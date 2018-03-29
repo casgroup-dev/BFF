@@ -1,6 +1,7 @@
 <template>
   <Card class="text-center">
     <h2 slot="header" class="title">Login</h2>
+    <p>Bienvenido al portal de CasGroup, por favor ingresa tu usuario y contraseña.</p>
     <label class="error" v-if="username.error">Necesitas ingresar un usuario</label>
     <fg-input class="col-12" placeholder="Usuario" v-model="username.payload"/>
     <label class="error" v-if="password.error">Necesitas ingresar una contraseña</label>
