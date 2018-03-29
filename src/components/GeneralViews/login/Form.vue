@@ -5,13 +5,15 @@
     <fg-input class="col-12" placeholder="Usuario" v-model="username.payload"/>
     <label class="error" v-if="password.error">Necesitas ingresar una contraseña</label>
     <fg-input class="col-12" placeholder="Contraseña" type="password" v-model="password.payload"/>
-    <button class="btn btn-info btn-fill" @click="login">Entrar</button>
+    <button class="btn btn-info btn-fill" @click="login" v-if="!loading">Entrar</button>
+    <clip-loader :loading="loading" color="#1DC7EA"/>
   </Card>
 </template>
 
 <script>
   import Card from '../../UIComponents/Cards/Card'
   import usersApi from '../../../apis/users/index'
+  import ClipLoader from 'vue-spinner/src/ClipLoader'
 
   export default {
     data () {
@@ -23,11 +25,13 @@
         password: {
           payload: null,
           error: false
-        }
+        },
+        loading: false
       }
     },
     components: {
-      Card
+      Card,
+      ClipLoader
     },
     methods: {
       async login () {
@@ -36,7 +40,11 @@
         if (this.username.payload && this.password.payload) {
           this.username.error = false
           this.password.error = false
+          this.loading = true
           const token = await usersApi.login(this.username, this.password)
+          this.loading = false
+          localStorage.setItem('token', token)
+          this.$router.push(this.$route.query.next || '/')
         }
       }
     }

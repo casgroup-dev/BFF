@@ -16,15 +16,20 @@ const routes = [
   {
     path: '/',
     component: DashboardLayout,
-    redirect: '/admin/overview'
+    redirect: '/admin/overview',
+    meta: {
+      requiresAuth: true
+    }
   },
   {
     path: '/login',
+    name: 'login',
     component: Login
   },
   {
     path: '/licitaciones',
     component: DashboardLayout,
+    meta: {requiresAuth: true},
     children: [
       {
         path: '/',
@@ -37,6 +42,9 @@ const routes = [
     path: '/admin',
     component: DashboardLayout,
     redirect: '/admin/overview',
+    meta: {
+      requiresAuth: true
+    },
     children: [
       {
         path: 'overview',

@@ -1,6 +1,8 @@
-async function login (username, password) {
+function login (username, password) {
   // TODO
-  return 'this is a false token'
+  return new Promise((resolve, reject) => {
+    setTimeout(() => resolve('this is a false token'), 2000)
+  })
 }
 
 export default {
