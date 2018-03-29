@@ -1,17 +1,17 @@
 <template>
   <div class="card">
     <div class="card-image" v-if="$slots.image">
-      <slot name="image"></slot>
+      <slot name="image"/>
     </div>
     <div class="card-header" v-if="$slots.header">
-      <slot name="header"></slot>
+      <slot name="header"/>
     </div>
     <div class="card-body">
       <slot></slot>
     </div>
     <div class="card-footer" v-if="$slots.footer">
       <hr>
-      <slot name="footer"></slot>
+      <slot name="footer"/>
     </div>
   </div>
 </template>
