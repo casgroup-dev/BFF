@@ -1,8 +1,7 @@
-import DashboardLayout from '../components/Dashboard/Layout/DashboardLayout.vue'
-// GeneralViews
-import NotFound from '../components/GeneralViews/NotFoundPage.vue'
-
-// Admin pages
+// General views
+import DashboardLayout from '../../components/Dashboard/Layout/DashboardLayout.vue'
+import NotFound from '../../components/GeneralViews/NotFoundPage.vue'
+// Dashboard pages
 import Overview from 'src/components/Dashboard/Views/Overview.vue'
 import UserProfile from 'src/components/Dashboard/Views/UserProfile.vue'
 import TableList from 'src/components/Dashboard/Views/TableList.vue'
@@ -10,12 +9,24 @@ import Typography from 'src/components/Dashboard/Views/Typography.vue'
 import Icons from 'src/components/Dashboard/Views/Icons.vue'
 import Maps from 'src/components/Dashboard/Views/Maps.vue'
 import Notifications from 'src/components/Dashboard/Views/Notifications.vue'
+import LicitacionesHome from 'src/components/Dashboard/Views/licitaciones/Home'
 
 const routes = [
   {
     path: '/',
     component: DashboardLayout,
     redirect: '/admin/overview'
+  },
+  {
+    path: '/licitaciones',
+    component: DashboardLayout,
+    children: [
+      {
+        path: '/',
+        name: 'Home',
+        component: LicitacionesHome
+      }
+    ]
   },
   {
     path: '/admin',
@@ -59,14 +70,14 @@ const routes = [
       }
     ]
   },
-  { path: '*', component: NotFound }
+  {path: '*', component: NotFound}
 ]
 
 /**
  * Asynchronously load view (Webpack Lazy loading compatible)
  * The specified component must be inside the Views folder
  * @param  {string} name  the filename (basename) of the view to load.
-function view(name) {
+ function view(name) {
    var res= require('../components/Dashboard/Views/' + name + '.vue');
    return res;
 };**/
