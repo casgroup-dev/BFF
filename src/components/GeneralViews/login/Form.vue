@@ -1,7 +1,9 @@
 <template>
   <Card class="text-center">
-    <h2 slot="header" class="title">Login</h2>
-    <p>Bienvenido al portal de CasGroup, por favor ingresa tu usuario y contraseña.</p>
+    <div slot="header">
+      <h2 slot="header" class="title">Ingresar</h2>
+      <p class="text-gray">Bienvenido al portal de CasGroup, por favor ingresa tu usuario y contraseña.</p>
+    </div>
     <label class="error" v-if="loginErrorMessage">{{loginErrorMessage}}</label>
     <label class="error" v-if="email.error">Necesitas ingresar un email</label>
     <fg-input class="col-12" placeholder="ejemplo@ejemplo.com" v-model="email.payload" @enter="login"/>
@@ -9,6 +11,13 @@
     <fg-input class="col-12" placeholder="Contraseña" type="password" v-model="password.payload" @enter="login"/>
     <button class="btn btn-info btn-fill" @click="login" v-if="!loading">Entrar</button>
     <clip-loader :loading="loading" color="#1DC7EA"/>
+    <div class="row margin-top">
+      <div class="col-12">
+        <router-link :to="{ name: 'register', query: {next: this.$route.query.next}}">
+          ¿No tienes usuario? Regístrate aquí.
+        </router-link>
+      </div>
+    </div>
   </Card>
 </template>
 
@@ -31,6 +40,9 @@
       ClipLoader
     },
     methods: {
+      /**
+       * Login the user in the system, check for errors and set messages for them.
+       */
       async login () {
         if (!this.email.payload) this.email.error = true
         if (!this.password.payload) this.password.error = true
@@ -49,6 +61,9 @@
             .then(function () { this.loading = false }.bind(this))
         }
       },
+      /**
+       * Focus the first input element of the form.
+       */
       focus () {
         this.$el.querySelector('input').focus()
       }
@@ -60,5 +75,11 @@
 <style scoped>
   label.error {
     color: #ff0000
+  }
+  .margin-top {
+    margin-top: 10px
+  }
+  .text-gray {
+    color: #889494
   }
 </style>

@@ -2,6 +2,7 @@
 import DashboardLayout from '../../components/Dashboard/Layout/DashboardLayout.vue'
 import NotFound from '../../components/GeneralViews/NotFoundPage.vue'
 import Login from '../../components/GeneralViews/login/Layout'
+import Register from '../../components/GeneralViews/register/Layout'
 // Dashboard pages
 import Overview from 'src/components/Dashboard/Views/Overview.vue'
 import UserProfile from 'src/components/Dashboard/Views/UserProfile.vue'
@@ -25,6 +26,11 @@ const routes = [
     path: '/login',
     name: 'login',
     component: Login
+  },
+  {
+    path: '/register',
+    name: 'register',
+    component: Register
   },
   {
     path: '/licitaciones',
