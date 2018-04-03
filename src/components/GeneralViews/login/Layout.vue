@@ -2,7 +2,7 @@
   <full-page-container>
     <div class="row h-100">
       <div class="col-md-4 offset-md-4 col-sm-12 align-self-center">
-        <Form/>
+        <Form></Form>
       </div>
     </div>
   </full-page-container>

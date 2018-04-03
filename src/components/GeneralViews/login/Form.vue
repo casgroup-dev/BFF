@@ -2,10 +2,11 @@
   <Card class="text-center">
     <h2 slot="header" class="title">Login</h2>
     <p>Bienvenido al portal de CasGroup, por favor ingresa tu usuario y contraseña.</p>
-    <label class="error" v-if="username.error">Necesitas ingresar un usuario</label>
-    <fg-input class="col-12" placeholder="Usuario" v-model="username.payload"/>
+    <label class="error" v-if="loginErrorMessage">{{loginErrorMessage}}</label>
+    <label class="error" v-if="email.error">Necesitas ingresar un email</label>
+    <fg-input class="col-12" placeholder="ejemplo@ejemplo.com" v-model="email.payload" @enter="login"/>
     <label class="error" v-if="password.error">Necesitas ingresar una contraseña</label>
-    <fg-input class="col-12" placeholder="Contraseña" type="password" v-model="password.payload"/>
+    <fg-input class="col-12" placeholder="Contraseña" type="password" v-model="password.payload" @enter="login"/>
     <button class="btn btn-info btn-fill" @click="login" v-if="!loading">Entrar</button>
     <clip-loader :loading="loading" color="#1DC7EA"/>
   </Card>
@@ -19,15 +20,10 @@
   export default {
     data () {
       return {
-        username: {
-          payload: null,
-          error: false
-        },
-        password: {
-          payload: null,
-          error: false
-        },
-        loading: false
+        email: {payload: null, error: false},
+        password: {payload: null, error: false},
+        loading: false,
+        loginErrorMessage: null
       }
     },
     components: {
@@ -36,19 +32,28 @@
     },
     methods: {
       async login () {
-        if (!this.username.payload) this.username.error = true
+        if (!this.email.payload) this.email.error = true
         if (!this.password.payload) this.password.error = true
-        if (this.username.payload && this.password.payload) {
-          this.username.error = false
-          this.password.error = false
+        if (this.email.payload && this.password.payload) {
+          this.email.error = this.password.error = false
           this.loading = true
-          const token = await usersApi.login(this.username, this.password)
-          this.loading = false
-          localStorage.setItem('token', token)
-          this.$router.push(this.$route.query.next || '/')
+          usersApi.login(this.email.payload, this.password.payload)
+            .then(function () {
+              this.$router.push(this.$route.query.next || '/')
+            }.bind(this))
+            .catch(function (err) {
+              this.loginErrorMessage = err.message || 'Hubo un error, lamentamos la situación.'
+              this.email.payload = this.password.payload = null
+              this.focus()
+            }.bind(this))
+            .then(function () { this.loading = false }.bind(this))
         }
+      },
+      focus () {
+        this.$el.querySelector('input').focus()
       }
-    }
+    },
+    mounted: function () { this.focus() }
   }
 </script>
 

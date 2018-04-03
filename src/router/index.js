@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 import routes from './routes'
+import usersApi from '../apis/users'
 
 Vue.use(Router)
 
@@ -10,7 +11,7 @@ const router = new Router({
 })
 
 router.beforeEach((to, from, next) => {
-  if (to.matched.some(record => record.meta.requiresAuth) && !localStorage.getItem('token')) {
+  if (to.matched.some(record => record.meta.requiresAuth) && !usersApi.isLoggedIn()) {
     next({name: 'login', query: {next: to.fullPath}})
   }
   next()
