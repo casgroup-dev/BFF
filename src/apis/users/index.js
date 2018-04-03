@@ -8,30 +8,24 @@ const TOKEN_NAME = 'token'
  * @return {Promise<String>}
  */
 function login (email, password) {
-  // TODO
+  // TODO: Call the real api
   return new Promise((resolve, reject) => {
+    // Simulate an api call with a timeout of two seconds that resolves or reject the promise with equal probability.
     setTimeout(() => {
-      Math.random() > 1
+      Math.random() > 0.5
         ? resolve('this is a false token')
         : reject(new Error(`Email y contraseña no coinciden.`))
     }, 2000)
-  }).then(saveToken)
+  }).then(token.save)
 }
 
 /**
- * Saves the token of the user to keep him logged in.
- * @param {String} token
+ * Register a new user. If it's all ok the promise is resolved void and if there are errors in the process
+ * rejects the promise with a correct error message.
+ * @returns {Promise<void>}
  */
-function saveToken (token) {
-  localStorage.setItem(TOKEN_NAME, token)
-}
-
-/**
- * Gets the token from the storage.
- * @return {string | null}
- */
-function getToken () {
-  return localStorage.getItem(TOKEN_NAME)
+function register () {
+  // TODO: Define parameters and simulate the api call (see login function).
 }
 
 /**
@@ -39,10 +33,24 @@ function getToken () {
  * @return {boolean}
  */
 function isLoggedIn () {
-  return !!getToken()
+  return !!token.get()
+}
+
+const token = {
+  /**
+   * Saves the token of the user to keep him logged in.
+   * @param {String} token
+   */
+  save: token => localStorage.setItem(TOKEN_NAME, token),
+  /**
+   * Gets the token from the storage.
+   * @return {string | null}
+   */
+  get: () => localStorage.getItem(TOKEN_NAME)
 }
 
 export default {
+  isLoggedIn,
   login,
-  isLoggedIn
+  register
 }
