@@ -1,8 +1,21 @@
 <template>
   <Card>
     <div slot="header">
-      <h1 class="title text-center">Registro</h1>
+      <h2 class="title text-center">Registro de usuario</h2>
     </div>
+    <div class="block">
+      <label>Nombre</label>
+      <fg-input class="col-12" placeholder="Juan Pérez González" @enter="login"/>
+    </div>
+    <div class="block">
+      <label>Correo electrónico</label>
+      <fg-input class="col-12" placeholder="ejemplo@ejemplo.com" @enter="login"/>
+    </div>
+    <div class="block">
+      <label>Empresa</label>
+      <fg-input class="col-12" placeholder="CasGroup" @enter="login"/>
+    </div>
+
     <p>¿Qué deberían hacer?</p>
     <ul>
       <li>Basándose en el formulario de login poner los elementos correspondientes (inputs, textos y botones).</li>
