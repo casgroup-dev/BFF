@@ -15,6 +15,28 @@
       <label>Empresa</label>
       <fg-input class="col-12" placeholder="CasGroup" @enter="login"/>
     </div>
+    <div class="block">
+      <!-- TODO change dropdown menu style -->
+      <label>Rol</label>
+      <select class="col-12" v-model="selected">
+        <option disabled value="">Por favor elija uno</option>
+        <option>Administrador</option>
+        <option>Proveedor</option>
+        <option>Consultor</option>
+      </select>
+    </div>
+    <div class="block">
+      <label>Teléfono</label>
+      <fg-input class="col-12" placeholder="+56 9 1234 5678" @enter="login"/>
+    </div>
+    <div class="block">
+      <label>Contraseña</label>
+      <fg-input class="col-12" placeholder="****" @enter="login"/>
+    </div>
+    <div align="center">
+      <button class="btn btn-info btn-fill" @click="login" v-if="!loading">Registrar</button>
+    </div>
+
 
     <p>¿Qué deberían hacer?</p>
     <ul>
