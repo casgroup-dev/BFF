@@ -98,7 +98,7 @@
         if (!this.phone.payload) this.phone.error = true // TODO Obligatorio?
         if (!this.password.payload) this.password.error = true
         if (!this.passwordConfirm.payload || (this.passwordConfirm.payload == this.password.payload)) this.passwordConfirm.error = true
-        if (this.name.payload && this.email.payload && this.company.payload && this.password.payload && this.passwordConfirm.payload){
+        if (this.name.payload && this.email.payload && this.company.payload && this.password.payload && this.passwordConfirm.payload) {
           this.name.error = this.email.error = this.company.error = this.password.error = this.passwordConfirm.error = false
           this.loading = true
           usersApi.register(this.name.payload, this.email.payload, this.company.payload, this.role.payload, this.phone.payload, this.password.payload, this.passwordConfirm.payload)
@@ -113,7 +113,6 @@
             .then(function () { this.loading = false }.bind(this))
         }
       },
-      }
     }
   }
 </script>
