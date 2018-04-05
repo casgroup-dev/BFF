@@ -91,7 +91,28 @@
        * Check that the data of the form is filled (not empty values) and call the register API.
        */
       async register () {
-        throw new Error('Not implemented.')
+        if (!this.name.payload) this.name.error = true
+        if (!this.email.payload) this.email.error = true
+        if (!this.company.payload) this.company.error = true
+        if (!this.role.payload) this.role.error = true // TODO Asginado o decidido?
+        if (!this.phone.payload) this.phone.error = true // TODO Obligatorio?
+        if (!this.password.payload) this.password.error = true
+        if (!this.passwordConfirm.payload || (this.passwordConfirm.payload == this.password.payload)) this.passwordConfirm.error = true
+        if (this.name.payload && this.email.payload && this.company.payload && this.password.payload && this.passwordConfirm.payload){
+          this.name.error = this.email.error = this.company.error = this.password.error = this.passwordConfirm.error = false
+          this.loading = true
+          usersApi.register(this.name.payload, this.email.payload, this.company.payload, this.role.payload, this.phone.payload, this.password.payload, this.passwordConfirm.payload)
+            .then(function () {
+              this.$router.push(this.$route.query.next || '/')
+            }.bind(this))
+            .catch(function (err) {
+              this.loginErrorMessage = err.message || 'Hubo un error, lamentamos la situación.'
+              this.name.payload = this.email.payload = this.company.payload = this.role.payload = this.phone.payload = this.password.payload = this.passwordConfirm.payload = null
+              this.focus()
+            }.bind(this))
+            .then(function () { this.loading = false }.bind(this))
+        }
+      },
       }
     }
   }

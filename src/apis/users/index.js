@@ -10,12 +10,12 @@ const TOKEN_NAME = 'token'
 function login (email, password) {
   // TODO: Call the real api
   return new Promise((resolve, reject) => {
-    // Simulate an api call with a timeout of two seconds that resolves or reject the promise with equal probability.
+    // Simulate an api call with a timeout of one seconds that resolves or reject the promise with equal probability.
     setTimeout(() => {
       Math.random() > 0.5
         ? resolve('this is a false token')
         : reject(new Error(`Email y contraseña no coinciden.`))
-    }, 2000)
+    }, 1000)
   }).then(token.save)
 }
 
@@ -24,7 +24,7 @@ function login (email, password) {
  * rejects the promise with a correct error message.
  * @returns {Promise<void>}
  */
-function register () {
+function register (name, email, company, role, phone, pass, passConfirm) {
   // TODO: Define parameters and simulate the api call (see login function).
 }
 
