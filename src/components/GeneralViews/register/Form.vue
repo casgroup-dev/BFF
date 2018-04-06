@@ -49,17 +49,19 @@
     <div align="center">
       <button class="btn btn-info btn-fill" @click="register" v-if="!loading">Registrar</button>
     </div>
+    <clip-loader :loading="loading" color="#1DC7EA"/>
+
     <p>¿Qué deberían hacer?</p>
     <ul>
       <li><del>Basándose en el formulario de login poner los elementos correspondientes (inputs, textos y botones).</del></li>
-      <li>Completar las funciones para el llamado a la api de registro.</li>
+      <li><del>Completar las funciones para el llamado a la api de registro.</del></li>
       <li><del>Mostrar mensaje de errores si los hay.</del></li>
       <li>Mostrar mensaje de éxito y pedir que revise su email (esta no lo hacemos aún, pero igual).</li>
-      <li>Mostrar spinner mientras responde la api.</li>
-      <li>Bindear en dos direcciones (con 'v-model') los datos del componente para el registro.</li>
-      <li>Verificar que no está enviando campos vacíos.</li>
+      <li><del>Mostrar spinner mientras responde la api.</del></li>
+      <li><del>Bindear en dos direcciones (con 'v-model') los datos del componente para el registro.</del></li>
+      <li><del>Verificar que no está enviando campos vacíos.</del></li>
       <li>Extra: Manejar qué pasa cuando se apreta enter.</li>
-      <li>Extra: Autofocus al carga el componente en el primer input.</li>
+      <li><del>Extra: Autofocus al carga el componente en el primer input.</del></li>
     </ul>
   </Card>
 </template>
@@ -99,7 +101,7 @@
         if (!this.role.payload) this.role.error = true // TODO Asginado o decidido?
         if (!this.phone.payload) this.phone.error = true // TODO Obligatorio?
         if (!this.password.payload) this.password.error = true
-        if (!this.passwordConfirm.payload || (this.passwordConfirm.payload == this.password.payload)) this.passwordConfirm.error = true
+        if (!this.passwordConfirm.payload || (this.passwordConfirm.payload === this.password.payload)) this.passwordConfirm.error = true
         if (this.name.payload && this.email.payload && this.company.payload && this.password.payload && this.passwordConfirm.payload) {
           this.name.error = this.email.error = this.company.error = this.password.error = this.passwordConfirm.error = false
           this.loading = true
@@ -114,8 +116,15 @@
             }.bind(this))
             .then(function () { this.loading = false }.bind(this))
         }
+      },
+      /**
+       * Focus the first input element of the form.
+       */
+      focus () {
+        this.$el.querySelector('input').focus()
       }
-    }
+    },
+    mounted: function () { this.focus() }
   }
 </script>
 
