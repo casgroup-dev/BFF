@@ -7,20 +7,22 @@
       <label>Nombre</label>
       <fg-input class="col-12" placeholder="Juan Pérez González" v-model="name.payload" @enter="register"/>
     </div>
+    <label align="center-block" class="error" v-if="email.error">Ingrese una dirección de correo</label>
     <div class="block">
       <label>Correo electrónico</label>
       <label class="error" v-if="email.error">Necesitas ingresar un email</label>
       <fg-input class="col-12" placeholder="ejemplo@ejemplo.com" v-model="email.payload" @enter="register"/>
     </div>
-    <div class="block">
+    <label class="error" v-if="company.error">Ingrese el nombre de su empresa</label>
+    <div class="form-group">
       <label>Empresa</label>
       <label class="error" v-if="company.error">Necesitas ingresar el nombre de tu empresa</label>
       <fg-input class="col-12" placeholder="CasGroup" v-model="company.payload" @enter="register"/>
     </div>
+    <label class="error" v-if="role.error">Ingrese su rol</label>
     <div class="block">
       <!-- TODO change dropdown menu style -->
       <label>Rol</label>
-      <label class="error" v-if="role.error">Necesitas ingresar tu rol</label>
       <select class="col-12" v-model="role.payload">
         <option disabled value="">Por favor elija uno</option>
         <option>Administrador</option>
@@ -32,11 +34,13 @@
       <label>Teléfono</label>
       <fg-input class="col-12" placeholder="+56 9 1234 5678" v-model="phone.payload" @enter="register"/>
     </div>
+    <label class="error" v-if="password.error">Ingrese una contraseña</label>
     <div class="block">
       <label>Contraseña</label>
       <label class="error" v-if="password.error">Necesitas ingresar una contraseña</label>
       <fg-input class="col-12" placeholder="******" type="password" v-model="password.payload" @enter="register"/>
     </div>
+    <label class="error" v-if="passwordConfirm.error">Confirme la contraseña</label>
     <div class="block">
       <!-- TODO check matching passwords -->
       <label>Confirmar contraseña</label>
@@ -125,4 +129,14 @@
   }
 </script>
 
-<style scoped></style>
+<style scoped>
+  label.error {
+    color: #ff0000
+  }
+  .margin-top {
+    margin-top: 10px
+  }
+  .text-gray {
+    color: #889494
+  }
+</style>
