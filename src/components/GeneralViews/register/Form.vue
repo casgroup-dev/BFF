@@ -72,7 +72,7 @@
   import ClipLoader from 'vue-spinner/src/ClipLoader'
 
   export default {
-    name: 'form',
+    name: 'Register',
     data () {
       return {
         name: {payload: null, error: false},
@@ -95,10 +95,10 @@
        * Check that the data of the form is filled (not empty values) and call the register API.
        */
       async register () {
-        if (!this.name.payload) this.name.error = true
+        if (!this.name.payload) this.name.error = true // TODO Obligatorio?
         if (!this.email.payload) this.email.error = true
         if (!this.company.payload) this.company.error = true
-        if (!this.role.payload) this.role.error = true // TODO Asginado o decidido?
+        if (!this.role.payload) this.role.error = true // TODO Asignado o decidido?
         if (!this.phone.payload) this.phone.error = true // TODO Obligatorio?
         if (!this.password.payload) this.password.error = true
         if (!this.passwordConfirm.payload || (this.passwordConfirm.payload === this.password.payload)) this.passwordConfirm.error = true

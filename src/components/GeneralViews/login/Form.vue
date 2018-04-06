@@ -27,6 +27,7 @@
   import ClipLoader from 'vue-spinner/src/ClipLoader'
 
   export default {
+    name: 'Login',
     data () {
       return {
         email: {payload: null, error: false},
