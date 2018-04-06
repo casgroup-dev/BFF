@@ -5,17 +5,17 @@
     </div>
     <div class="block">
       <label>Nombre</label>
-      <fg-input class="col-12" placeholder="Juan Pérez González" v-model="name.payload" @enter="login"/>
+      <fg-input class="col-12" placeholder="Juan Pérez González" v-model="name.payload" @enter="register"/>
     </div>
     <div class="block">
       <label>Correo electrónico</label>
       <label class="error" v-if="email.error">Necesitas ingresar un email</label>
-      <fg-input class="col-12" placeholder="ejemplo@ejemplo.com" v-model="email.payload" @enter="login"/>
+      <fg-input class="col-12" placeholder="ejemplo@ejemplo.com" v-model="email.payload" @enter="register"/>
     </div>
     <div class="block">
       <label>Empresa</label>
       <label class="error" v-if="company.error">Necesitas ingresar el nombre de tu empresa</label>
-      <fg-input class="col-12" placeholder="CasGroup" v-model="company.payload" @enter="login"/>
+      <fg-input class="col-12" placeholder="CasGroup" v-model="company.payload" @enter="register"/>
     </div>
     <div class="block">
       <!-- TODO change dropdown menu style -->
@@ -30,18 +30,18 @@
     </div>
     <div class="block">
       <label>Teléfono</label>
-      <fg-input class="col-12" placeholder="+56 9 1234 5678" v-model="phone.payload" @enter="login"/>
+      <fg-input class="col-12" placeholder="+56 9 1234 5678" v-model="phone.payload" @enter="register"/>
     </div>
     <div class="block">
       <label>Contraseña</label>
       <label class="error" v-if="password.error">Necesitas ingresar una contraseña</label>
-      <fg-input class="col-12" placeholder="******" type="password" v-model="password.payload" @enter="login"/>
+      <fg-input class="col-12" placeholder="******" type="password" v-model="password.payload" @enter="register"/>
     </div>
     <div class="block">
       <!-- TODO check matching passwords -->
       <label>Confirmar contraseña</label>
       <label class="error" v-if="passwordConfirm.error">Debes confirmar la contraseña</label>
-      <fg-input class="col-12" placeholder="******" type="password" v-model="passwordConfirm.payload" @enter="login"/>
+      <fg-input class="col-12" placeholder="******" type="password" v-model="passwordConfirm.payload" @enter="register"/>
     </div>
     <div align="center">
       <button class="btn btn-info btn-fill" @click="register" v-if="!loading">Registrar</button>
@@ -50,15 +50,15 @@
 
     <p>¿Qué deberían hacer?</p>
     <ul>
-      <li>Basándose en el formulario de login poner los elementos correspondientes (inputs, textos y botones).</li>
-      <li>Completar las funciones para el llamado a la api de registro.</li>
-      <li>Mostrar mensaje de errores si los hay.</li>
+      <li><del>Basándose en el formulario de login poner los elementos correspondientes (inputs, textos y botones).</del></li>
+      <li><del>Completar las funciones para el llamado a la api de registro.</del></li>
+      <li><del>Mostrar mensaje de errores si los hay.</del></li>
       <li>Mostrar mensaje de éxito y pedir que revise su email (esta no lo hacemos aún, pero igual).</li>
-      <li>Mostrar spinner mientras responde la api.</li>
-      <li>Bindear en dos direcciones (con 'v-model') los datos del componente para el registro.</li>
-      <li>Verificar que no está enviando campos vacíos.</li>
+      <li><del>Mostrar spinner mientras responde la api.</del></li>
+      <li><del>Bindear en dos direcciones (con 'v-model') los datos del componente para el registro.</del></li>
+      <li><del>Verificar que no está enviando campos vacíos.</del></li>
       <li>Extra: Manejar qué pasa cuando se apreta enter.</li>
-      <li>Extra: Autofocus al carga el componente en el primer input.</li>
+      <li><del>Extra: Autofocus al carga el componente en el primer input.</del></li>
     </ul>
   </Card>
 </template>
@@ -114,7 +114,14 @@
             .then(function () { this.loading = false }.bind(this))
         }
       },
-    }
+      /**
+       * Focus the first input element of the form.
+       */
+      focus () {
+        this.$el.querySelector('input').focus()
+      }
+    },
+    mounted: function () { this.focus() }
   }
 </script>
 
