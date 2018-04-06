@@ -10,13 +10,11 @@
     <label align="center-block" class="error" v-if="email.error">Ingrese una dirección de correo</label>
     <div class="block">
       <label>Correo electrónico</label>
-      <label class="error" v-if="email.error">Necesitas ingresar un email</label>
       <fg-input class="col-12" placeholder="ejemplo@ejemplo.com" v-model="email.payload" @enter="register"/>
     </div>
     <label class="error" v-if="company.error">Ingrese el nombre de su empresa</label>
     <div class="form-group">
       <label>Empresa</label>
-      <label class="error" v-if="company.error">Necesitas ingresar el nombre de tu empresa</label>
       <fg-input class="col-12" placeholder="CasGroup" v-model="company.payload" @enter="register"/>
     </div>
     <label class="error" v-if="role.error">Ingrese su rol</label>
@@ -37,14 +35,12 @@
     <label class="error" v-if="password.error">Ingrese una contraseña</label>
     <div class="block">
       <label>Contraseña</label>
-      <label class="error" v-if="password.error">Necesitas ingresar una contraseña</label>
       <fg-input class="col-12" placeholder="******" type="password" v-model="password.payload" @enter="register"/>
     </div>
     <label class="error" v-if="passwordConfirm.error">Confirme la contraseña</label>
     <div class="block">
       <!-- TODO check matching passwords -->
       <label>Confirmar contraseña</label>
-      <label class="error" v-if="passwordConfirm.error">Debes confirmar la contraseña</label>
       <fg-input class="col-12" placeholder="******" type="password" v-model="passwordConfirm.payload" @enter="register"/>
     </div>
     <div align="center">
