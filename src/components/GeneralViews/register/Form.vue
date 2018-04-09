@@ -59,19 +59,6 @@
         Volver a login.
       </router-link>
     </div>
-
-    <p>¿Qué deberían hacer?</p>
-    <ul>
-      <li><del>Basándose en el formulario de login poner los elementos correspondientes (inputs, textos y botones).</del></li>
-      <li><del>Completar las funciones para el llamado a la api de registro.</del></li>
-      <li><del>Mostrar mensaje de errores si los hay.</del></li>
-      <li>Mostrar mensaje de éxito y pedir que revise su email (esta no lo hacemos aún, pero igual).</li>
-      <li><del>Mostrar spinner mientras responde la api.</del></li>
-      <li><del>Bindear en dos direcciones (con 'v-model') los datos del componente para el registro.</del></li>
-      <li><del>Verificar que no está enviando campos vacíos.</del></li>
-      <li>Extra: Manejar qué pasa cuando se apreta enter.</li>
-      <li><del>Extra: Autofocus al carga el componente en el primer input.</del></li>
-    </ul>
   </Card>
 </template>
 
@@ -186,8 +173,5 @@
 <style scoped>
   label.error {
     color: #ff0000
-  }
-  .margin-top {
-    margin-top: 10px
   }
 </style>
