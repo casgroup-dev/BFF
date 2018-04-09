@@ -1,6 +1,14 @@
 /* global describe it */
-import { shallow } from 'vue-test-utils'
-const Register = require('../../components/GeneralViews/register/Form.vue')
+import { shallow } from '@vue/test-utils'
+const Register = require('../../../../../../src/components/GeneralViews/register/Form.vue')
+
+
+describe('Register', () => {
+  it('checks that register has a field called name', () => {
+    const wrapper = shallow(Register)
+    expect(wrapper.contains('name')).toBe(true)
+  })
+})
 
 const factory = (values = {}) => {
   return shallow(Register, {
@@ -11,7 +19,7 @@ const factory = (values = {}) => {
 describe('Register', () => {
   it('name contains only letters', () => {
     const wrapper = factory({name: 'Daniela'})
-    expect(wrapper.find('.name').text()).toEqual('Daniela')
+    expect(wrapper.find('.name').text()).toBe('Daniela')
   })
   //
   // it('renders an error when username is less than 7 characters', () => {
