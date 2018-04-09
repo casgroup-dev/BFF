@@ -95,15 +95,16 @@
        * Check that the data of the form is filled (not empty values) and call the register API.
        */
       async register () {
-        if (!this.name.payload) this.name.error = true // TODO Obligatorio?
-        if (!this.email.payload) this.email.error = true
-        if (!this.company.payload) this.company.error = true
-        if (!this.role.payload) this.role.error = true // TODO Asignado o decidido?
-        if (!this.phone.payload) this.phone.error = true // TODO Obligatorio?
-        if (!this.password.payload) this.password.error = true
-        if (!this.passwordConfirm.payload || (this.passwordConfirm.payload === this.password.payload)) this.passwordConfirm.error = true
-        if (this.name.payload && this.email.payload && this.company.payload && this.password.payload && this.passwordConfirm.payload) {
-          this.name.error = this.email.error = this.company.error = this.password.error = this.passwordConfirm.error = false
+        this.name.error = !this.name.payload
+        this.email.error = !this.email.payload
+        this.company.error = !this.company.payload
+        this.role.error = !this.role.payload
+        this.phone.error = !this.phone.payload
+        this.password.error = !this.password.payload
+        this.passwordConfirm.error = !this.passwordConfirm.payload
+        this.differentPasswordsError = !!(this.password.payload && this.passwordConfirm.payload && !(this.passwordConfirm.payload === this.password.payload))
+        if (this.name.payload && this.email.payload && this.company.payload && this.password.payload && this.passwordConfirm.payload &&
+          (this.passwordConfirm.payload === this.password.payload)) {
           this.loading = true
           usersApi.register(this.name.payload, this.email.payload, this.company.payload, this.role.payload, this.phone.payload, this.password.payload, this.passwordConfirm.payload)
             .then(function () {
