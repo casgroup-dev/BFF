@@ -38,7 +38,7 @@ function register (name, email, company, role, phone, pass, passConfirm) {
     setTimeout(() => {
       Math.random() > 0.5
         ? resolve('this is a false token')
-        : reject(new Error(`Email y contraseña no coinciden.`))
+        :reject (new Error(`Random < 0.5.`))
     }, 1000)
   }).then(token.save)
 }

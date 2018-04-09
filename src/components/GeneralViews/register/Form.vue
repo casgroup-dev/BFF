@@ -1,9 +1,9 @@
 <template>
   <Card>
     <div slot="header">
-      <!-- TODO title disappears after pressing register D: -->
       <h2 class="title text-center">Registro de usuario</h2>
     </div>
+    <label class="error" v-if="registerErrorMessage">{{registerErrorMessage}}</label>
     <label align="center-block" class="error" v-if="name.error">Ingrese su nombre</label>
     <div class="block">
       <label>Nombre*</label>
@@ -46,23 +46,19 @@
       <label>Confirmar contraseña*</label>
       <fg-input class="col-12" placeholder="******" type="password" v-model="passwordConfirm.payload" @enter="register"/>
     </div>
+    <label class="error" v-if="differentPasswordsError">Contraseñas no coinciden</label>
     <div align="center">
-      <button class="btn btn-info btn-fill" @click="register" v-if="!loading">Registrar</button>
+      <button class="btn btn-info btn-fill" @click="register" v-if="registerButton">Registrar</button>
     </div>
     <clip-loader :loading="loading" color="#1DC7EA"/>
-
-    <p>¿Qué deberían hacer?</p>
-    <ul>
-      <li><del>Basándose en el formulario de login poner los elementos correspondientes (inputs, textos y botones).</del></li>
-      <li><del>Completar las funciones para el llamado a la api de registro.</del></li>
-      <li><del>Mostrar mensaje de errores si los hay.</del></li>
-      <li>Mostrar mensaje de éxito y pedir que revise su email (esta no lo hacemos aún, pero igual).</li>
-      <li><del>Mostrar spinner mientras responde la api.</del></li>
-      <li><del>Bindear en dos direcciones (con 'v-model') los datos del componente para el registro.</del></li>
-      <li><del>Verificar que no está enviando campos vacíos.</del></li>
-      <li>Extra: Manejar qué pasa cuando se apreta enter.</li>
-      <li><del>Extra: Autofocus al carga el componente en el primer input.</del></li>
-    </ul>
+    <div class="alert alert-success" v-if="successMessage">
+      Registrado con éxito. Un mail para la verificación de su cuenta ha sido enviado.
+    </div>
+    <div class="col-12" align="center">
+      <router-link :to="{ name: 'login', query: {next: this.$route.query.next}}">
+        Volver a login.
+      </router-link>
+    </div>
   </Card>
 </template>
 
@@ -82,8 +78,12 @@
         phone: {payload: null, error: false},
         password: {payload: null, error: false},
         passwordConfirm: {payload: null, error: false},
+        registerButton: true,
         loading: false,
-        loginErrorMessage: null
+        successMessage: false,
+        success: false,
+        differentPasswordsError: false,
+        registerErrorMessage: null
       }
     },
     components: {
@@ -95,24 +95,66 @@
        * Check that the data of the form is filled (not empty values) and call the register API.
        */
       async register () {
-        if (!this.name.payload) this.name.error = true // TODO Obligatorio?
-        if (!this.email.payload) this.email.error = true
-        if (!this.company.payload) this.company.error = true
-        if (!this.role.payload) this.role.error = true // TODO Asignado o decidido?
-        if (!this.phone.payload) this.phone.error = true // TODO Obligatorio?
-        if (!this.password.payload) this.password.error = true
-        if (!this.passwordConfirm.payload || (this.passwordConfirm.payload === this.password.payload)) this.passwordConfirm.error = true
-        if (this.name.payload && this.email.payload && this.company.payload && this.password.payload && this.passwordConfirm.payload) {
-          this.name.error = this.email.error = this.company.error = this.password.error = this.passwordConfirm.error = false
+        if (!this.name.payload){ // TODO Obligatorio?
+          this.name.error = true
+        }
+        else {
+          this.name.error = false
+        }
+        if (!this.email.payload){
+          this.email.error = true
+          }
+        else {
+          this.email.error = false
+        }
+        if (!this.company.payload){
+          this.company.error = true
+        }
+        else{
+          this.company.error = false
+        }
+        if (!this.role.payload){  // TODO Asignado o decidido?
+          this.role.error = true
+        }
+        else{
+          this.role.error = false
+        }
+        if (!this.phone.payload){ // TODO Obligatorio?
+          this.phone.error = true
+        }
+        else{
+          this.phone.error = false
+        }
+        if (!this.password.payload) {
+          this.password.error = true
+        }
+        else{
+          this.password.error = false
+        }
+        if (!this.passwordConfirm.payload) {
+          this.passwordConfirm.error = true
+        }
+        else{
+          this.passwordConfirm.error = false
+        }
+        if (this.password.payload && this.passwordConfirm.payload && !(this.passwordConfirm.payload === this.password.payload)){
+          this.differentPasswordsError = true
+        }
+        else{
+          this.differentPasswordsError = false
+        }
+        if (this.name.payload && this.email.payload && this.company.payload && this.password.payload && this.passwordConfirm.payload &&
+          (this.passwordConfirm.payload === this.password.payload)) {
           this.loading = true
+          this.registerButton = false
           usersApi.register(this.name.payload, this.email.payload, this.company.payload, this.role.payload, this.phone.payload, this.password.payload, this.passwordConfirm.payload)
             .then(function () {
-              this.$router.push(this.$route.query.next || '/')
+              this.successMessage = true
+              this.registerErrorMessage = false
             }.bind(this))
             .catch(function (err) {
-              this.loginErrorMessage = err.message || 'Hubo un error, lamentamos la situación.'
-              this.name.payload = this.email.payload = this.company.payload = this.role.payload = this.phone.payload = this.password.payload = this.passwordConfirm.payload = null
-              this.focus()
+              this.registerErrorMessage = err.message || 'Hubo un error, lamentamos la situación.'
+              this.registerButton = true
             }.bind(this))
             .then(function () { this.loading = false }.bind(this))
         }
@@ -131,11 +173,5 @@
 <style scoped>
   label.error {
     color: #ff0000
-  }
-  .margin-top {
-    margin-top: 10px
-  }
-  .text-gray {
-    color: #889494
   }
 </style>
