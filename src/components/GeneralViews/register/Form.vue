@@ -26,7 +26,7 @@
     </div>
     <div class="block">
       <fg-input class="col-12" placeholder="******" type="password" v-model="password.payload" @enter="register">
-        <label slot="label" v-if="!passwordConfirm.error">Contraseña*</label>
+        <label slot="label" v-if="!password.error">Contraseña*</label>
         <label class="error" slot="label" v-else>Complete la contraseña</label></fg-input>
     </div>
     <div class="block">
@@ -84,27 +84,22 @@
        * Check that the data of the form is filled (not empty values) and call the register API.
        */
       async register () {
-        if (!this.name.payload){ // TODO Obligatorio?
-          this.name.error = true
-        }
+        if (!this.name.payload) this.name.error = true
+          else this.name.error = false
         const email_regexp = /^([a-zA-Z0-9_.+-])+\@(([a-zA-Z0-9-])+\.)+([a-zA-Z0-9]{2,4})+$/
-        if (!this.email.payload || !email_regexp.test(this.email.payload)){
-          this.email.error = true
-        }
-        if (!this.company.payload){
-          this.company.error = true
-        }
-        if (!this.phone.payload){ // TODO Obligatorio?
-          this.phone.error = true
-        }
-        if (!this.password.payload) {
-          this.password.error = true
-        }
-        if (!this.passwordConfirm.payload) {
-          this.passwordConfirm.error = true
-        }
-        if (this.password.payload && this.passwordConfirm.payload && this.password !== this.passwordConfirm){
-          this.differentPasswordsError = true
+        if (!this.email.payload || !email_regexp.test(this.email.payload)) this.email.error = true
+          else this.email.error = false
+        if (!this.company.payload) this.company.error = true
+          else this.company.error = false
+        if (!this.phone.payload) this.phone.error = true
+          else this.phone.error = false
+        if (!this.password.payload) this.password.error = true
+          else this.password.error = false
+        if (!this.passwordConfirm.payload) this.passwordConfirm.error = true
+          else this.passwordConfirm.error = false
+        if (this.password.payload && this.passwordConfirm.payload){
+          this.differentPasswordsError = false
+          if (this.password.payload !== this.passwordConfirm.payload) this.differentPasswordsError = true
         }
         if (this.name.payload && this.email.payload && this.company.payload && this.password.payload && this.passwordConfirm.payload &&
           (this.passwordConfirm.payload === this.password.payload)) {

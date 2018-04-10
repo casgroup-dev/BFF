@@ -46,7 +46,9 @@
        */
       async login () {
         if (!this.email.payload) this.email.error = true
+          else this.email.error = false
         if (!this.password.payload) this.password.error = true
+          else this.password.error = false
         if (this.email.payload && this.password.payload) {
           this.email.error = this.password.error = false
           this.loading = true
