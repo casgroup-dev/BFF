@@ -4,36 +4,36 @@
       <h2 class="title text-center">Registro de usuario</h2>
     </div>
     <label class="error" v-if="registerErrorMessage">{{registerErrorMessage}}</label>
-    <label align="center-block" class="error" v-if="name.error">Ingrese su nombre</label>
     <div class="block">
       <fg-input class="col-12" placeholder="Juan Pérez González" v-model="name.payload" @enter="register">
-        <label slot="label">Nombre</label></fg-input>
+        <label slot="label" v-if="!name.error">Nombre*</label>
+        <label class="error" slot="label" v-else>Ingrese su nombre</label></fg-input>
     </div>
-    <label align="center-block" class="error" v-if="email.error">Ingrese una dirección de correo</label>
     <div class="block">
       <!-- TODO check email format -->
       <fg-input class="col-12" placeholder="ejemplo@ejemplo.com" type="email" v-model="email.payload" @enter="register">
-        <label slot="label">Correo electrónico</label></fg-input>
+        <label slot="label" v-if="!email.error">Correo electrónico*</label>
+        <label class="error" slot="label" v-else>Ingrese una dirección de correo válida</label></fg-input>
     </div>
-    <label class="error" v-if="company.error">Ingrese el nombre de su empresa</label>
     <div class="form-group">
       <fg-input class="col-12" placeholder="CasGroup" v-model="company.payload" @enter="register">
-        <label slot="label">Empresa</label></fg-input>
+        <label slot="label" v-if="!company.error">Empresa*</label>
+        <label class="error" slot="label" v-else>Ingrese el nombre de su empresa</label></fg-input>
     </div>
     <div class="block">
       <fg-input class="col-12" placeholder="+56 9 1234 5678" v-model="phone.payload" @enter="register">
         <label slot="label">Teléfono</label></fg-input>
     </div>
-    <label class="error" v-if="password.error">Ingrese una contraseña</label>
     <div class="block">
       <fg-input class="col-12" placeholder="******" type="password" v-model="password.payload" @enter="register">
-        <label slot="label">Contraseña</label></fg-input>
+        <label slot="label" v-if="!passwordConfirm.error">Contraseña*</label>
+        <label class="error" slot="label" v-else>Complete la contraseña</label></fg-input>
     </div>
-    <label class="error" v-if="passwordConfirm.error">Confirme la contraseña</label>
     <div class="block">
       <!-- TODO check matching passwords -->
       <fg-input class="col-12" placeholder="******" type="password" v-model="passwordConfirm.payload" @enter="register">
-        <label slot="label">Confirmar contraseña</label></fg-input>
+        <label slot="label" v-if="!passwordConfirm.error">Confirmar contraseña*</label>
+        <label class="error" slot="label" v-else>Complete la contraseña</label></fg-input>
     </div>
     <label class="error" v-if="differentPasswordsError">Contraseñas no coinciden</label>
     <div align="center">
@@ -63,6 +63,7 @@
         name: {payload: null, error: false},
         email: {payload: null, error: false},
         company: {payload: null, error: false},
+        role: {payload: null, error: false},
         phone: {payload: null, error: false},
         password: {payload: null, error: false},
         passwordConfirm: {payload: null, error: false},
@@ -86,7 +87,8 @@
         if (!this.name.payload){ // TODO Obligatorio?
           this.name.error = true
         }
-        if (!this.email.payload){
+        const email_regexp = /^([a-zA-Z0-9_.+-])+\@(([a-zA-Z0-9-])+\.)+([a-zA-Z0-9]{2,4})+$/
+        if (!this.email.payload || !email_regexp.test(this.email.payload)){
           this.email.error = true
         }
         if (!this.company.payload){
@@ -100,6 +102,9 @@
         }
         if (!this.passwordConfirm.payload) {
           this.passwordConfirm.error = true
+        }
+        if (this.password.payload && this.passwordConfirm.payload && this.password !== this.passwordConfirm){
+          this.differentPasswordsError = true
         }
         if (this.name.payload && this.email.payload && this.company.payload && this.password.payload && this.passwordConfirm.payload &&
           (this.passwordConfirm.payload === this.password.payload)) {
