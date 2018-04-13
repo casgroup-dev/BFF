@@ -56,7 +56,7 @@
     </div>
     <div class="col-12" align="center">
       <router-link :to="{ name: 'login', query: {next: this.$route.query.next}}">
-        Volver a login.
+        Volver a pantalla de login
       </router-link>
     </div>
   </Card>
@@ -95,54 +95,14 @@
        * Check that the data of the form is filled (not empty values) and call the register API.
        */
       async register () {
-        if (!this.name.payload){ // TODO Obligatorio?
-          this.name.error = true
-        }
-        else {
-          this.name.error = false
-        }
-        if (!this.email.payload){
-          this.email.error = true
-          }
-        else {
-          this.email.error = false
-        }
-        if (!this.company.payload){
-          this.company.error = true
-        }
-        else{
-          this.company.error = false
-        }
-        if (!this.role.payload){  // TODO Asignado o decidido?
-          this.role.error = true
-        }
-        else{
-          this.role.error = false
-        }
-        if (!this.phone.payload){ // TODO Obligatorio?
-          this.phone.error = true
-        }
-        else{
-          this.phone.error = false
-        }
-        if (!this.password.payload) {
-          this.password.error = true
-        }
-        else{
-          this.password.error = false
-        }
-        if (!this.passwordConfirm.payload) {
-          this.passwordConfirm.error = true
-        }
-        else{
-          this.passwordConfirm.error = false
-        }
-        if (this.password.payload && this.passwordConfirm.payload && !(this.passwordConfirm.payload === this.password.payload)){
-          this.differentPasswordsError = true
-        }
-        else{
-          this.differentPasswordsError = false
-        }
+        this.name.error = !this.name.payload
+        this.email.error = !this.email.payload
+        this.company.error = !this.company.payload
+        this.role.error = !this.role.payload
+        this.phone.error = !this.phone.payload
+        this.password.error = !this.password.payload
+        this.passwordConfirm.error = !this.passwordConfirm.payload
+        this.differentPasswordsError = this.password.payload && this.passwordConfirm.payload && !(this.passwordConfirm.payload === this.password.payload)
         if (this.name.payload && this.email.payload && this.company.payload && this.password.payload && this.passwordConfirm.payload &&
           (this.passwordConfirm.payload === this.password.payload)) {
           this.loading = true
