@@ -17,7 +17,7 @@ const routes = [
   {
     path: '/',
     component: DashboardLayout,
-    redirect: '/admin/overview',
+    redirect: '/licitaciones',
     meta: {
       requiresAuth: true
     }
@@ -39,7 +39,7 @@ const routes = [
     children: [
       {
         path: '/',
-        name: 'Home',
+        name: 'home',
         component: LicitacionesHome
       }
     ]

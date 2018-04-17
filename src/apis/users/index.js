@@ -1,4 +1,4 @@
-const TOKEN_NAME = 'token'
+const TOKEN_NAME = 'casGroupTokenAuth'
 
 /**
  * Validates the credentials and return a promise that resolves with the token of the user. Rejects an error with
@@ -22,23 +22,26 @@ function login (email, password) {
 /**
  * Register a new user. If it's all ok the promise is resolved void and if there are errors in the process
  * rejects the promise with a correct error message.
- * @param {String} name
- * @param {String} email
- * @param {String} company
- * @param {String} role
- * @param {String} phone
- * @param {String} pass
- * @param {String} passConfirm
+ * @param {Object} data
+ * @param {String} data.name
+ * @param {String} data.email
+ * @param {String} data.businessName
+ * @param {String} data.fantasyName
+ * @param {String | Number} data.rut
+ * @param {String} data.legalRepresentative
+ * @param {String} data.legalRepresentativeEmail
+ * @param {String} data.legalRepresentativePhone
+ * @param {Array<String>} data.industries
+ * @param {String} data.password
  * @returns {Promise<void>}
  */
-function register (name, email, company, role, phone, pass, passConfirm) {
-  // TODO: Define parameters and simulate the api call (see login function).
+async function register (data) {
   return new Promise((resolve, reject) => {
     // Simulate an api call with a timeout of one seconds that resolves or reject the promise with equal probability.
     setTimeout(() => {
-      Math.random() > 0.5
+      Math.random() > 1
         ? resolve('this is a false token')
-        :reject (new Error(`Random < 0.5.`))
+        : reject(new Error(`Error con el registro.`))
     }, 1000)
   }).then(token.save)
 }
