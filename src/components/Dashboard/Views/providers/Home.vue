@@ -10,9 +10,9 @@
                   <a style="float: right; width: 250px"><i class="nc-icon nc-simple-add"></i></a>
                 </router-link>
               </h4>
-              <p class="card-category">Últimas licitaciones realizadas en la plataforma
+              <p class="card-category">Actuales proveedores disponibles para CasGroup
                 <router-link :to="{ name: 'Nueva', query: {next: this.$route.query.next}}">
-                  <a style="float: right; width: 250px">Nueva Licitación</a>
+                  <a style="float: right; width: 250px">Agregar Proveedor</a>
                 </router-link>
               </p>
             </template>
@@ -76,14 +76,30 @@
   import LTable from 'src/components/UIComponents/Table.vue'
   import Card from 'src/components/UIComponents/Cards/Card.vue'
 
-  const tableColumns = ['Nombre', 'Fecha creación', 'Última edición', 'Estado', 'Etapa']
+  const tableColumns = [
+    'Nombre Fantasia',
+    'Nombre Legal',
+    'Indicador Vigencia',
+    'Rut',
+    'Dirección',
+    'Ciudad',
+    'Pais',
+    'Telefono',
+    'Pagina Web',
+    'Contacto Comercial'
+  ]
   const tableData = Array(13).fill({
     attributes: {
-      nombre: 'Snacks Copec de Rancagua',
-      'fecha creación': '20 de Marzo de 2018',
-      'última edición': '25 de Marzo de 2018',
-      estado: 'Cerrada',
-      etapa: 'Revisión',
+      nombre_fantasia: 'souto',
+      nombre_legal: 'sut',
+      active: true,
+      RUT: '12.345.678-9',
+      direccion: 'calle falsa 123',
+      ciudad: 'Talagante',
+      pais: 'Chile',
+      fono: '+569 999 888 21',
+      web: '-',
+      contacto: 'a@a.a'
     },
     show: false
   })
