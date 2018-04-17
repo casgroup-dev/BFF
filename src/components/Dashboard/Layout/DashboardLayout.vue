@@ -6,6 +6,10 @@
         <i class="nc-icon nc-notes"></i>
         <p>Licitaciones</p>
       </sidebar-link>
+      <sidebar-link to="/admin/providers">
+        <i class="nc-icon nc-delivery-fast"></i>
+        <p>Proveedores</p>
+      </sidebar-link>
       <sidebar-link to="/admin/overview">
         <i class="nc-icon nc-chart-pie-35"></i>
         <p>Dashboard</p>
