@@ -16,6 +16,13 @@
                 </router-link>
               </p>
             </template>
+            <template>
+              <div class="row">
+                <fg-input class="col-6" v-model="search" placeholder="Nombre Licitacion" addon-right-icon="nc-icon nc-zoom-split">
+                </fg-input>
+              </div>
+            </template>
+            <template>
             <div class="table-responsive">
               <table class="table table-hover table-striped">
                 <thead>
@@ -24,7 +31,7 @@
                 </th>
                 </thead>
                 <tbody>
-                <template v-for="licit in table.data">
+                <template v-for="licit in filteredLicitations">
                   <tr>
                     <td v-for="attr in licit.attributes">
                       <a
@@ -66,6 +73,7 @@
                 </div>
               </div>
             </div>
+            </template>
           </card>
         </div>
       </div>
@@ -77,16 +85,38 @@
   import Card from 'src/components/UIComponents/Cards/Card.vue'
 
   const tableColumns = ['Nombre', 'Fecha creación', 'Última edición', 'Estado', 'Etapa']
-  const tableData = Array(13).fill({
-    attributes: {
-      nombre: 'Snacks Copec de Rancagua',
-      'fecha creación': '20 de Marzo de 2018',
-      'última edición': '25 de Marzo de 2018',
-      estado: 'Cerrada',
-      etapa: 'Revisión',
+  // const tableData = Array(13).fill({
+  //   attributes: {
+  //     nombre: 'Snacks Copec de Rancagua',
+  //     'fecha creación': '20 de Marzo de 2018',
+  //     'última edición': '25 de Marzo de 2018',
+  //     estado: 'Cerrada',
+  //     etapa: 'Revisión',
+  //   },
+  //   show: false
+  // })
+  const tableData = [
+    {
+      attributes: {
+        nombre: 'Snacks Copec de Rancagua',
+        'fecha creación': '20 de Marzo de 2018',
+        'última edición': '25 de Marzo de 2018',
+        estado: 'Cerrada',
+        etapa: 'Revisión',
+      },
+      show: false
     },
-    show: false
-  })
+    {
+      attributes: {
+        nombre: 'Snacks Copec de Curico',
+        'fecha creación': '20 de Marzo de 2018',
+        'última edición': '25 de Marzo de 2018',
+        estado: 'Cerrada',
+        etapa: 'Revisión',
+      },
+      show: false
+    }
+  ]
   export default {
     components: {
       LTable,
@@ -97,14 +127,24 @@
 
       }
     },
-    data () {
+    data: function() {
       return {
+        search: '',
         table: {
           columns: [...tableColumns],
           data: [...tableData]
         }
       }
-    }
+    },
+    computed:
+      {
+        filteredLicitations:function()
+        {
+          var self=this;
+          return this.table.data.filter(function(cust){return cust.attributes.nombre.toLowerCase().indexOf(self.search.toLowerCase())>=0;});
+          //return this.customers;
+        }
+      }
   }
 </script>
 <style>
