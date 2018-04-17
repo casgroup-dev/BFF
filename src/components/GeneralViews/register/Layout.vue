@@ -1,7 +1,7 @@
 <template>
   <full-page-container>
-    <div class="row h-100">
-      <div class="col-md-6 offset-md-3 col-sm-12 align-self-center">
+    <div class="row" style="padding: 20px 0;">
+      <div class="col-md-4 offset-md-4 col-sm-12">
         <transition name="fade" mode="out-in" appear>
           <Form></Form>
         </transition>
