@@ -7,7 +7,7 @@ const TOKEN_NAME = 'token'
  * @param {String} password
  * @return {Promise<String>}
  */
-function login (email, password) {
+function login(email, password) {
   // TODO: Call the real api
   return new Promise((resolve, reject) => {
     // Simulate an api call with a timeout of two seconds that resolves or reject the promise with equal probability.
@@ -23,7 +23,7 @@ function login (email, password) {
  * Logout the user (remove the token) and redirect him to the login page.
  * @param {Object} router - Router object of Vue.
  */
-function logout (router) {
+function logout(router) {
   if (!router) throw new Error('Router must be provided to call this function.')
   token.remove()
   router.push({name: 'login'})
@@ -34,7 +34,7 @@ function logout (router) {
  * rejects the promise with a correct error message.
  * @returns {Promise<void>}
  */
-function register () {
+function register() {
   // TODO: Define parameters and simulate the api call (see login function).
 }
 
@@ -42,8 +42,24 @@ function register () {
  * Check if the user is logged in the site and returns a boolean.
  * @return {boolean}
  */
-function isLoggedIn () {
+function isLoggedIn() {
   return !!token.get()
+}
+
+/**
+ * Check if email exists in database. If not register it.
+ * @param email
+ * @returns {Promise<any>}
+ */
+function registerProvider (email) {
+  return new Promise((resolve, reject) => {
+    // Simulate an api call with a timeout of two seconds that resolves or reject the promise with equal probability.
+    setTimeout(() => {
+      Math.random() > 0.5
+        ? resolve('Agregando proveedor')
+        : reject(new Error(`Proveedor existente`))
+    }, 2000)
+  })
 }
 
 const token = {
@@ -67,5 +83,6 @@ export default {
   isLoggedIn,
   login,
   logout,
-  register
+  register,
+  registerProvider
 }

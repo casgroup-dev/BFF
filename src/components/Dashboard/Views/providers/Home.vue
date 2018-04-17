@@ -10,9 +10,9 @@
                   Proveedores
                 </div>
                 <div class="col-3" style="text-align: right; font-size: xx-large">
-                  <router-link :to="{ name: 'Nueva', query: {next: this.$route.query.next}}">
-                    <button class="btn btn-primary" style="font-size: large">Agregar proveedor</button>
-                  </router-link>
+                  <button class="btn btn-primary" style="font-size: large" @click="providerModal.modalOn = true">
+                    Agregar proveedor
+                  </button>
                 </div>
               </div>
             </template>
@@ -79,41 +79,45 @@
         </div>
       </div>
     </div>
+    <modal v-if="providerModal.modalOn">
+      <template slot="header">
+        <label>Registre a un nuevo proveedor</label>
+      </template>
+      <template slot="body">
+        <label class="error" v-if="providerModal.error">{{providerModal.errorMessage}}</label>
+        <fg-input placeholder="proveedor@suempresa.cl" v-model="providerModal.newEmail"></fg-input>
+      </template>
+      <template slot="footer">
+        <button class="btn btn-primary" @click="addProvider">
+          Autorizar proveedor
+        </button>
+        <button class="btn btn-primary" @click="cancelModal">
+          Cancelar
+        </button>
+      </template>
+    </modal>
   </div>
 </template>
 <script>
   import LTable from 'src/components/UIComponents/Table.vue'
   import Card from 'src/components/UIComponents/Cards/Card.vue'
-  import bla from 'vue'
+  import Modal from 'src/components/UIComponents/Modal/Modal.vue'
+  import usersApi from 'src/apis/users'
+
 
   const tableColumns = [
-    'Nombre Fantasia',
-    'Nombre Legal',
+    'Nombre fantasia',
+    'Razón social',
     'Industria',
     'Activo',
     'Rut',
     'Dirección',
     'Ciudad',
     'Pais',
-    'Telefono',
-    'Pagina Web',
-    'Contacto Comercial'
+    'Teléfono',
+    'Página web',
+    'Contacto comercial'
   ]
-  // const tableData = Array(13).fill({
-  //   attributes: {
-  //     nombre_fantasia: 'souto',
-  //     nombre_legal: 'sut',
-  //     active: true,
-  //     RUT: '12.345.678-9',
-  //     direccion: 'calle falsa 123',
-  //     ciudad: 'Talagante',
-  //     pais: 'Chile',
-  //     fono: '+569 999 888 21',
-  //     web: '-',
-  //     contacto: 'a@a.a'
-  //   },
-  //   show: false
-  // })
   const tableData = [
     {
       attributes: {
@@ -151,26 +155,49 @@
   export default {
     components: {
       LTable,
-      Card
+      Card,
+      Modal
     },
-    methods: {},
+    methods: {
+      addProvider: function () {
+        if (this.providerModal.newEmail === '') {
+          this.providerModal.error = true
+          this.providerModal.errorMessage = 'Este campo es obligatorio'
+        } else {
+          const self = this
+          usersApi.registerProvider(this.providerModal.newEmail)
+            .then(function () {
+              self.cancelModal()
+            })
+            .catch(function (err) {
+              self.providerModal.error = true
+              self.providerModal.errorMessage = 'Este proveedor ya existe en el sistema'
+            })
+        } // TODO: add spinner
+      },
+
+      cancelModal: function () {
+        this.providerModal.error = this.providerModal.modalOn = false
+        this.providerModal.newEmail = ''
+      }
+    },
     data: function () {
       return {
         search: '',
         table: {
           columns: [...tableColumns],
           data: [...tableData]
-        }
+        },
+        providerModal: {newEmail: '', modalOn: false, error: false, errorMessage: ''}
       }
     },
     computed:
       {
         filteredProviders: function () {
-          var self = this;
+          var self = this
           return this.table.data.filter(function (cust) {
-            return cust.attributes.industria.toLowerCase().indexOf(self.search.toLowerCase()) >= 0;
-          });
-          //return this.customers;
+            return cust.attributes.industria.toLowerCase().indexOf(self.search.toLowerCase()) >= 0
+          })
         }
       }
   }
@@ -178,9 +205,17 @@
 </script>
 <style scoped src="../../../../assets/css/animations/fade.css">
 </style>
-<style>
-  my_title {
-    text-align: center;
-    font-size: xx-large
+
+<style scoped>
+  label.error {
+    color: #ff0000
+  }
+
+  .margin-top {
+    margin-top: 10px
+  }
+
+  .text-gray {
+    color: #889494
   }
 </style>
