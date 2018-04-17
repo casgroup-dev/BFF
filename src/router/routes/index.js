@@ -11,7 +11,7 @@ import Typography from 'src/components/Dashboard/Views/Typography.vue'
 import Icons from 'src/components/Dashboard/Views/Icons.vue'
 import Maps from 'src/components/Dashboard/Views/Maps.vue'
 import Notifications from 'src/components/Dashboard/Views/Notifications.vue'
-import LicitacionesHome from 'src/components/Dashboard/Views/licitaciones/Home'
+import LicitacionesHome from 'src/components/Dashboard/Views/Licitaciones/Home'
 
 const routes = [
   {
@@ -33,7 +33,7 @@ const routes = [
     component: Register
   },
   {
-    path: '/licitaciones',
+    path: '/Licitaciones',
     component: DashboardLayout,
     meta: {requiresAuth: true},
     children: [
