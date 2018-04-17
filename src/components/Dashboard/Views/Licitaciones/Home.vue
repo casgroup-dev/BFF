@@ -141,7 +141,7 @@
         filteredLicitations:function()
         {
           var self=this;
-          return this.table.data.filter(function(cust){return cust.attributes.nombre.toLowerCase().indexOf(self.search.toLowerCase())>=0;});
+          return this.table.data.filter(function(licit){return licit.attributes.nombre.toLowerCase().indexOf(self.search.toLowerCase())>=0;});
           //return this.customers;
         }
       }
