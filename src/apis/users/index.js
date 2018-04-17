@@ -20,6 +20,22 @@ function login (email, password) {
 }
 
 /**
+ * Returns a promise that resolves with a boolean indicating if the user is a Shadow User.
+ * @param {String} email
+ */
+function isShadowUser (email) {
+  // TODO: Call the real api
+  return new Promise((resolve, reject) => {
+    // Simulate an api call with a timeout of one seconds that resolves or reject the promise with equal probability.
+    setTimeout(() => {
+      Math.random() > 1
+        ? resolve()
+        : reject(new Error(`No está autorizado.`))
+    }, 1000)
+  }).then(token.save)
+}
+
+/**
  * Register a new user. If it's all ok the promise is resolved void and if there are errors in the process
  * rejects the promise with a correct error message.
  * @param {Object} data
@@ -69,6 +85,7 @@ const token = {
 
 export default {
   isLoggedIn,
+  isShadowUser,
   login,
   register
 }
