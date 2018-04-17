@@ -16,6 +16,13 @@
                 </router-link>
               </p>
             </template>
+            <template>
+              <div class="row">
+                <fg-input class="col-6" v-model="search" placeholder="Proveedor" addon-right-icon="nc-icon nc-zoom-split">
+                </fg-input>
+              </div>
+            </template>
+            <template>
             <div class="table-responsive">
               <table class="table table-hover table-striped">
                 <thead>
@@ -24,7 +31,7 @@
                 </th>
                 </thead>
                 <tbody>
-                <template v-for="licit in table.data">
+                <template v-for="licit in filteredProviders">
                   <tr>
                     <td v-for="attr in licit.attributes">
                       <a
@@ -44,17 +51,17 @@
                       <i class="nc-icon nc-stre-up" v-else></i>
                     </a></td>
                   </tr>
-                  <transition name="slide" :duration="500">
+                  <transition name="fade" mode="out-in" appear>
                     <tr>
                       <td v-if="licit.show"> <!-- TODO Componentes de una Licitacion -->
-                    <tr>Cronograma</tr> <!-- TODO Componente Propio -->
-                    <tr>Bases</tr> <!-- TODO Componente Propio -->
-                    <tr>Estado Licitación</tr>
-                    <tr>Subir Documentos</tr> <!-- TODO Componente Propio -->
-                    <tr>Preguntas/Respuestas</tr> <!-- TODO Componente Propio -->
-                    <tr>Evaluaciones (Técnico, Comercial, Economico)</tr> <!-- TODO Componente Propio -->
-                    <tr>Cuadro Comparativo</tr> <!-- TODO Componente Propio -->
-                    </td>
+                        <tr>Cronograma</tr> <!-- TODO Componente Propio -->
+                        <tr>Bases</tr> <!-- TODO Componente Propio -->
+                        <tr>Estado Licitación</tr>
+                        <tr>Subir Documentos</tr> <!-- TODO Componente Propio -->
+                        <tr>Preguntas/Respuestas</tr> <!-- TODO Componente Propio -->
+                        <tr>Evaluaciones (Técnico, Comercial, Economico)</tr> <!-- TODO Componente Propio -->
+                        <tr>Cuadro Comparativo</tr> <!-- TODO Componente Propio -->
+                      </td>
                     </tr>
                   </transition>
                 </template>
@@ -66,6 +73,7 @@
                 </div>
               </div>
             </div>
+            </template>
           </card>
         </div>
       </div>
@@ -79,7 +87,8 @@
   const tableColumns = [
     'Nombre Fantasia',
     'Nombre Legal',
-    'Indicador Vigencia',
+    'Industria',
+    'Activo',
     'Rut',
     'Dirección',
     'Ciudad',
@@ -88,21 +97,55 @@
     'Pagina Web',
     'Contacto Comercial'
   ]
-  const tableData = Array(13).fill({
-    attributes: {
-      nombre_fantasia: 'souto',
-      nombre_legal: 'sut',
-      active: true,
-      RUT: '12.345.678-9',
-      direccion: 'calle falsa 123',
-      ciudad: 'Talagante',
-      pais: 'Chile',
-      fono: '+569 999 888 21',
-      web: '-',
-      contacto: 'a@a.a'
+  // const tableData = Array(13).fill({
+  //   attributes: {
+  //     nombre_fantasia: 'souto',
+  //     nombre_legal: 'sut',
+  //     active: true,
+  //     RUT: '12.345.678-9',
+  //     direccion: 'calle falsa 123',
+  //     ciudad: 'Talagante',
+  //     pais: 'Chile',
+  //     fono: '+569 999 888 21',
+  //     web: '-',
+  //     contacto: 'a@a.a'
+  //   },
+  //   show: false
+  // })
+  const tableData = [
+    {
+      attributes: {
+        nombre_fantasia: 'souto',
+        nombre_legal: 'sut',
+        industria: 'telecomunicaciones',
+        active: true,
+        RUT: '12.345.678-9',
+        direccion: 'calle falsa 123',
+        ciudad: 'Talagante',
+        pais: 'Chile',
+        fono: '+569 999 888 21',
+        web: '-',
+        contacto: 'a@a.a'
+      },
+      show: false
     },
-    show: false
-  })
+    {
+      attributes: {
+        nombre_fantasia: 'perry',
+        nombre_legal: 'porry',
+        industria: 'transporte',
+        active: false,
+        RUT: '69.426.942-9',
+        direccion: 'avenida siempre viva 78',
+        ciudad: 'Springfield',
+        pais: 'US',
+        fono: '+569 555 666 77',
+        web: '-',
+        contacto: 'b@b.b'
+      },
+      show: false
+    }
+  ]
   export default {
     components: {
       LTable,
@@ -110,16 +153,26 @@
     },
     methods: {
     },
-    data () {
+    data: function() {
       return {
+        search: '',
         table: {
           columns: [...tableColumns],
           data: [...tableData]
         }
       }
-    }
+    },
+    computed:
+      {
+        filteredProviders:function()
+        {
+          var self=this;
+          return this.table.data.filter(function(cust){return cust.attributes.industria.toLowerCase().indexOf(self.search.toLowerCase())>=0;});
+          //return this.customers;
+        }
+      }
   }
 </script>
-<style>
+<style scoped src="../../../../assets/css/animations/fade.css">
 </style>
 
