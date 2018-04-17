@@ -18,7 +18,7 @@
             </template>
             <template>
               <div class="row">
-                <fg-input class="col-6" v-model="search" placeholder="Proveedor" addon-right-icon="nc-icon nc-zoom-split">
+                <fg-input class="col-6" v-model="search" placeholder="Industria" addon-right-icon="nc-icon nc-zoom-split">
                 </fg-input>
               </div>
             </template>
@@ -31,29 +31,33 @@
                 </th>
                 </thead>
                 <tbody>
-                <template v-for="licit in filteredProviders">
+                <template v-for="provider in filteredProviders">
                   <tr>
-                    <td v-for="attr in licit.attributes">
+                    <td v-for="attr in provider.attributes">
                       <a
                         style="font-weight:normal; color:#262626;"
                         data-toggle="collapse"
                         role="button"
-                        v-on:click="licit.show = !licit.show">
+                        v-on:click="provider.show = !provider.show">
                         {{attr}}
                       </a>
+                    </td>
+                    <td>
+                      <i class="nc-icon nc-check-2" v-if="provider.active"></i>
+                      <i class="nc-icon nc-simple-remove" v-else></i>
                     </td>
                     <td><a
                       style="color:#262626;"
                       data-toggle="collapse"
                       role="button"
-                      v-on:click="licit.show = !licit.show">
-                      <i class="nc-icon nc-stre-down" v-if="!licit.show"></i>
+                      v-on:click="provider.show = !provider.show">
+                      <i class="nc-icon nc-stre-down" v-if="!provider.show"></i>
                       <i class="nc-icon nc-stre-up" v-else></i>
                     </a></td>
                   </tr>
                   <transition name="fade" mode="out-in" appear>
                     <tr>
-                      <td v-if="licit.show"> <!-- TODO Componentes de una Licitacion -->
+                      <td v-if="provider.show"> <!-- TODO Componentes de una Licitacion -->
                         <tr>Cronograma</tr> <!-- TODO Componente Propio -->
                         <tr>Bases</tr> <!-- TODO Componente Propio -->
                         <tr>Estado Licitación</tr>
@@ -88,14 +92,14 @@
     'Nombre Fantasia',
     'Nombre Legal',
     'Industria',
-    'Activo',
     'Rut',
     'Dirección',
     'Ciudad',
     'Pais',
     'Telefono',
     'Pagina Web',
-    'Contacto Comercial'
+    'Contacto Comercial',
+    'Activo'
   ]
   // const tableData = Array(13).fill({
   //   attributes: {
@@ -118,7 +122,6 @@
         nombre_fantasia: 'souto',
         nombre_legal: 'sut',
         industria: 'telecomunicaciones',
-        active: true,
         RUT: '12.345.678-9',
         direccion: 'calle falsa 123',
         ciudad: 'Talagante',
@@ -127,6 +130,7 @@
         web: '-',
         contacto: 'a@a.a'
       },
+      active: true,
       show: false
     },
     {
@@ -134,7 +138,6 @@
         nombre_fantasia: 'perry',
         nombre_legal: 'porry',
         industria: 'transporte',
-        active: false,
         RUT: '69.426.942-9',
         direccion: 'avenida siempre viva 78',
         ciudad: 'Springfield',
@@ -143,6 +146,7 @@
         web: '-',
         contacto: 'b@b.b'
       },
+      active: false,
       show: false
     }
   ]
@@ -167,7 +171,7 @@
         filteredProviders:function()
         {
           var self=this;
-          return this.table.data.filter(function(cust){return cust.attributes.industria.toLowerCase().indexOf(self.search.toLowerCase())>=0;});
+          return this.table.data.filter(function(prov){return prov.attributes.industria.toLowerCase().indexOf(self.search.toLowerCase())>=0;});
           //return this.customers;
         }
       }
