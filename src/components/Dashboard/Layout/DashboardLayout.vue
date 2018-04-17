@@ -6,7 +6,7 @@
         <i class="nc-icon nc-notes"></i>
         <p>Licitaciones</p>
       </sidebar-link>
-      <sidebar-link to="/admin/providers">
+      <sidebar-link to="/providers">
         <i class="nc-icon nc-delivery-fast"></i>
         <p>Proveedores</p>
       </sidebar-link>
