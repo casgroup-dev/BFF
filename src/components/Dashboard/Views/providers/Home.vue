@@ -85,13 +85,14 @@
       </template>
       <template slot="body">
         <label class="error" v-if="providerModal.error">{{providerModal.errorMessage}}</label>
-        <fg-input placeholder="proveedor@suempresa.cl" v-model="providerModal.newEmail"></fg-input>
+        <fg-input placeholder="proveedor@suempresa.cl" v-model="providerModal.payload"></fg-input>
       </template>
       <template slot="footer">
-        <button class="btn btn-primary" @click="addProvider">
+        <clip-loader :loading="providerModal.loading" color="#5D8EF9"/>
+        <button class="btn btn-primary" v-if="!providerModal.loading" @click="addProvider">
           Autorizar proveedor
         </button>
-        <button class="btn btn-primary" @click="cancelModal">
+        <button class="btn btn-primary" v-if="!providerModal.loading" @click="cancelModal">
           Cancelar
         </button>
       </template>
@@ -102,8 +103,8 @@
   import LTable from 'src/components/UIComponents/Table.vue'
   import Card from 'src/components/UIComponents/Cards/Card.vue'
   import Modal from 'src/components/UIComponents/Modal/Modal.vue'
+  import ClipLoader from 'vue-spinner/src/ClipLoader'
   import usersApi from 'src/apis/users'
-
 
   const tableColumns = [
     'Nombre fantasia',
@@ -156,16 +157,18 @@
     components: {
       LTable,
       Card,
-      Modal
+      Modal,
+      ClipLoader
     },
     methods: {
       addProvider: function () {
-        if (this.providerModal.newEmail === '') {
+        if (this.providerModal.payload === '') {
           this.providerModal.error = true
           this.providerModal.errorMessage = 'Este campo es obligatorio'
         } else {
           const self = this
-          usersApi.registerProvider(this.providerModal.newEmail)
+          self.providerModal.loading = true
+          usersApi.registerProvider(this.providerModal.payload)
             .then(function () {
               self.cancelModal()
             })
@@ -173,13 +176,17 @@
               self.providerModal.error = true
               self.providerModal.errorMessage = 'Este proveedor ya existe en el sistema'
             })
-        } // TODO: add spinner
+            .then(function () {
+              self.providerModal.loading = false
+            })
+        } // TODO: add notifications when it success
       },
 
       cancelModal: function () {
         this.providerModal.error = this.providerModal.modalOn = false
-        this.providerModal.newEmail = ''
+        this.providerModal.payload = ''
       }
+
     },
     data: function () {
       return {
@@ -188,7 +195,13 @@
           columns: [...tableColumns],
           data: [...tableData]
         },
-        providerModal: {newEmail: '', modalOn: false, error: false, errorMessage: ''}
+        providerModal: {
+          payload: '',
+          modalOn: false,
+          error: false,
+          errorMessage: '',
+          loading: false
+        }
       }
     },
     computed:
@@ -209,13 +222,5 @@
 <style scoped>
   label.error {
     color: #ff0000
-  }
-
-  .margin-top {
-    margin-top: 10px
-  }
-
-  .text-gray {
-    color: #889494
   }
 </style>
