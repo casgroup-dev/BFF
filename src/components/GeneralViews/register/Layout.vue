@@ -36,6 +36,9 @@
                 </div>
               </div>
             </div>
+            <router-link :to="{ name: 'login', query: {next: this.$route.query.next}}">
+              <div style="margin-top: 10px; margin-left: 175px;">¿Ya tienes cuenta? Ingresa aquí</div>
+            </router-link>
           </card>
         </transition>
       </div>
