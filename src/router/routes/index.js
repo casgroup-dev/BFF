@@ -3,6 +3,7 @@ import DashboardLayout from '../../components/Dashboard/Layout/DashboardLayout.v
 import NotFound from '../../components/GeneralViews/NotFoundPage.vue'
 import Login from '../../components/GeneralViews/login/Layout'
 import Register from '../../components/GeneralViews/register/Layout'
+import NuevaLicitacion from 'src/components/Dashboard/Views/Licitaciones/Nueva/Home'
 // Dashboard pages
 import Overview from 'src/components/Dashboard/Views/Overview.vue'
 import UserProfile from 'src/components/Dashboard/Views/UserProfile.vue'
@@ -41,6 +42,11 @@ const routes = [
         path: '/',
         name: 'Home',
         component: LicitacionesHome
+      },
+      {
+        path: '/Nueva',
+        name: 'NewLicit',
+        component: NuevaLicitacion
       }
     ]
   },

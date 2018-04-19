@@ -6,12 +6,12 @@
           <card>
             <template slot="header">
               <h4 class="card-title">Licitaciones
-                <router-link :to="{ name: 'Nueva', query: {next: this.$route.query.next}}">
+                <router-link :to="{ name: 'NewLicit', query: {next: this.$route.query.next}}">
                   <a style="float: right; width: 250px"><i class="nc-icon nc-simple-add"></i></a>
                 </router-link>
               </h4>
               <p class="card-category">Últimas licitaciones realizadas en la plataforma
-                <router-link :to="{ name: 'Nueva', query: {next: this.$route.query.next}}">
+                <router-link :to="{ name: 'NewLicit', query: {next: this.$route.query.next}}">
                 <a style="float: right; width: 250px">Nueva Licitación</a>
                 </router-link>
               </p>
