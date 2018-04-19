@@ -6,7 +6,28 @@ import AirbnbStyleDatepicker from 'vue-airbnb-style-datepicker'
 import 'vue-airbnb-style-datepicker/dist/styles.css'
 
 // see docs for available options
-const datepickerOptions = {}
+const datepickerOptions = {
+  days: ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo'],
+  daysShort: ['Lun', 'Mar', 'Mie', 'Jue', 'Vie', 'Sab', 'Dom'],
+  monthNames: [
+    'Enero',
+    'Febrero',
+    'Marzo',
+    'Abril',
+    'Mayo',
+    'Junio',
+    'Julio',
+    'Agosto',
+    'Septiembre',
+    'Octubre',
+    'Noviembre',
+    'Diciembre'
+  ],
+  texts: {
+    apply: 'Guardar',
+    cancel: 'Cancelar'
+  }
+}
 
 // make sure we can use it in our components
 Vue.use(AirbnbStyleDatepicker, datepickerOptions)
