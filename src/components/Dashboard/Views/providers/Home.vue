@@ -10,7 +10,7 @@
                   Proveedores
                 </div>
                 <div class="col-3" style="text-align: right; font-size: xx-large">
-                  <button class="btn btn-primary" style="font-size: large" @click="providerModal.modalOn = true">
+                  <button class="btn btn-primary" style="font-size: large" @click="provider.modalOn = true">
                     Agregar proveedor
                   </button>
                 </div>
@@ -79,20 +79,25 @@
         </div>
       </div>
     </div>
-    <modal v-if="providerModal.modalOn">
+    <modal v-if="provider.modalOn">
       <template slot="header">
         <label>Registre a un nuevo proveedor</label>
       </template>
       <template slot="body">
-        <label class="error" v-if="providerModal.error">{{providerModal.errorMessage}}</label>
-        <fg-input placeholder="proveedor@suempresa.cl" v-model="providerModal.payload"></fg-input>
+        <label class="error" v-if="provider.name.error">{{provider.name.errorMessage}}</label>
+        <fg-input placeholder="Nombre Proveedor" v-model="provider.name.payload"></fg-input>
+        <label class="error" v-if="provider.mail.error">{{provider.mail.errorMessage}}</label>
+        <fg-input placeholder="proveedor@suempresa.cl" v-model="provider.mail.payload"></fg-input>
+        <label class="error" v-if="provider.rut.error">{{provider.rut.errorMessage}}</label>
+        <fg-input placeholder="RUT Empresa Proveedor" v-model="provider.rut.payload"></fg-input>
       </template>
       <template slot="footer">
-        <clip-loader :loading="providerModal.loading" color="#5D8EF9"/>
-        <button class="btn btn-primary" v-if="!providerModal.loading" @click="addProvider">
+        <label class="error" v-if="provider.error">{{provider.errorMessage}}</label>
+        <clip-loader :loading="provider.loading" color="#5D8EF9"/>
+        <button class="btn btn-primary" v-if="!provider.loading" @click="addProvider">
           Autorizar proveedor
         </button>
-        <button class="btn btn-primary" v-if="!providerModal.loading" @click="cancelModal">
+        <button class="btn btn-primary" v-if="!provider.loading" @click="cancelModal">
           Cancelar
         </button>
       </template>
@@ -162,29 +167,43 @@
     },
     methods: {
       addProvider: function () {
-        if (this.providerModal.payload === '') {
-          this.providerModal.error = true
-          this.providerModal.errorMessage = 'Este campo es obligatorio'
+        this.provider.mail.error =
+          this.provider.name.error =
+            this.provider.rut.error =
+              this.provider.error = false
+        if (this.provider.mail.payload === '') {
+          this.provider.mail.error = true
+          this.provider.mail.errorMessage = 'Este campo es obligatorio'
         } else {
           const self = this
-          self.providerModal.loading = true
-          usersApi.registerProvider(this.providerModal.payload)
+          self.provider.loading = true
+          usersApi.registerProvider(
+            this.provider.name.payload,
+            this.provider.rut.payload,
+            this.provider.mail.payload
+          )
             .then(function () {
               self.cancelModal()
             })
             .catch(function (err) {
-              self.providerModal.error = true
-              self.providerModal.errorMessage = 'Este proveedor ya existe en el sistema'
+              self.provider.error = true
+              self.provider.errorMessage = 'Este proveedor ya existe en el sistema'
             })
             .then(function () {
-              self.providerModal.loading = false
+              self.provider.loading = false
             })
         } // TODO: add notifications when it success
       },
 
       cancelModal: function () {
-        this.providerModal.error = this.providerModal.modalOn = false
-        this.providerModal.payload = ''
+        this.provider.modalOn = false
+        this.provider.name.payload =
+          this.provider.rut.payload =
+            this.provider.mail.payload = ''
+        this.provider.error =
+          this.provider.name.error =
+            this.provider.rut.error =
+              this.provider.mail.error = false
       }
 
     },
@@ -195,11 +214,25 @@
           columns: [...tableColumns],
           data: [...tableData]
         },
-        providerModal: {
-          payload: '',
-          modalOn: false,
+        provider: {
+          name: {
+            payload: '',
+            error: false,
+            errorMessage: ''
+          },
+          rut: {
+            payload: '',
+            error: false,
+            errorMessage: ''
+          },
+          mail: {
+            payload: '',
+            error: false,
+            errorMessage: ''
+          },
           error: false,
           errorMessage: '',
+          modalOn: false,
           loading: false
         }
       }

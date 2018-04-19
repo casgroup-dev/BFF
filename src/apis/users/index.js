@@ -51,14 +51,14 @@ function isLoggedIn() {
  * @param email
  * @returns {Promise<any>}
  */
-function registerProvider (email) {
+function registerProvider (name, rut, email) {
   return new Promise((resolve, reject) => {
     // Simulate an api call with a timeout of two seconds that resolves or reject the promise with equal probability.
     setTimeout(() => {
-      Math.random() > 0.5
+      Math.random() > 0.7
         ? resolve('Agregando proveedor')
         : reject(new Error(`Proveedor existente`))
-    }, 2000)
+    }, 500)
   })
 }
 
