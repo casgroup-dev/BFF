@@ -51,18 +51,16 @@
                       <i class="nc-icon nc-stre-up" v-else></i>
                     </a></td>
                   </tr>
-                  <transition name="slide" :duration="500">
-                  <tr>
-                    <td v-if="licit.show"> <!-- TODO Componentes de una Licitacion -->
-                      <tr>Cronograma</tr> <!-- TODO Componente Propio -->
-                      <tr>Bases</tr> <!-- TODO Componente Propio -->
-                      <tr>Estado Licitación</tr>
-                      <tr>Subir Documentos</tr> <!-- TODO Componente Propio -->
-                      <tr>Preguntas/Respuestas</tr> <!-- TODO Componente Propio -->
-                      <tr>Evaluaciones (Técnico, Comercial, Economico)</tr> <!-- TODO Componente Propio -->
-                      <tr>Cuadro Comparativo</tr> <!-- TODO Componente Propio -->
+                  <transition name="fade" mode="out-in" appear>
+                    <td v-if="licit.show">
+                        <tr>Cronograma</tr> <!-- TODO Componente Propio -->
+                        <tr>Bases</tr> <!-- TODO Componente Propio -->
+                        <tr>Estado Licitación</tr>
+                        <tr>Subir Documentos</tr> <!-- TODO Componente Propio -->
+                        <tr>Preguntas/Respuestas</tr> <!-- TODO Componente Propio -->
+                        <tr>Evaluaciones (Técnico, Comercial, Económico)</tr> <!-- TODO Componente Propio -->
+                        <tr>Cuadro Comparativo</tr> <!-- TODO Componente Propio -->
                     </td>
-                  </tr>
                   </transition>
                 </template>
                 </tbody>
