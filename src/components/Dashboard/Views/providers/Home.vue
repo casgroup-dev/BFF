@@ -18,50 +18,53 @@
             </template>
             <template>
               <div class="row">
-                <fg-input class="col-6" v-model="search" placeholder="Proveedor"
-                          addon-right-icon="nc-icon nc-zoom-split">
+                <fg-input class="col-6" v-model="search" placeholder="Industria" addon-right-icon="nc-icon nc-zoom-split">
                 </fg-input>
               </div>
             </template>
             <template>
-              <div class="table-responsive">
-                <table class="table table-hover table-striped">
-                  <thead>
-                  <th v-for="attr in table.columns">
-                    <tr scope="col">{{attr}}</tr>
-                  </th>
-                  </thead>
-                  <tbody>
-                  <template v-for="licit in filteredProviders">
-                    <tr>
-                      <td v-for="attr in licit.attributes">
-                        <a
-                          style="font-weight:normal; color:#262626;"
-                          data-toggle="collapse"
-                          role="button"
-                          v-on:click="licit.show = !licit.show">
-                          {{attr}}
-                        </a>
-                      </td>
-                      <td><a
-                        style="color:#262626;"
+            <div class="table-responsive">
+              <table class="table table-hover table-striped">
+                <thead>
+                <th v-for="attr in table.columns">
+                  <tr scope="col">{{attr}}</tr>
+                </th>
+                </thead>
+                <tbody>
+                <template v-for="provider in filteredProviders">
+                  <tr>
+                    <td v-for="attr in provider.attributes">
+                      <a
+                        style="font-weight:normal; color:#262626;"
                         data-toggle="collapse"
                         role="button"
-                        v-on:click="licit.show = !licit.show">
-                        <i class="nc-icon nc-stre-down" v-if="!licit.show"></i>
-                        <i class="nc-icon nc-stre-up" v-else></i>
-                      </a></td>
-                    </tr>
-                    <transition name="fade" mode="out-in" appear>
-                      <tr>
-                        <td v-if="licit.show"> <!-- TODO Componentes de una Licitacion -->
-                      <tr>Cronograma</tr> <!-- TODO Componente Propio -->
-                      <tr>Bases</tr> <!-- TODO Componente Propio -->
-                      <tr>Estado Licitación</tr>
-                      <tr>Subir Documentos</tr> <!-- TODO Componente Propio -->
-                      <tr>Preguntas/Respuestas</tr> <!-- TODO Componente Propio -->
-                      <tr>Evaluaciones (Técnico, Comercial, Economico)</tr> <!-- TODO Componente Propio -->
-                      <tr>Cuadro Comparativo</tr> <!-- TODO Componente Propio -->
+                        v-on:click="provider.show = !provider.show">
+                        {{attr}}
+                      </a>
+                    </td>
+                    <td>
+                      <i class="nc-icon nc-check-2" v-if="provider.active"></i>
+                      <i class="nc-icon nc-simple-remove" v-else></i>
+                    </td>
+                    <td><a
+                      style="color:#262626;"
+                      data-toggle="collapse"
+                      role="button"
+                      v-on:click="provider.show = !provider.show">
+                      <i class="nc-icon nc-stre-down" v-if="!provider.show"></i>
+                      <i class="nc-icon nc-stre-up" v-else></i>
+                    </a></td>
+                  </tr>
+                  <transition name="fade" mode="out-in" appear>
+                    <tr>
+                      <td v-if="provider.show"> <!-- TODO Componentes de una Licitacion -->
+                        <tr>Cronograma</tr> <!-- TODO Componente Propio -->
+                        <tr>Bases</tr> <!-- TODO Componente Propio -->
+                        <tr>Estado Licitación</tr>
+                        <tr>Subir Documentos</tr> <!-- TODO Componente Propio -->
+                        <tr>Preguntas/Respuestas</tr> <!-- TODO Componente Propio -->
+                        <tr>Evaluaciones (Técnico, Comercial, Economico)</tr> <!-- TODO Componente Propio -->
+                        <tr>Cuadro Comparativo</tr> <!-- TODO Componente Propio -->
                       </td>
                       </tr>
                     </transition>
@@ -80,7 +83,7 @@
       </div>
     </div>
 
-    <div v-if="provider.success">
+    <div v-if="provider.success" style="text-align: center">
       <notifications></notifications>
     </div>
 
@@ -90,6 +93,7 @@
         <label>Registre a un nuevo proveedor</label>
       </template>
       <template slot="body">
+        <label class="error" v-if="provider.error">{{provider.errorMessage}}</label>
         <label class="error" v-if="provider.name.error">{{provider.name.errorMessage}}</label>
         <fg-input placeholder="Nombre Proveedor" v-model="provider.name.payload"></fg-input>
         <label class="error" v-if="provider.mail.error">{{provider.mail.errorMessage}}</label>
@@ -98,7 +102,7 @@
         <fg-input placeholder="RUT Empresa Proveedor" v-model="provider.rut.payload"></fg-input>
       </template>
       <template slot="footer">
-        <!-- <label class="error" v-if="provider.error">{{provider.errorMessage}}</label> -->
+
         <clip-loader :loading="provider.loading" color="#5D8EF9"/>
         <button class="btn btn-primary" v-if="!provider.loading" @click="addProvider">
           Autorizar proveedor
@@ -122,14 +126,14 @@
     'Nombre fantasia',
     'Razón social',
     'Industria',
-    'Activo',
     'Rut',
     'Dirección',
     'Ciudad',
     'Pais',
-    'Teléfono',
-    'Página web',
-    'Contacto comercial'
+    'Telefono',
+    'Pagina Web',
+    'Contacto Comercial',
+    'Activo'
   ]
   const tableData = [
     {
@@ -137,7 +141,6 @@
         nombre_fantasia: 'souto',
         nombre_legal: 'sut',
         industria: 'telecomunicaciones',
-        active: true,
         RUT: '12.345.678-9',
         direccion: 'calle falsa 123',
         ciudad: 'Talagante',
@@ -146,6 +149,7 @@
         web: '-',
         contacto: 'a@a.a'
       },
+      active: true,
       show: false
     },
     {
@@ -153,7 +157,6 @@
         nombre_fantasia: 'perry',
         nombre_legal: 'porry',
         industria: 'transporte',
-        active: false,
         RUT: '69.426.942-9',
         direccion: 'avenida siempre viva 78',
         ciudad: 'Springfield',
@@ -162,6 +165,7 @@
         web: '-',
         contacto: 'b@b.b'
       },
+      active: false,
       show: false
     }
   ]
@@ -192,25 +196,15 @@
               self.addNotification()
             })
             .catch(function (err) {
-              // Este bloque está mal
-              if (err.rut) {
-                self.provider.rut.error = true
-                self.provider.rut.errorMessage = 'Este rut pertenece a un proveedor ya registrado'
-              }
-              if (err.email) {
-                self.provider.mail.error = true
-                self.provider.rut.errorMessage = 'Este email pertenece a un proveedor ya registrado'
-              }
-              if (err.name) {
-                self.provider.name.error = true
-                self.provider.name.errorMessage = 'Este nombre pertenece a un proveedor ya registrado'
-              }
+              // TODO: Manage messages per type of error
+              self.provider.error = true
+              self.provider.errorMessage = 'Este proveedor ya existe en el sistema'
             })
             .then(function () {
               self.provider.loading = false
               self.provider.success = true
             })
-        } // TODO: add notifications when it success
+        }
       },
 
       cancelModal: function () {
@@ -267,11 +261,11 @@
     },
     computed:
       {
-        filteredProviders: function () {
-          var self = this
-          return this.table.data.filter(function (cust) {
-            return cust.attributes.industria.toLowerCase().indexOf(self.search.toLowerCase()) >= 0
-          })
+        filteredProviders:function()
+        {
+          var self=this;
+          return this.table.data.filter(function(prov){return prov.attributes.industria.toLowerCase().indexOf(self.search.toLowerCase())>=0;});
+          //return this.customers;
         }
       }
   }
@@ -284,4 +278,5 @@
   label.error {
     color: #ff0000
   }
+
 </style>
