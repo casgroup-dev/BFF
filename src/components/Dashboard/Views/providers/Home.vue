@@ -79,6 +79,12 @@
         </div>
       </div>
     </div>
+
+    <div v-if="provider.success">
+      <notifications></notifications>
+    </div>
+
+
     <modal v-if="provider.modalOn">
       <template slot="header">
         <label>Registre a un nuevo proveedor</label>
@@ -92,7 +98,7 @@
         <fg-input placeholder="RUT Empresa Proveedor" v-model="provider.rut.payload"></fg-input>
       </template>
       <template slot="footer">
-        <label class="error" v-if="provider.error">{{provider.errorMessage}}</label>
+        <!-- <label class="error" v-if="provider.error">{{provider.errorMessage}}</label> -->
         <clip-loader :loading="provider.loading" color="#5D8EF9"/>
         <button class="btn btn-primary" v-if="!provider.loading" @click="addProvider">
           Autorizar proveedor
@@ -110,6 +116,7 @@
   import Modal from 'src/components/UIComponents/Modal/Modal.vue'
   import ClipLoader from 'vue-spinner/src/ClipLoader'
   import usersApi from 'src/apis/users'
+  import VueNotify from 'vue-notifyjs'
 
   const tableColumns = [
     'Nombre fantasia',
@@ -163,17 +170,14 @@
       LTable,
       Card,
       Modal,
-      ClipLoader
+      ClipLoader,
+      VueNotify
     },
     methods: {
       addProvider: function () {
-        this.provider.mail.error =
-          this.provider.name.error =
-            this.provider.rut.error =
-              this.provider.error = false
-        if (this.provider.mail.payload === '') {
+        if (!this.provider.mail.payload) {
           this.provider.mail.error = true
-          this.provider.mail.errorMessage = 'Este campo es obligatorio'
+          this.provider.mail.errorMessage = 'El email es obligatorio'
         } else {
           const self = this
           self.provider.loading = true
@@ -184,13 +188,27 @@
           )
             .then(function () {
               self.cancelModal()
+              self.provider.success = true
+              self.addNotification()
             })
             .catch(function (err) {
-              self.provider.error = true
-              self.provider.errorMessage = 'Este proveedor ya existe en el sistema'
+              // Este bloque está mal
+              if (err.rut) {
+                self.provider.rut.error = true
+                self.provider.rut.errorMessage = 'Este rut pertenece a un proveedor ya registrado'
+              }
+              if (err.email) {
+                self.provider.mail.error = true
+                self.provider.rut.errorMessage = 'Este email pertenece a un proveedor ya registrado'
+              }
+              if (err.name) {
+                self.provider.name.error = true
+                self.provider.name.errorMessage = 'Este nombre pertenece a un proveedor ya registrado'
+              }
             })
             .then(function () {
               self.provider.loading = false
+              self.provider.success = true
             })
         } // TODO: add notifications when it success
       },
@@ -204,6 +222,15 @@
           this.provider.name.error =
             this.provider.rut.error =
               this.provider.mail.error = false
+      },
+
+      addNotification: function () {
+        this.$notify({
+          message: 'Proveedor autorizado exitosamente!',
+          horizontalAlign: 'center',
+          verticalAlign: 'top',
+          type: 'success'
+        })
       }
 
     },
@@ -230,10 +257,11 @@
             error: false,
             errorMessage: ''
           },
-          error: false,
-          errorMessage: '',
+          /* error: false,
+          errorMessage: '', */
           modalOn: false,
-          loading: false
+          loading: false,
+          success: false
         }
       }
     },

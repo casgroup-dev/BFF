@@ -7,7 +7,7 @@ const TOKEN_NAME = 'token'
  * @param {String} password
  * @return {Promise<String>}
  */
-function login(email, password) {
+function login (email, password) {
   // TODO: Call the real api
   return new Promise((resolve, reject) => {
     // Simulate an api call with a timeout of two seconds that resolves or reject the promise with equal probability.
@@ -55,6 +55,7 @@ function registerProvider (name, rut, email) {
   return new Promise((resolve, reject) => {
     // Simulate an api call with a timeout of two seconds that resolves or reject the promise with equal probability.
     setTimeout(() => {
+      // En esta version dummy no se discrimina cual campo genero el error
       Math.random() > 0.7
         ? resolve('Agregando proveedor')
         : reject(new Error(`Proveedor existente`))
