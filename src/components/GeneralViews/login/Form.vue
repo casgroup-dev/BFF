@@ -50,16 +50,15 @@
         if (this.email.payload && this.password.payload) {
           this.email.error = this.password.error = false
           this.loading = true
+          const self = this
           usersApi.login(this.email.payload, this.password.payload)
-            .then(function () {
-              this.$router.push(this.$route.query.next || '/')
-            }.bind(this))
-            .catch(function (err) {
-              this.loginErrorMessage = err.message || 'Hubo un error, lamentamos la situación.'
-              this.email.payload = this.password.payload = null
-              this.focus()
-            }.bind(this))
-            .then(function () { this.loading = false }.bind(this))
+            .then(() => self.$router.push(this.$route.query.next || '/'))
+            .catch(err => {
+              self.loginErrorMessage = err.message || 'Hubo un error, lamentamos la situación.'
+              self.email.payload = this.password.payload = null
+              self.focus()
+            })
+            .then(() => { self.loading = false })
         }
       },
       /**
@@ -77,9 +76,11 @@
   label.error {
     color: #ff0000
   }
+
   .margin-top {
     margin-top: 10px
   }
+
   .text-gray {
     color: #889494
   }

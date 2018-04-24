@@ -1,7 +1,7 @@
 import axios from 'axios'
 
 const TOKEN_NAME = 'casGroupTokenAuth'
-const endpoint = 'localhost:3000'
+const endpoint = 'http://localhost:3000'
 const routes = {
   login: '/auth/login',
   users: '/users'
