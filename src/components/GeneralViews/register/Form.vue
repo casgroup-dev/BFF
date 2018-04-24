@@ -60,7 +60,7 @@
             rut: {label: 'RUT de empresa', placeholder: '90193000-7', payload: null, error: false},
             legalRepresentative: {
               label: 'Representante legal',
-              placeholder: 'Hernesto Tapia Herrera',
+              placeholder: 'Ernesto Tapia Herrera',
               payload: null,
               error: false
             },

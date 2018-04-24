@@ -151,15 +151,13 @@ function isLoggedIn () {
  * @param email
  * @returns {Promise<any>}
  */
-function registerProvider (name, rut, email) {
-  return new Promise((resolve, reject) => {
-    // Simulate an api call with a timeout of two seconds that resolves or reject the promise with equal probability.
-    setTimeout(() => {
-      // En esta version dummy no se discrimina cual campo genero el error
-      Math.random() > 0.7
-        ? resolve('Agregando proveedor')
-        : reject(new Error(`Proveedor existente`))
-    }, 500)
+async function registerProvider (name, rut, email) {
+  if (!email) throw new Error('Mail is mandatory.')
+  const data = {email}
+  if (name) data.name = name
+  if (rut) data.rut = rut
+  return axios.post(getRouteWithToken(routes.shadowUsers), data).then(res => {
+    if (res.data.error) throw new Error('Lo sentimos, intente más tarde.')
   })
 }
 
