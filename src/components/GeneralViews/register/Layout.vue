@@ -25,7 +25,7 @@
                     <label v-if="error" class="control-label error">{{ error }}</label>
                   </div>
                 </div>
-                <!-- BUTTON ANS SPINNER -->
+                <!-- BUTTON AND SPINNER -->
                 <div class="row">
                   <div class="col-12">
                     <button v-if="!loading" class="btn btn-info btn-fill" @click="isShadowUser">
@@ -37,7 +37,7 @@
               </div>
             </div>
             <router-link :to="{ name: 'login', query: {next: this.$route.query.next}}">
-              <div style="margin-top: 10px; margin-left: 175px;">¿Ya tienes cuenta? Ingresa aquí</div>
+              <div style="margin-top: 10px;" class="align-center">¿Ya tienes cuenta? Ingresa aquí</div>
             </router-link>
           </card>
         </transition>
