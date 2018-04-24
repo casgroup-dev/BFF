@@ -79,7 +79,6 @@
             .then(() => { self.authorized = true })
             .catch(err => { self.error = err.message })
             .then(() => { self.loading = false })
-            .then(() => { self.authorized = true })
         }
       }
     },

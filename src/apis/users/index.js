@@ -4,7 +4,8 @@ const TOKEN_NAME = 'casGroupTokenAuth'
 const endpoint = 'http://localhost:3000'
 const routes = {
   login: '/auth/login',
-  users: '/users'
+  users: '/users',
+  shadowUsers: '/shadow/users'
 }
 
 /**
@@ -13,7 +14,7 @@ const routes = {
  * @returns {string}
  */
 function getRouteWithToken (route) {
-  return `${endpoint + routes[route]}?token=${token.get()}`
+  return `${endpoint + route}?token=${token.get()}`
 }
 
 /**
@@ -26,7 +27,7 @@ function getRouteWithToken (route) {
 function login (email, password) {
   const generalError = new Error('Tuvimos un problema procesando el login, intenta nuevamente más tarde.')
   return new Promise((resolve, reject) => {
-    axios.post(getRouteWithToken('login'), {email, password})
+    axios.post(getRouteWithToken(routes.login), {email, password})
       .then(res => {
         if (res.data.error && (res.data.error.status === 403 || res.data.error.status === 404)) {
           return reject(new Error('Email o contraseña incorrectos'))
@@ -44,19 +45,29 @@ function login (email, password) {
 }
 
 /**
- * Returns a promise that resolves with a boolean indicating if the user is a Shadow User.
- * @param {String} email
+ * Returns a promise that resolves indicating that the email is a Shadow User or rejects with an error indicating
+ * that the email is not a shadow user.
+ * @param {String} email - Email to check if it is a shadow user.
  */
 function isShadowUser (email) {
-  // TODO: Call the real api
+  const generalError = new Error('Tuvimos un problema procesando tu solicitud, intenta nuevamente más tarde.')
   return new Promise((resolve, reject) => {
-    // Simulate an api call with a timeout of one seconds that resolves or reject the promise with equal probability.
-    setTimeout(() => {
-      Math.random() > 1
-        ? resolve()
-        : reject(new Error(`No está autorizado.`))
-    }, 1000)
-  }).then(token.save)
+    axios.get(endpoint + routes.shadowUsers + '/' + email)
+      .then(res => {
+        if (res.data.token) {
+          token.save(res.data.token)
+          return resolve()
+        } else if (res.data.error && res.data.error.status === 404) {
+          return reject(new Error('No estás autorizado para registrarte, contacta al administrador del portal.'))
+        } else {
+          return reject(generalError)
+        }
+      })
+      .catch(err => {
+        console.error(err)
+        return reject(generalError)
+      })
+  })
 }
 
 /**
