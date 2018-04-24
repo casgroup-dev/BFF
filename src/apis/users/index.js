@@ -3,9 +3,10 @@ import axios from 'axios'
 const TOKEN_NAME = 'casGroupTokenAuth'
 const endpoint = 'http://localhost:3000'
 const routes = {
+  companies: '/companies',
   login: '/auth/login',
-  users: '/users',
-  shadowUsers: '/shadow/users'
+  shadowUsers: '/shadow/users',
+  users: '/users'
 }
 
 /**
@@ -80,24 +81,49 @@ function isShadowUser (email) {
  * @param {String} data.fantasyName
  * @param {String | Number} data.rut
  * @param {String} data.legalRepresentative
- * @param {String} data.legalRepresentativeEmail
- * @param {String} data.legalRepresentativePhone
+ * @param {String} data.legalRepEmail
+ * @param {String} data.legalRepPhone
  * @param {Array<String>} data.industries
  * @param {String} data.password
  * @returns {Promise<void>}
  */
 async function register (data) {
   const generalError = new Error('Tuvimos un error procesando el registro, por favor intenta nuevamente más tarde.')
+  const company = {
+    businessName: data.businessName,
+    fantasyName: data.fantasyName,
+    rut: data.rut,
+    industries: data.industries,
+    legalRepresentative: data.legalRepresentative,
+    legalRepEmail: data.legalRepEmail,
+    legalRepPhone: data.legalRepPhone
+  }
+  const user = {
+    email: data.email,
+    name: data.name,
+    password: data.password
+  }
   return new Promise((resolve, reject) => {
-    axios.post(getRouteWithToken('users'), data)
+    /* REGISTER COMPANY FIRST */
+    axios.post(getRouteWithToken(routes.companies), company)
       .then(res => {
-        if (res.data.error) return reject(generalError)
-        else return resolve()
+        if (res.data.error) throw generalError
+        else if (res.data.id) return res.data.id
+        else throw generalError
       })
-      .catch(err => {
-        console.error(err)
-        return reject(err)
+      .then(companyId => {
+        /* REGISTER USER */
+        user.company = companyId
+        return axios.post(getRouteWithToken(routes.users), user)
       })
+      .then(res => {
+        if (res.data.error) throw generalError
+        else {
+          resolve()
+          token.remove()
+        }
+      })
+      .catch(() => reject(generalError))
   })
 }
 
@@ -119,7 +145,12 @@ const token = {
    * Gets the token from the storage.
    * @return {string | null}
    */
-  get: () => localStorage.getItem(TOKEN_NAME)
+  get: () => localStorage.getItem(TOKEN_NAME),
+  /**
+   * Removes the token from the local storage.
+   * @return {void}
+   */
+  remove: () => localStorage.removeItem(TOKEN_NAME)
 }
 
 export default {

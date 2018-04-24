@@ -146,9 +146,10 @@
             fantasyName: this.inputs.text.fantasyName.payload,
             rut: this.inputs.text.rut.payload,
             legalRepresentative: this.inputs.text.legalRepresentative.payload,
-            legalRepresentativeEmail: this.inputs.text.legalRepresentativeEmail.payload,
-            legalRepresentativePhone: this.inputs.text.legalRepresentativePhone.payload,
-            industries: this.inputs.dropDowns.industries.options.filter(opt => opt.selected).map(opt => opt.label),
+            legalRepEmail: this.inputs.text.legalRepresentativeEmail.payload,
+            legalRepPhone: this.inputs.text.legalRepresentativePhone.payload,
+            // industries: this.inputs.dropDowns.industries.options.filter(opt => opt.selected).map(opt => opt.label),
+            // TODO: Uncomment industries when the drop down is working
             password: this.inputs.passwords.first.payload
           })
             .then(function () {
