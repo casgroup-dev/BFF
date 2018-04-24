@@ -33,7 +33,8 @@ function login (email, password) {
         if (res.data.error && (res.data.error.status === 403 || res.data.error.status === 404)) {
           return reject(new Error('Email o contraseña incorrectos'))
         } else if (res.data.token) {
-          return resolve(res.data.token)
+          token.save(res.data.token)
+          return resolve()
         } else {
           return reject(generalError)
         }
@@ -69,6 +70,16 @@ function isShadowUser (email) {
         return reject(generalError)
       })
   })
+}
+
+/**
+ * Logout the user (remove the token) and redirect him to the login page.
+ * @param {Object} router - Router object of Vue.
+ */
+function logout (router) {
+  if (!router) throw new Error('Router must be provided to call this function.')
+  token.remove()
+  router.push({name: 'login'})
 }
 
 /**
@@ -135,6 +146,23 @@ function isLoggedIn () {
   return !!token.get()
 }
 
+/**
+ * Check if email exists in database. If not register it.
+ * @param email
+ * @returns {Promise<any>}
+ */
+function registerProvider (name, rut, email) {
+  return new Promise((resolve, reject) => {
+    // Simulate an api call with a timeout of two seconds that resolves or reject the promise with equal probability.
+    setTimeout(() => {
+      // En esta version dummy no se discrimina cual campo genero el error
+      Math.random() > 0.7
+        ? resolve('Agregando proveedor')
+        : reject(new Error(`Proveedor existente`))
+    }, 500)
+  })
+}
+
 const token = {
   /**
    * Saves the token of the user to keep him logged in.
@@ -157,5 +185,7 @@ export default {
   isLoggedIn,
   isShadowUser,
   login,
-  register
+  logout,
+  register,
+  registerProvider
 }

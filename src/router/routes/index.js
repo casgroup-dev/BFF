@@ -12,6 +12,7 @@ import Icons from 'src/components/Dashboard/Views/Icons.vue'
 import Maps from 'src/components/Dashboard/Views/Maps.vue'
 import Notifications from 'src/components/Dashboard/Views/Notifications.vue'
 import LicitacionesHome from 'src/components/Dashboard/Views/licitaciones/Home'
+import ProvidersHome from 'src/components/Dashboard/Views/providers/Home.vue'
 
 const routes = [
   {
@@ -41,6 +42,18 @@ const routes = [
         path: '/',
         name: 'home',
         component: LicitacionesHome
+      }
+    ]
+  },
+  {
+    path: '/Providers',
+    component: DashboardLayout,
+    meta: {requiresAuth: true},
+    children: [
+      {
+        path: '/',
+        name: 'Home',
+        component: ProvidersHome
       }
     ]
   },
