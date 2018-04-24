@@ -4,7 +4,7 @@
       <div class="col-md-4 offset-md-4 col-sm-12 align-self-center">
         <transition name="fade" mode="out-in" appear>
           <!-- FORM ONLY IF IT IS AUTHORIZED -->
-          <Form v-if="authorized"></Form>
+          <Form v-if="authorized" :email="email"></Form>
           <!-- EMAIL VERIFICATION FIRST -->
           <card v-else>
             <h2 class="align-center">Registro</h2>

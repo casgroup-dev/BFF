@@ -2,6 +2,8 @@
   <Card>
     <!-- TITLE AND GENERAL ERRORS -->
     <h2 slot="header" class="title text-center">Registro de usuario</h2>
+    <!-- DISABLED INPUTS (PASSED BY PROPS) -->
+    <fg-input disabled :placeholder="email" label="Email"/>
     <!-- TEXT INPUTS -->
     <fg-input v-for="(input, index) in inputs.text" :key="index"
               :placeholder="input.placeholder" v-model="input.payload"
@@ -44,13 +46,15 @@
   import ClipLoader from 'vue-spinner/src/ClipLoader'
 
   export default {
+    props: {
+      email: {type: String, required: true}
+    },
     data () {
       return {
         inputs: {
           /* TEXT INPUTS */
           text: {
             name: {label: 'Nombre', placeholder: 'Juan Lopez Carrera', payload: null, error: false},
-            email: {label: 'Email', placeholder: 'ejemplo@email.com', payload: null, error: false},
             businessName: {label: 'Razón social', placeholder: 'CasGroup', payload: null, error: false},
             fantasyName: {label: 'Nombre de fantasía', placeholder: 'CasGroup', payload: null, error: false},
             rut: {label: 'RUT de empresa', placeholder: '90193000-7', payload: null, error: false},
@@ -141,10 +145,10 @@
           const self = this
           usersApi.register({
             name: this.inputs.text.name.payload,
-            email: this.inputs.text.email.payload,
+            email: this.email,
             businessName: this.inputs.text.businessName.payload,
             fantasyName: this.inputs.text.fantasyName.payload,
-            rut: this.inputs.text.rut.payload,
+            rut: this.inputs.text.rut.payload.replace(/[.-]/g, ''),
             legalRepresentative: this.inputs.text.legalRepresentative.payload,
             legalRepEmail: this.inputs.text.legalRepresentativeEmail.payload,
             legalRepPhone: this.inputs.text.legalRepresentativePhone.payload,
