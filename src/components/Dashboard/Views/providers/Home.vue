@@ -123,52 +123,19 @@
   import VueNotify from 'vue-notifyjs'
 
   const tableColumns = [
-    'Nombre fantasia',
     'Razón social',
-    'Industria',
+    'Nombre fantasia',
     'Rut',
-    'Dirección',
-    'Ciudad',
-    'Pais',
-    'Telefono',
-    'Pagina Web',
-    'Contacto Comercial',
-    'Activo'
+    'Rubros',
+    'Representante Legal',
+    'Email Representante Legal',
+    'Telefono Representante Legal',
+    'users'
   ]
-  const tableData = [
-    {
-      attributes: {
-        nombre_fantasia: 'souto',
-        nombre_legal: 'sut',
-        industria: 'telecomunicaciones',
-        RUT: '12.345.678-9',
-        direccion: 'calle falsa 123',
-        ciudad: 'Talagante',
-        pais: 'Chile',
-        fono: '+569 999 888 21',
-        web: '-',
-        contacto: 'a@a.a'
-      },
-      active: true,
-      show: false
-    },
-    {
-      attributes: {
-        nombre_fantasia: 'perry',
-        nombre_legal: 'porry',
-        industria: 'transporte',
-        RUT: '69.426.942-9',
-        direccion: 'avenida siempre viva 78',
-        ciudad: 'Springfield',
-        pais: 'US',
-        fono: '+569 555 666 77',
-        web: '-',
-        contacto: 'b@b.b'
-      },
-      active: false,
-      show: false
-    }
-  ]
+
+  var tableData = usersApi.getCompanies()
+  //TODO:Returns a Promise, fix to return companies and call this.companiesToTable
+
   export default {
     components: {
       LTable,
@@ -207,6 +174,14 @@
         }
       },
 
+      companiesToTable: function(companies){
+        for (var i = 0; i< companies.length; i++ ){
+          companies[i]["industries"] = companies[i]["industries"].join(', ')
+          companies[i]["users"] = companies[i]["users"].join(', ')
+        }
+        return companies
+      },
+
       cancelModal: function () {
         this.provider.modalOn = false
         this.provider.name.payload =
@@ -229,6 +204,7 @@
 
     },
     data: function () {
+      console.log(tableData)
       return {
         search: '',
         table: {

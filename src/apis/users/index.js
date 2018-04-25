@@ -72,6 +72,27 @@ function isShadowUser (email) {
   })
 }
 
+function getCompanies (){
+  const generalError = new Error('Error de conexion.')
+  return new Promise((resolve, reject) => {
+    axios.get(getRouteWithToken(routes.companies))
+      .then(res => {
+        if (res.data.error && res.data.error.status === 403) {
+          return reject(new Error('No autorizado'))
+        } else if (res.data.error && res.data.error.status === 404) {
+          return reject(new Error('No encontrado'))
+        } else{
+          return res.data
+        }
+      })
+      .then(res => {
+        resolve()
+        return res
+      })
+      .catch(() => reject(generalError))
+  })
+}
+
 /**
  * Logout the user (remove the token) and redirect him to the login page.
  * @param {Object} router - Router object of Vue.
@@ -185,5 +206,6 @@ export default {
   login,
   logout,
   register,
-  registerProvider
+  registerProvider,
+  getCompanies
 }
