@@ -27,7 +27,7 @@
               <div class="table-responsive">
                 <table class="table table-hover table-striped">
                   <thead>
-                  <th v-for="attr in table.columns">
+                  <th v-for="attr in table.columns.attributes">
                     <tr scope="col">{{attr}}</tr>
                   </th>
                   </thead>
@@ -57,16 +57,13 @@
                       </a></td>
                     </tr>
                     <transition name="fade" mode="out-in" appear>
-                      <tr>
-                        <td v-if="provider.show"> <!-- TODO Componentes de una Licitacion -->
-                      <tr>Cronograma</tr> <!-- TODO Componente Propio -->
-                      <tr>Bases</tr> <!-- TODO Componente Propio -->
-                      <tr>Estado Licitación</tr>
-                      <tr>Subir Documentos</tr> <!-- TODO Componente Propio -->
-                      <tr>Preguntas/Respuestas</tr> <!-- TODO Componente Propio -->
-                      <tr>Evaluaciones (Técnico, Comercial, Economico)</tr> <!-- TODO Componente Propio -->
-                      <tr>Cuadro Comparativo</tr> <!-- TODO Componente Propio -->
-                      </td>
+                      <tr v-if="provider.show">
+                        <td>
+                          <tr v-for="attr in table.columns.details"><a>{{attr}}</a></tr>
+                        </td>
+                        <td>
+                          <tr v-for="attr in provider.details"><a>{{attr}}</a></tr>
+                        </td>
                       </tr>
                     </transition>
                   </template>
@@ -123,19 +120,21 @@
   import usersApi from 'src/apis/users'
   import VueNotify from 'vue-notifyjs'
 
-  const tableColumns = [
-    'Razón social',
-    'Nombre fantasia',
-    'Rut',
-    'Rubros',
-    'Representante Legal',
-    'Email Representante Legal',
-    'Telefono Representante Legal',
-    'Usuarios',
-    'Activo'
-  ]
-
-  //TODO:Returns a Promise, fix to return companies and call this.companiesToTable
+  const tableColumns = {
+    'attributes': [
+      'Razón social',
+      'Nombre fantasia',
+      'Rut',
+      'Industria',
+      'Activo'
+    ],
+    'details': [
+      'Representante Legal',
+      'Email Representante Legal',
+      'Telefono Representante Legal',
+      'Usuarios'
+    ]
+  }
 
   export default {
     components: {
@@ -182,7 +181,9 @@
               'businessName': company['businessName'],
               'fantasyName': company['fantasyName'],
               'rut': company['rut'],
-              'industries': company['industries'].join(', '),
+              'industries': company['industries'].join(', ')
+            },
+            'details': {
               'legalRepresentative': company['legalRepresentative'],
               'legalRepEmail': company['legalRepEmail'],
               'legalRepPhone': company['legalRepPhone'],
@@ -219,7 +220,7 @@
       return {
         search: '',
         table: {
-          columns: [...tableColumns],
+          columns: tableColumns,
           data: []
         },
         provider: {
@@ -251,7 +252,6 @@
       usersApi.getCompanies().then(data => {
         const temp = data
         self.table.data = self.companiesToTable(temp)
-        console.log(self.table.data)
       })
     },
     computed:
