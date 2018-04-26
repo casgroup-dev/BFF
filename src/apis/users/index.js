@@ -72,7 +72,7 @@ function isShadowUser (email) {
   })
 }
 
-function getCompanies (){
+function getCompanies () {
   const generalError = new Error('Error de conexion.')
   return new Promise((resolve, reject) => {
     axios.get(getRouteWithToken(routes.companies))
@@ -81,13 +81,9 @@ function getCompanies (){
           return reject(new Error('No autorizado'))
         } else if (res.data.error && res.data.error.status === 404) {
           return reject(new Error('No encontrado'))
-        } else{
-          return res.data
+        } else {
+          return resolve(res.data)
         }
-      })
-      .then(res => {
-        resolve()
-        return res
       })
       .catch(() => reject(generalError))
   })
