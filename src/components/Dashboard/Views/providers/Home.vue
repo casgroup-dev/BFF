@@ -18,65 +18,66 @@
             </template>
             <template>
               <div class="row">
-                <fg-input class="col-6" v-model="search" placeholder="Industria" addon-right-icon="nc-icon nc-zoom-split">
+                <fg-input class="col-6" v-model="search" placeholder="Industria"
+                          addon-right-icon="nc-icon nc-zoom-split">
                 </fg-input>
               </div>
             </template>
             <template>
-            <div class="table-responsive">
-              <table class="table table-hover table-striped">
-                <thead>
-                <th v-for="attr in table.columns">
-                  <tr scope="col">{{attr}}</tr>
-                </th>
-                </thead>
-                <tbody>
-                <template v-for="provider in filteredProviders">
-                  <tr>
-                    <td v-for="attr in provider.attributes">
-                      <a
-                        style="font-weight:normal; color:#262626;"
+              <div class="table-responsive">
+                <table class="table table-hover table-striped">
+                  <thead>
+                  <th v-for="attr in table.columns">
+                    <tr scope="col">{{attr}}</tr>
+                  </th>
+                  </thead>
+                  <tbody>
+                  <template v-for="provider in filteredProviders">
+                    <tr>
+                      <td v-for="attr in provider.attributes">
+                        <a
+                          style="font-weight:normal; color:#262626;"
+                          data-toggle="collapse"
+                          role="button"
+                          v-on:click="provider.show = !provider.show">
+                          {{attr}}
+                        </a>
+                      </td>
+                      <td>
+                        <i class="nc-icon nc-check-2" v-if="provider.active"></i>
+                        <i class="nc-icon nc-simple-remove" v-else></i>
+                      </td>
+                      <td><a
+                        style="color:#262626;"
                         data-toggle="collapse"
                         role="button"
                         v-on:click="provider.show = !provider.show">
-                        {{attr}}
-                      </a>
-                    </td>
-                    <td>
-                      <i class="nc-icon nc-check-2" v-if="provider.active"></i>
-                      <i class="nc-icon nc-simple-remove" v-else></i>
-                    </td>
-                    <td><a
-                      style="color:#262626;"
-                      data-toggle="collapse"
-                      role="button"
-                      v-on:click="provider.show = !provider.show">
-                      <i class="nc-icon nc-stre-down" v-if="!provider.show"></i>
-                      <i class="nc-icon nc-stre-up" v-else></i>
-                    </a></td>
-                  </tr>
-                  <transition name="fade" mode="out-in" appear>
-                    <tr>
-                      <td v-if="provider.show"> <!-- TODO Componentes de una Licitacion -->
-                        <tr>Cronograma</tr> <!-- TODO Componente Propio -->
-                        <tr>Bases</tr> <!-- TODO Componente Propio -->
-                        <tr>Estado Licitación</tr>
-                        <tr>Subir Documentos</tr> <!-- TODO Componente Propio -->
-                        <tr>Preguntas/Respuestas</tr> <!-- TODO Componente Propio -->
-                        <tr>Evaluaciones (Técnico, Comercial, Economico)</tr> <!-- TODO Componente Propio -->
-                        <tr>Cuadro Comparativo</tr> <!-- TODO Componente Propio -->
-                      </td>
+                        <i class="nc-icon nc-stre-down" v-if="!provider.show"></i>
+                        <i class="nc-icon nc-stre-up" v-else></i>
+                      </a></td>
                     </tr>
-                  </transition>
-                </template>
-                </tbody>
-              </table>
-              <div class="row">
-                <div class="col-12" style="text-align: center">
-                  <button class="btn btn-center btn-info btn-round">Cargar más</button>
+                    <transition name="fade" mode="out-in" appear>
+                      <tr>
+                        <td v-if="provider.show"> <!-- TODO Componentes de una Licitacion -->
+                      <tr>Cronograma</tr> <!-- TODO Componente Propio -->
+                      <tr>Bases</tr> <!-- TODO Componente Propio -->
+                      <tr>Estado Licitación</tr>
+                      <tr>Subir Documentos</tr> <!-- TODO Componente Propio -->
+                      <tr>Preguntas/Respuestas</tr> <!-- TODO Componente Propio -->
+                      <tr>Evaluaciones (Técnico, Comercial, Economico)</tr> <!-- TODO Componente Propio -->
+                      <tr>Cuadro Comparativo</tr> <!-- TODO Componente Propio -->
+                      </td>
+                      </tr>
+                    </transition>
+                  </template>
+                  </tbody>
+                </table>
+                <div class="row">
+                  <div class="col-12" style="text-align: center">
+                    <button class="btn btn-center btn-info btn-round">Cargar más</button>
+                  </div>
                 </div>
               </div>
-            </div>
             </template>
           </card>
         </div>
@@ -155,9 +156,8 @@
       LTable,
       Card
     },
-    methods: {
-    },
-    data: function() {
+    methods: {},
+    data: function () {
       return {
         search: '',
         table: {
@@ -168,11 +168,11 @@
     },
     computed:
       {
-        filteredProviders:function()
-        {
-          var self=this;
-          return this.table.data.filter(function(prov){return prov.attributes.industria.toLowerCase().indexOf(self.search.toLowerCase())>=0;});
-          //return this.customers;
+        filteredProviders: function () {
+          const self = this
+          return this.table.data.filter(function (prov) {
+            return prov.attributes.industria.toLowerCase().indexOf(self.search.toLowerCase()) >= 0
+          })
         }
       }
   }
