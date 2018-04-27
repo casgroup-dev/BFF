@@ -256,7 +256,7 @@
         filteredProviders: function () {
           var self = this
           return this.table.data.filter(function (prov) {
-            return prov.attributes.businessName.toLowerCase().indexOf(self.search.toLowerCase()) >= 0
+            return prov.attributes.industries.toLowerCase().includes(self.search.toLowerCase())
           })
         }
       }
