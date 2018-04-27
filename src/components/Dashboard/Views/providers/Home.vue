@@ -18,8 +18,12 @@
             </template>
             <template>
               <div class="row">
-                <fg-input class="col-6" v-model="search" placeholder="Industria" addon-right-icon="nc-icon nc-zoom-split">
-                </fg-input>
+                <!--<fg-input class="col-6" v-model="search" placeholder="Industria" addon-right-icon="nc-icon nc-zoom-split">
+                </fg-input>-->
+                <div class="col-6" style="margin: 5px 0px 15px 15px; padding: 10px 0px 10px 0px; border: 2px solid; border-radius: 4px">
+                  <div class="col-1 nc-icon nc-zoom-split"></div>
+                  <input class="col-10" v-model="search" placeholder="Buscar por industria" style="border: hidden">
+                </div>
               </div>
             </template>
             <template>
@@ -121,6 +125,7 @@
   import ClipLoader from 'vue-spinner/src/ClipLoader'
   import usersApi from 'src/apis/users'
   import VueNotify from 'vue-notifyjs'
+  import Icons from "../Icons";
 
   const tableColumns = [
     'Nombre fantasia',
@@ -171,6 +176,7 @@
   ]
   export default {
     components: {
+      Icons,
       LTable,
       Card,
       Modal,
