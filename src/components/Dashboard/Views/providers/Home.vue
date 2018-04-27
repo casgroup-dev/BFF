@@ -120,16 +120,17 @@
   const tableColumns = {
     'attributes': [
       'Razón social',
-      'Nombre fantasia',
-      'Rut',
-      'Industria',
-      'Activo'
+      'Mail Admin Proveedor',
+      'Telefono Admin Proveedor',
+      'Active',
+      'Details'
     ],
     'details': {
       'legalRepresentative': 'Representante Legal',
-      'legalRepEmail': 'Email',
-      'legalRepPhone': 'Telefono',
-      'users': 'Usuarios'
+      'legalRepEmail': 'Email Representante Legal',
+      'legalRepPhone': 'Telefono Representante Legal',
+      'industries': 'Rubros',
+      'users': 'Usuarios',
     }
   }
 
@@ -176,16 +177,16 @@
           return {
             'attributes': {
               'businessName': company['businessName'],
-              'fantasyName': company['fantasyName'],
-              'rut': company['rut'],
-              'industries': company['industries'].join(', ')
+              'usersEmail': company['users'].map(user => user.email).join(', '),
+              'usersPhone': company['users'].map(user => user.phone).join(', ')
             },
             'details': {
               'legalRepresentative': company['legalRepresentative'],
-              'legalRepEmail': company['legalRepEmail'],
-              'legalRepPhone': company['legalRepPhone'],
-              'users': company['users'].map(user => user.name).join(', ')
-            },
+              'industries': company['industries'].join(', '),
+              'users': company['users'].map(user => user.name).join(', '),
+              'fantasyName': company['fantasyName'],
+              'rut': company['rut']
+              },
             'active': true,
             'show': false
           }
@@ -256,7 +257,7 @@
         filteredProviders: function () {
           var self = this
           return this.table.data.filter(function (prov) {
-            return prov.attributes.industries.toLowerCase().includes(self.search.toLowerCase())
+            return prov.details.industries.toLowerCase().includes(self.search.toLowerCase())
           })
         }
       }
