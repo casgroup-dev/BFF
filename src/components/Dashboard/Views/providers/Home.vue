@@ -7,7 +7,7 @@
             <template slot="header">
               <div class="row">
                 <div class="col-1" style="text-align: left; font-size: xx-large">
-                  <button class="btn btn-primary btn-lg btn-fill" style="font-size: large" @click="provider.modalOn = true">
+                  <button class="btn btn-primary btn-lg btn-fill" style="font-size: large" @click="inviteToBidding()">
                     Invitar a Licitación
                   </button>
                 </div>
@@ -60,7 +60,9 @@
                         <i class="nc-icon nc-stre-down" v-if="!provider.show"></i>
                         <i class="nc-icon nc-stre-up" v-else></i>
                       </a></td>
-                      <td><input type="checkbox" id="invited_checkbox" v-model=provider.invited v-on:click="checkboxClicked(provider)"></td>
+                      <td>
+                        <input type="checkbox" id="invited_checkbox" v-model=provider.invited v-on:click="checkboxClicked(provider)">
+                      </td>
                     </tr>
                     <transition name="fade" mode="out-in" appear>
                       <tr v-if="provider.show">
@@ -113,6 +115,29 @@
         </button>
       </template>
     </modal>
+
+    <modal v-if="invited.modalOn">
+      <template slot="header">
+        <label>Seleccionar Licitación</label>
+      </template>
+      <template slot="body">
+        <div class="modal-body">
+          <slot name="body">
+            <label>Proveedores seleccionados:</label>
+            <li v-for="provider in invited.data">
+              {{ provider.attributes.businessName }}
+            </li>
+          </slot>
+        </div>
+      </template>
+      <template slot="footer">
+
+        <button class="btn btn-primary" @click="invited.modalOn=false">
+          Cancelar
+        </button>
+      </template>
+    </modal>
+
   </div>
 </template>
 <script>
@@ -182,20 +207,25 @@
       },
 
       checkboxClicked: function(row) {
-        console.log(row.attributes.businessName)
         if (row.invited == true){
-          console.log("Esta")
-          var index = this.invited.data.indexOf(row.attributes.businessName);
+          var index = this.invited.data.indexOf(row);
           if (index > -1) {
             this.invited.data.splice(index, 1);
           }
           row.invited = false
         } else{
-          console.log("No esta")
-          this.invited.data.push(row.attributes.businessName)
+          this.invited.data.push(row)
           row.invited = true
         }
 
+      },
+
+      inviteToBidding: function(){
+          if(this.invited.data.length == 0){
+            //TODO: mensaje de Error
+          } else{
+            this.invited.modalOn = true
+          }
       },
 
       companiesToTable: function (companies) {
@@ -277,7 +307,8 @@
           invited: false
         },
         invited: {
-          data: []
+          data: [],
+          modalOn: false
         }
       }
     },
