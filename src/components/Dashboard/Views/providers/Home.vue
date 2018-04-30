@@ -55,6 +55,7 @@
                         <i class="nc-icon nc-stre-down" v-if="!provider.show"></i>
                         <i class="nc-icon nc-stre-up" v-else></i>
                       </a></td>
+                      <td><input type="checkbox" @click="checkboxClicked(provider)"/></td>
                     </tr>
                     <transition name="fade" mode="out-in" appear>
                       <tr v-if="provider.show">
@@ -174,6 +175,18 @@
         }
       },
 
+      checkboxClicked: function(row) {
+        if (this.invited.data.includes(row.attributes.businessName)){
+          var index = this.invited.data.indexOf(row.attributes.businessName);
+          if (index > -1) {
+            this.invited.data.splice(index, 1);
+          }
+        } else{
+          this.invited.data.push(row.attributes.businessName)
+        }
+
+      },
+
       companiesToTable: function (companies) {
         return companies.map(company => {
           return {
@@ -250,6 +263,9 @@
           modalOn: false,
           loading: false,
           success: false
+        },
+        invited: {
+          data: []
         }
       }
     },
