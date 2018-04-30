@@ -177,8 +177,12 @@
           return {
             'attributes': {
               'businessName': company['businessName'],
-              'usersEmail': company['users'].map(user => user.email).join(', '),
-              'usersPhone': company['users'].map(user => user.phone).join(', ')
+              'usersEmail': company['users'].filter(user => {
+                return user.role === "companyAdmin"
+              }).map(user => user.email).join(', '),
+              'usersPhone': company['users'].filter(user => {
+                return user.role === "companyAdmin"
+              }).map(user => user.phone).join(', ')
             },
             'details': {
               'legalRepresentative': company['legalRepresentative'],
