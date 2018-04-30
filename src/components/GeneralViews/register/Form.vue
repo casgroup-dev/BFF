@@ -11,6 +11,13 @@
       <label slot="label" :class="`control-label ${input.error ? 'error' : ''}`">{{ input.label }}</label>
     </fg-input>
     <!-- DROP DOWNS -->
+    <div>
+      <label class="typo__label">Rubros</label>
+      <multiselect v-model="inputs.dropDowns.industries.values" :options="inputs.dropDowns.industries.options" :multiple="true" :close-on-select="false" :clear-on-select="false" :hide-selected="true" :preserve-search="true" placeholder="Seleccione sus rubros" label="name" track-by="name" :preselect-first="true">
+        <template slot="tag" slot-scope="props"><span class="custom__tag"><span>{{ props.option.language }}</span><span class="custom__remove" @click="props.remove(props.option)">❌</span></span></template>
+      </multiselect>
+      <!--<pre class="language-json"><code>{{ inputs.dropDowns.industries.values }}</code></pre>-->
+    </div>
     <!-- TODO: With modal of Seba Puja and checkboxes filtered by a search field, it is its own component -->
     <!-- PASSWORDS -->
     <fg-input v-for="(input, index) in inputs.passwords" :key="index"
@@ -44,6 +51,7 @@
   import Card from '../../UIComponents/Cards/Card'
   import usersApi from '../../../apis/users'
   import ClipLoader from 'vue-spinner/src/ClipLoader'
+  import Multiselect from 'vue-multiselect'
 
   export default {
     props: {
@@ -80,8 +88,12 @@
           /* DROP DOWN INPUTS */
           dropDowns: {
             industries: {
-              options: [],
-              selected: [],
+              options: [
+                { name: 'JavaScript', language: 'JavaScript' },
+                { name: 'Ruby', language: 'Ruby' },
+                { name: 'PHP', language: 'PHP' },
+                { name: 'Elixir', language: 'Elixir' }],
+              values: [],
               error: false
             }
           },
@@ -103,7 +115,8 @@
     /* OTHER COMPONENTS USED IN THIS COMPONENT */
     components: {
       Card,
-      ClipLoader
+      ClipLoader,
+      Multiselect
     },
     /* METHODS/FUNCTIONS OF THIS COMPONENT */
     methods: {
@@ -176,6 +189,8 @@
     mounted: function () { this.focus() }
   }
 </script>
+
+<style src="vue-multiselect/dist/vue-multiselect.min.css"></style>
 
 <style scoped>
   label.error {
