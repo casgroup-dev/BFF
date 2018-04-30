@@ -6,11 +6,16 @@
           <card>
             <template slot="header">
               <div class="row">
-                <div class="offset-3 col-6" style="text-align: center; font-size: xx-large">
+                <div class="col-1" style="text-align: left; font-size: xx-large">
+                  <button class="btn btn-primary btn-lg btn-fill" style="font-size: large" @click="provider.modalOn = true">
+                    Invitar a Licitación
+                  </button>
+                </div>
+                <div class="offset-3 col-3" style="text-align: center; font-size: xx-large">
                   Proveedores
                 </div>
                 <div class="col-3" style="text-align: right; font-size: xx-large">
-                  <button class="btn btn-primary" style="font-size: large" @click="provider.modalOn = true">
+                  <button class="btn btn-primary btn-sm" style="font-size: large" @click="provider.modalOn = true">
                     Agregar proveedor
                   </button>
                 </div>
@@ -55,7 +60,7 @@
                         <i class="nc-icon nc-stre-down" v-if="!provider.show"></i>
                         <i class="nc-icon nc-stre-up" v-else></i>
                       </a></td>
-                      <td><input type="checkbox" @click="checkboxClicked(provider)"/></td>
+                      <td><input type="checkbox" id="invited_checkbox" v-model=provider.invited v-on:click="checkboxClicked(provider)"></td>
                     </tr>
                     <transition name="fade" mode="out-in" appear>
                       <tr v-if="provider.show">
@@ -124,7 +129,8 @@
       'Mail Admin Proveedor',
       'Telefono Admin Proveedor',
       'Active',
-      'Details'
+      'Details',
+      'Invitar'
     ],
     'details': {
       'industries': 'Rubros',
@@ -176,13 +182,18 @@
       },
 
       checkboxClicked: function(row) {
-        if (this.invited.data.includes(row.attributes.businessName)){
+        console.log(row.attributes.businessName)
+        if (row.invited == true){
+          console.log("Esta")
           var index = this.invited.data.indexOf(row.attributes.businessName);
           if (index > -1) {
             this.invited.data.splice(index, 1);
           }
+          row.invited = false
         } else{
+          console.log("No esta")
           this.invited.data.push(row.attributes.businessName)
+          row.invited = true
         }
 
       },
@@ -262,7 +273,8 @@
           errorMessage: '', */
           modalOn: false,
           loading: false,
-          success: false
+          success: false,
+          invited: false
         },
         invited: {
           data: []
