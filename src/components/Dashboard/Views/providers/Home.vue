@@ -36,10 +36,7 @@
                     <tr>
                       <td v-for="attr in provider.attributes">
                         <a
-                          style="font-weight:normal; color:#262626;"
-                          data-toggle="collapse"
-                          role="button"
-                          v-on:click="provider.show = !provider.show">
+                          style="font-weight:normal; color:#262626;">
                           {{attr}}
                         </a>
                       </td>
@@ -47,14 +44,11 @@
                         <i class="nc-icon nc-check-2" v-if="provider.active"></i>
                         <i class="nc-icon nc-simple-remove" v-else></i>
                       </td>
-                      <td><a
-                        style="color:#262626;"
-                        data-toggle="collapse"
-                        role="button"
-                        v-on:click="provider.show = !provider.show">
-                        <i class="nc-icon nc-stre-down" v-if="!provider.show"></i>
-                        <i class="nc-icon nc-stre-up" v-else></i>
-                      </a></td>
+                      <td>
+                        <button class="btn btn-primary" style="font-size: large" v-on:click="addProviderToPopup(provider)">
+                          Ver Detalles
+                        </button>
+                      </td>
                     </tr>
                     <transition name="fade" mode="out-in" appear>
                       <tr v-if="provider.show">
@@ -107,6 +101,29 @@
         </button>
       </template>
     </modal>
+
+    <modal v-if="detailsPopup.show">
+      <template slot="header">
+        <label>Detalles del proveedor</label>
+      </template>
+      <template slot="body">
+        <label><b>Razón Social:</b> {{detailsPopup.data.businessName}}<br></label>
+        <label><b>Mail Admin Proveedor:</b> {{detailsPopup.data.usersEmail}}<br></label>
+        <label><b>Teléfono Admin Proveedor:</b> {{detailsPopup.data.usersPhone}}<br></label>
+        <label><b>Rubros:</b> {{detailsPopup.data.industries}}<br /></label>
+        <label><b>RUT:</b> {{detailsPopup.data.rut}}<br /></label>
+        <label><b>Usuarios:</b> {{detailsPopup.data.users}}<br></label>
+        <label><b>Representante Legal:</b> {{detailsPopup.data.legalRepresentative}}<br></label>
+        <label><b>Email Representante Legal:</b> {{detailsPopup.data.legalRepEmail}}<br></label>
+        <label><b>Telefono Representante Legal:</b> {{detailsPopup.data.legalRepPhone}}<br></label>
+        <label><b>Nombre de Fantasía:</b> {{detailsPopup.data.fantasyName}}<br></label>
+      </template>
+      <template slot="footer">
+        <button class="btn btn-primary" @click="cancelPopup">
+          Volver
+        </button>
+      </template>
+    </modal>
   </div>
 </template>
 <script>
@@ -123,14 +140,17 @@
       'Mail Admin Proveedor',
       'Telefono Admin Proveedor',
       'Active',
-      'Details'
+      'Details',
+      'Invitar'
     ],
     'details': {
+      'industries': 'Rubros',
+      'rut': 'RUT',
+      'users': 'Usuarios',
       'legalRepresentative': 'Representante Legal',
       'legalRepEmail': 'Email Representante Legal',
       'legalRepPhone': 'Telefono Representante Legal',
-      'industries': 'Rubros',
-      'users': 'Usuarios',
+      'fantasyName': 'Fantasy Name'
     }
   }
 
@@ -177,16 +197,22 @@
           return {
             'attributes': {
               'businessName': company['businessName'],
-              'usersEmail': company['users'].map(user => user.email).join(', '),
-              'usersPhone': company['users'].map(user => user.phone).join(', ')
+              'usersEmail': company['users'].filter(user => {
+                return user.role === "companyAdmin"
+              }).map(user => user.email).join(', '),
+              'usersPhone': company['users'].filter(user => {
+                return user.role === "companyAdmin"
+              }).map(user => user.phone).join(', ')
             },
             'details': {
-              'legalRepresentative': company['legalRepresentative'],
               'industries': company['industries'].join(', '),
-              'users': company['users'].map(user => user.name).join(', '),
+              'rut': company['rut'],
+              'users': company['users'].map(user => user.name + " (" + user.role + ") ").join(', '),
+              'legalRepresentative': company['legalRepresentative'],
+              'legalRepEmail': company['legalRepEmail'],
+              'legalRepPhone': company['legalRepPhone'],
               'fantasyName': company['fantasyName'],
-              'rut': company['rut']
-              },
+            },
             'active': true,
             'show': false
           }
@@ -202,6 +228,24 @@
           this.provider.name.error =
             this.provider.rut.error =
               this.provider.mail.error = false
+      },
+
+      addProviderToPopup: function (provider) {
+        this.detailsPopup.show = true
+        this.detailsPopup.data.businessName = provider.attributes.businessName
+        this.detailsPopup.data.usersEmail = provider.attributes.usersEmail
+        this.detailsPopup.data.usersPhone = provider.attributes.usersPhone
+        this.detailsPopup.data.legalRepresentative = provider.details.legalRepresentative
+        this.detailsPopup.data.legalRepEmail = provider.details.legalRepEmail
+        this.detailsPopup.data.legalRepPhone = provider.details.legalRepPhone
+        this.detailsPopup.data.industries = provider.details.industries
+        this.detailsPopup.data.users = provider.details.users
+        this.detailsPopup.data.fantasyName = provider.details.fantasyName
+        this.detailsPopup.data.rut = provider.details.rut
+      },
+
+      cancelPopup: function () {
+        this.detailsPopup.show = false
       },
 
       addNotification: function () {
@@ -242,6 +286,21 @@
           modalOn: false,
           loading: false,
           success: false
+        },
+        detailsPopup: {
+          show: false,
+          data: {
+            businessName: '',
+            usersEmail: '',
+            usersPhone: '',
+            industries: '',
+            rut: '',
+            users: '',
+            legalRepresentative: '',
+            legalRepEmail: '',
+            legalRepPhone: '',
+            fantasyName: ''
+          }
         }
       }
     },
