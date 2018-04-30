@@ -7,8 +7,9 @@
             <template slot="header">
               <div class="row">
                 <div class="col-1" style="text-align: left; font-size: xx-large">
-                  <button class="btn btn-primary btn-lg btn-fill" style="font-size: large" @click="inviteToBidding()">
-                    Invitar a Licitación
+                  <button label="Hola!\nhola" class="btn btn-primary btn-lg btn-fill" style="font-size: large" @click="inviteToBidding()">
+                    Invitar a Licitación<br />
+                    ({{this.invited.data.length}} seleccionados)
                   </button>
                 </div>
                 <div class="offset-3 col-3" style="text-align: center; font-size: xx-large">
@@ -118,12 +119,23 @@
 
     <modal v-if="invited.modalOn">
       <template slot="header">
-        <label>Seleccionar Licitación</label>
+        <label>Invitar a Licitación</label>
       </template>
       <template slot="body">
         <div class="modal-body">
-          <slot name="body">
-            <label>Proveedores seleccionados:</label>
+          <slot name="body" v-if="invited.selectBidding">
+            <label>Seleccionar Licitación Activa:</label>
+            <select v-model="invited.selectedBidding">
+              <option v-for="option in invited.biddings" v-bind:value="option">
+                {{ option }}
+              </option>
+            </select>
+          </slot>
+          <slot>
+            <span>Seleccionado: {{ invited.selectedBidding }}</span>
+          </slot>
+          <slot name="body" v-if="invited.confirmation">
+            <label> Proveedores invitados: </label>
             <li v-for="provider in invited.data">
               {{ provider.attributes.businessName }}
             </li>
@@ -132,8 +144,14 @@
       </template>
       <template slot="footer">
 
-        <button class="btn btn-primary" @click="invited.modalOn=false">
+        <button class="btn btn-primary" @click="cancelInvitation()">
           Cancelar
+        </button>
+        <button class="btn btn-primary btn-fill" v-if="invited.acceptButton" @click="acceptInvitation()">
+          Aceptar
+        </button>
+        <button class="btn btn-primary btn-fill" v-if="invited.confirmButton" @click="confirmInvitation()">
+          Confirmar
         </button>
       </template>
     </modal>
@@ -208,9 +226,9 @@
 
       checkboxClicked: function(row) {
         if (row.invited == true){
-          var index = this.invited.data.indexOf(row);
+          var index = this.invited.data.indexOf(row)
           if (index > -1) {
-            this.invited.data.splice(index, 1);
+            this.invited.data.splice(index, 1)
           }
           row.invited = false
         } else{
@@ -266,6 +284,31 @@
               this.provider.mail.error = false
       },
 
+      acceptInvitation: function() {
+        this.invited.acceptButton = false
+        this.invited.confirmButton = true
+        this.invited.selectBidding = false
+        this.invited.confirmation = true
+      },
+
+      cancelInvitation: function() {
+        this.invited.modalOn = false
+        this.invited.selectedBidding = ""
+        this.invited.acceptButton = true
+        this.invited.confirmButton = false
+        this.invited.confirmation = false
+        this.invited.selectBidding = true
+      },
+
+      confirmInvitation: function() {
+        this.invited.modalOn = false
+        this.invited.selectedBidding = ""
+        this.invited.acceptButton = true
+        this.invited.confirmButton = false
+        this.invited.confirmation = false
+        this.invited.selectBidding = true
+      },
+
       addNotification: function () {
         this.$notify({
           message: 'Proveedor autorizado exitosamente!',
@@ -308,7 +351,13 @@
         },
         invited: {
           data: [],
-          modalOn: false
+          modalOn: false,
+          selectBidding: true,
+          confirmation: false,
+          biddings: ['Licitacion1','Licitacion2','Licitacion3'],
+          selectedBidding: "",
+          acceptButton: true,
+          confirmButton: false
         }
       }
     },
