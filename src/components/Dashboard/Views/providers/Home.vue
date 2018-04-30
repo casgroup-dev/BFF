@@ -285,10 +285,14 @@
       },
 
       acceptInvitation: function() {
-        this.invited.acceptButton = false
-        this.invited.confirmButton = true
-        this.invited.selectBidding = false
-        this.invited.confirmation = true
+        if (this.invited.selectedBidding === ""){
+          //TODO: mensaje: "elegir licitacion"
+        } else {
+          this.invited.acceptButton = false
+          this.invited.confirmButton = true
+          this.invited.selectBidding = false
+          this.invited.confirmation = true
+        }
       },
 
       cancelInvitation: function() {
