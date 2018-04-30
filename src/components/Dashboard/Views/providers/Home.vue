@@ -126,11 +126,13 @@
       'Details'
     ],
     'details': {
+      'industries': 'Rubros',
+      'rut' : 'RUT',
+      'users': 'Usuarios',
       'legalRepresentative': 'Representante Legal',
       'legalRepEmail': 'Email Representante Legal',
       'legalRepPhone': 'Telefono Representante Legal',
-      'industries': 'Rubros',
-      'users': 'Usuarios',
+      'fantasyName' : 'Fantasy Name'
     }
   }
 
@@ -185,11 +187,13 @@
               }).map(user => user.phone).join(', ')
             },
             'details': {
-              'legalRepresentative': company['legalRepresentative'],
               'industries': company['industries'].join(', '),
+              'rut': company['rut'],
               'users': company['users'].map(user => user.name + " (" + user.role + ") ").join(', '),
+              'legalRepresentative': company['legalRepresentative'],
+              'legalRepEmail' : company['legalRepEmail'],
+              'legalRepPhone' : company['legalRepPhone'],
               'fantasyName': company['fantasyName'],
-              'rut': company['rut']
               },
             'active': true,
             'show': false
