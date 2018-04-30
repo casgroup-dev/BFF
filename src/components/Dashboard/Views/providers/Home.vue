@@ -187,7 +187,7 @@
             'details': {
               'legalRepresentative': company['legalRepresentative'],
               'industries': company['industries'].join(', '),
-              'users': company['users'].map(user => user.name).join(', '),
+              'users': company['users'].map(user => user.name + " (" + user.role + ") ").join(', '),
               'fantasyName': company['fantasyName'],
               'rut': company['rut']
               },
