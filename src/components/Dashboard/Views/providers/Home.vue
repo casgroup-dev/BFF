@@ -189,8 +189,8 @@
       'Mail Admin Proveedor',
       'Telefono Admin Proveedor',
       'Active',
-      'Details',
-      'Invitar'
+      'Invitar',
+      'Details'
     ],
     'details': {
       'industries': 'Rubros',
@@ -397,7 +397,6 @@
           selectedBidding: "",
           acceptButton: true,
           confirmButton: false
-          success: false
         },
         detailsPopup: {
           show: false,
