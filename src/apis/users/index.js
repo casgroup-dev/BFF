@@ -90,6 +90,20 @@ function getCompanies () {
 }
 
 /**
+ *
+ * @param providers {Array} Providers that need to receive the invitation
+ * @param bidding {Object} The bidding that the providers will be invited to
+ */
+function invitationsToBidding (providers, bidding) {
+  return new Promise((resolve, reject) => {
+    // Simulate an api call with a timeout of one seconds that resolves or reject the promise with equal probability.
+    setTimeout(() => {
+        resolve()
+    }, 1000)
+  })
+}
+
+/**
  * Logout the user (remove the token) and redirect him to the login page.
  * @param {Object} router - Router object of Vue.
  */
@@ -203,5 +217,6 @@ export default {
   logout,
   register,
   registerProvider,
-  getCompanies
+  getCompanies,
+  invitationsToBidding
 }

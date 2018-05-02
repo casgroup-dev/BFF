@@ -6,16 +6,17 @@
           <card>
             <template slot="header">
               <div class="row">
-                <div class="col-1" style="text-align: left; font-size: xx-large">
+                <div class="col-4" style="text-align: left; font-size: xx-large">
+                  <clip-loader :loading="invited.inviteToBiddingLoading" color="#5D8EF9"/>
                   <button label="Hola!\nhola" class="btn btn-primary btn-lg btn-fill" style="font-size: large" @click="inviteToBidding()">
                     Invitar a Licitación<br />
                     ({{this.invited.data.length}} seleccionados)
                   </button>
                 </div>
-                <div class="offset-3 col-3" style="text-align: center; font-size: xx-large">
+                <div class="col-4" style="text-align: center; font-size: xx-large">
                   Proveedores
                 </div>
-                <div class="col-3" style="text-align: right; font-size: xx-large">
+                <div class="col-4" style="text-align: right; font-size: xx-large">
                   <button class="btn btn-primary btn-sm" style="font-size: large" @click="provider.modalOn = true">
                     Agregar proveedor
                   </button>
@@ -137,16 +138,18 @@
         </div>
       </template>
       <template slot="footer">
-
         <button class="btn btn-primary" @click="cancelInvitation()">
-          Cancelar
+          {{invited.goBackMessage}}
         </button>
+        <clip-loader :loading="invited.confirmationLoading" color="#5D8EF9"/>
         <button class="btn btn-primary btn-fill" v-if="invited.acceptButton" @click="acceptInvitation()">
           Aceptar
         </button>
         <button class="btn btn-primary btn-fill" v-if="invited.confirmButton" @click="confirmInvitation()">
           Confirmar
         </button>
+        <div class="alert alert-success hide" v-if="invited.successMessage">Invitaciones enviadas con éxito</div>
+        <!--TODO: Cuadro de confirmacion se ve desalineado con los botones-->
       </template>
     </modal>
 
@@ -319,15 +322,20 @@
         this.invited.confirmButton = false
         this.invited.confirmation = false
         this.invited.selectBidding = true
+        this.invited.goBackMessage = "Cancelar"
+        this.invited.successMessage = false
       },
 
-      confirmInvitation: function() {
-        this.invited.modalOn = false
-        this.invited.selectedBidding = ""
-        this.invited.acceptButton = true
+      confirmInvitation: async function() {
         this.invited.confirmButton = false
-        this.invited.confirmation = false
-        this.invited.selectBidding = true
+        this.invited.confirmationLoading = true
+        this.invited.goBackMessage = "Volver"
+        usersApi.invitationsToBidding(this.invited.data, this.invited.selectedBidding)
+          .then(function () {
+            this.invited.confirmationLoading = false
+            this.invited.successMessage = true
+          }.bind(this))
+
       },
 
       addProviderToPopup: function (provider) {
@@ -396,7 +404,11 @@
           biddings: ['Licitacion1','Licitacion2','Licitacion3'],
           selectedBidding: "",
           acceptButton: true,
-          confirmButton: false
+          confirmButton: false,
+          inviteToBiddingLoading: false,
+          confirmationLoading: false,
+          successMessage: false,
+          goBackMessage: "Cancelar"
         },
         detailsPopup: {
           show: false,
