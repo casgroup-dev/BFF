@@ -3,28 +3,33 @@
     <div class="container-fluid">
       <form>
         <div class="form-group">
-          <label>Nombre Licitacion</label>
-          <label class="error" v-if="bidding.name.error">{{bidding.name.errorMessage}}</label>
+          <label>Nombre Licitacion</label><br style="margin: 0.5%;">
+          <small><label class="error" style="color: red;"
+                        v-if="bidding.name.error">{{bidding.name.errorMessage}}</label></small>
           <fg-input placeholder="Nombre Licitación" v-model="bidding.name.payload"></fg-input>
         </div>
         <div class="form-group">
-          <label>Empresa Autora</label>
-          <label class="error" v-if="bidding.company.error">{{bidding.company.errorMessage}}</label>
+          <label>Empresa Autora</label><br style="margin: 0.5%;">
+          <small><label class="error" style="color: red;"
+                        v-if="bidding.company.error">{{bidding.company.errorMessage}}</label></small>
           <fg-input placeholder="CasGroup" v-model="bidding.company.payload"></fg-input>
         </div>
         <div class="form-group">
-          <label>Bases</label>
-          <label class="error" v-if="bidding.bases.error">{{bidding.bases.errorMessage}}</label>
+          <label>Bases</label><br style="margin: 0.5%;">
+          <small><label class="error" style="color: red;"
+                        v-if="bidding.bases.error">{{bidding.bases.errorMessage}}</label></small>
           <textarea class="form-control" v-model="bidding.bases.payload" style="height: 150px;"></textarea>
           <small id="basesHelpBlock" class="form-text text-muted">
             Descripción de bases PENDIENTE
           </small>
         </div>
-        <div class="form-group col-md-2"> <!-- PENDIENTE corregir alineación -->
+        <div class="form-group col-2"> <!-- PENDIENTE corregir alineación -->
           <label>Numero de Usuarios Asociados</label>
           <fg-input v-model="bidding.users.amount"></fg-input>
         </div>
         <div class="form-group">
+          <small><label class="error" style="color: red;"
+                        v-if="bidding.users.error">{{bidding.users.errorMessage}}</label></small>
           <div class="form-row" v-for="user in usersAndRoles">
             <div class="form-group col-md-4">
               <fg-input placeholder="Usuario" v-model="user.name"></fg-input>
@@ -39,11 +44,13 @@
             </div>
           </div>
         </div>
-        <div class="form-group col-md-2"> <!-- PENDIENTE corregir alineación -->
-          <label>Numero de Usuarios Asociados</label>
+        <div class="form-group col-2"> <!-- PENDIENTE corregir alineación -->
+          <label>Numero de Periodos</label>
           <fg-input v-model="periodos.amount"></fg-input>
         </div>
         <div class="form-group">
+          <small><label class="error" style="color: red;"
+                        v-if="periodos.error">{{periodos.errorMessage}}</label></small>
           <table>
             <td v-for="period in periodAvailables">
               <label :for="period.label">{{period.title}}</label>
@@ -88,28 +95,30 @@
         dateFormat: 'D MMM',
         periodos: {
           amount: 3,
-          payload: []
+          payload: [],
+          error: false,
+          errorMessage: ''
         },
         bidding: {
           name: {
             payload: '',
-            error: '',
+            error: false,
             errorMessage: ''
           },
           company: {
             payload: '',
-            error: '',
+            error: false,
             errorMessage: ''
           },
           bases: {
             payload: '',
-            error: '',
+            error: false,
             errorMessage: ''
           },
           users: {
             amount: 1,
             payload: [],
-            error: '',
+            error: false,
             errorMessage: ''
           }
         }
@@ -126,18 +135,27 @@
         }
         return formattedDates
       },
-      //
-      // name: {type: String, required: true, unique: true},
-      // company: {type: String, required: true},
-      // users: [{
-      //   userId: {type: String},
-      //   userRole: {type: String}
-      // }],
-      // // documents: [],
-      // bases: {type: String},
-      // periods: [{type: Date}]
-      //
       addBidding () {
+        if (!this.periodos.payload || !this.periodos.payload[0].dateOne || !this.periodos.payload[0].dateTwo) {
+          this.periodos.error = true
+          this.periodos.errorMessage = 'Debe definir las fechas de la Licitación'
+        } else this.periodos.error = false
+        if (!this.bidding.company.payload) {
+          this.bidding.company.error = true
+          this.bidding.company.errorMessage = 'Debe asignar la Licitacion a una empresa'
+        } else this.bidding.company.error = false
+        if (!this.bidding.name.payload) {
+          this.bidding.name.error = true
+          this.bidding.name.errorMessage = 'Debe asignar un nombre a la Licitación'
+        } else this.bidding.name.error = false
+        if (!this.bidding.bases.payload) {
+          this.bidding.bases.error = true
+          this.bidding.bases.errorMessage = 'Debe describir las bases de la Licitación'
+        } else this.bidding.bases.error = false
+        if (!this.bidding.users.payload || !this.bidding.users.payload[0].name) {
+          this.bidding.users.error = true
+          this.bidding.users.errorMessage = 'Debe designar al menos un encargado a la Licitación'
+        } else this.bidding.users.error = false
         const self = this
         const bidding = {
           name: this.bidding.name,
@@ -157,6 +175,7 @@
             return periods
           })()
         }
+      //  TODO call api
       }
     },
     computed: {
