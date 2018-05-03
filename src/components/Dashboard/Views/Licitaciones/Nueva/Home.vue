@@ -30,7 +30,7 @@
               <fg-input placeholder="Usuario" v-model="user.name"></fg-input>
             </div>
             <div class="form-group col-md-4">
-              <select v-model="user.role" >
+              <select v-model="user.role">
                 <option disabled value="">Seleccione el Rol</option>
                 <option>A</option>
                 <option>B</option>
@@ -39,8 +39,8 @@
             </div>
           </div>
         </div>
-        <div class="form-group">
-          <label>Numero de Periodos</label>
+        <div class="form-group col-md-2"> <!-- PENDIENTE corregir alineación -->
+          <label>Numero de Usuarios Asociados</label>
           <fg-input v-model="periodos.amount"></fg-input>
         </div>
         <div class="form-group">
@@ -61,7 +61,8 @@
                     :date-one="period.dateOne"
                     :date-two="period.dateTwo"
                     @date-one-selected="val => { period.dateOne = val }"
-                    @date-two-selected="val => { period.dateTwo = val }"></AirbnbStyleDatepicker>
+                    @date-two-selected="val => { period.dateTwo = val }">
+                  </AirbnbStyleDatepicker>
                 </div>
               </div>
             </td>
@@ -125,8 +126,37 @@
         }
         return formattedDates
       },
+      //
+      // name: {type: String, required: true, unique: true},
+      // company: {type: String, required: true},
+      // users: [{
+      //   userId: {type: String},
+      //   userRole: {type: String}
+      // }],
+      // // documents: [],
+      // bases: {type: String},
+      // periods: [{type: Date}]
+      //
       addBidding () {
-        console.log(this.bidding)
+        const self = this
+        const bidding = {
+          name: this.bidding.name,
+          company: this.bidding.company,
+          users: this.bidding.users,
+          bases: this.bidding.bases,
+          periods: (function () {
+            let periods = []
+            for (let i = 0; i < self.periodos.amount; ++i) {
+              const dateTable = self.periodos.payload[i]
+              let period = {
+                dateOne: dateTable.dateOne,
+                dateTwo: dateTable.dateTwo
+              }
+              periods.push(period)
+            }
+            return periods
+          })()
+        }
       }
     },
     computed: {
@@ -134,7 +164,6 @@
         let users = []
         for (let i = 1; i <= this.bidding.users.amount; ++i) {
           let user = {
-            id: i,
             name: '',
             role: ''
           }
