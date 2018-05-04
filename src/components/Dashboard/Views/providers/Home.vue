@@ -17,14 +17,7 @@
               </div>
             </template>
             <template>
-              <div class="row">
-                <!--<fg-input class="col-6" v-model="search" placeholder="Industria" addon-right-icon="nc-icon nc-zoom-split">
-                </fg-input>-->
-                <div class="col-6" style="margin: 5px 0px 15px 15px; padding: 10px 0px 10px 0px; border: 2px solid; border-radius: 4px">
-                  <div class="col-1 nc-icon nc-zoom-split"></div>
-                  <input class="col-10" v-model="search" placeholder="Buscar por industria" style="border: hidden">
-                </div>
-              </div>
+              <search-bar v-model="search" placeholder="Buscar por industria"></search-bar>
             </template>
             <template>
             <div class="table-responsive">
@@ -122,10 +115,11 @@
   import LTable from 'src/components/UIComponents/Table.vue'
   import Card from 'src/components/UIComponents/Cards/Card.vue'
   import Modal from 'src/components/UIComponents/Modal/Modal.vue'
+  import SearchBar from 'src/components/UIComponents/Inputs/SearchBar.vue'
   import ClipLoader from 'vue-spinner/src/ClipLoader'
   import usersApi from 'src/apis/users'
   import VueNotify from 'vue-notifyjs'
-  import Icons from "../Icons";
+  import Icons from '../Icons'
 
   const tableColumns = [
     'Nombre fantasia',
@@ -181,7 +175,8 @@
       Card,
       Modal,
       ClipLoader,
-      VueNotify
+      VueNotify,
+      SearchBar
     },
     methods: {
       addProvider: function () {
