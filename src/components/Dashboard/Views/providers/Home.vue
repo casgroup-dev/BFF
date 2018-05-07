@@ -125,7 +125,7 @@
           <slot name="body" v-if="invited.confirmation">
             <label> Proveedores invitados: </label>
             <li v-for="provider in invited.data">
-              {{ provider.attributes.businessName }}
+              {{ provider.attributes.businessName }} <br> {{provider.attributes.usersEmail}}
             </li>
           </slot>
         </div>
