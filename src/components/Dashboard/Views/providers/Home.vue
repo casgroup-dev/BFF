@@ -60,13 +60,6 @@
                         </button>
                       </td>
                     </tr>
-                    <transition name="fade" mode="out-in" appear>
-                      <tr v-if="provider.show">
-                      <td v-for="(item, key, index) in table.columns.details">
-                        {{table.columns.details[key]}}: {{provider.details[key]}}
-                      </td>
-                      </tr>
-                    </transition>
                   </template>
                   </tbody>
                 </table>
