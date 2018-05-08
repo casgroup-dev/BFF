@@ -20,86 +20,75 @@
                     </button>
                   </transition>
                   <!-- ADD PROVIDER -->
-                  <button class="btn btn-primary" @click="provider.modalOn = true">
-                    Agregar proveedor
-                  </button>
+                  <button class="btn btn-primary" @click="provider.modalOn = true">Agregar proveedor</button>
                 </div>
               </div>
             </template>
-            <template>
-              <div class="row">
-                <fg-input class="col-6" v-model="search" placeholder="Industria"
-                          addon-right-icon="nc-icon nc-zoom-split">
-                </fg-input>
-              </div>
-            </template>
-            <template>
-              <div class="table-responsive">
-                <table class="table table-hover table-striped">
-                  <thead>
-                  <th v-for="attr in table.columns.attributes">
-                    <tr scope="col">{{attr}}</tr>
-                  </th>
-                  </thead>
-                  <tbody>
-                  <template v-for="provider in filteredProviders">
-                    <tr>
-                      <td v-for="attr in provider.attributes">
-                        <a
-                          style="font-weight:normal; color:#262626;">
-                          {{attr}}
-                        </a>
-                      </td>
-                      <td>
-                        <i class="nc-icon nc-check-2" v-if="provider.active"></i>
-                        <i class="nc-icon nc-simple-remove" v-else></i>
-                      </td>
-                      <td>
-                        <input type="checkbox" id="invited_checkbox" v-model=provider.invited
-                               v-on:click="checkboxClicked(provider)">
-                      </td>
-                      <td>
-                        <button class="btn btn-primary" style="font-size: large"
-                                v-on:click="addProviderToPopup(provider)">
-                          Ver Detalles
-                        </button>
-                      </td>
-                    </tr>
-                  </template>
-                  </tbody>
-                </table>
-                <div class="row">
-                  <div class="col-12" style="text-align: center">
-                    <button class="btn btn-center btn-info btn-round">Cargar más</button>
-                  </div>
-                </div>
-              </div>
-            </template>
+            <!-- SEARCH BAR -->
+            <div class="row">
+              <fg-input class="col-6" v-model="search" placeholder="Industria"
+                        addon-right-icon="nc-icon nc-zoom-split"/>
+            </div>
+            <!-- TABLE WITH PROVIDERS -->
+            <div class="table-responsive">
+              <table class="table table-hover table-striped">
+                <!-- HEADERS -->
+                <thead class="thead-light">
+                <tr>
+                  <th v-for="attr in table.columns.attributes" :key="attr" scope="col">{{attr}}</th>
+                </tr>
+                </thead>
+                <!-- BODY -->
+                <tbody>
+                <tr v-for="(provider, index) in filteredProviders" :key="index">
+                  <!-- PROVIDER ATTRIBUTES -->
+                  <td v-for="(attr, index) in provider.attributes" :key="index">
+                    <a style="font-weight:normal; color:#262626;">{{attr}}</a>
+                  </td>
+                  <!-- ACTIVE -->
+                  <td>
+                    <i class="nc-icon nc-check-2" v-if="provider.active"></i>
+                    <i class="nc-icon nc-simple-remove" v-else></i>
+                  </td>
+                  <!-- SELECT -->
+                  <td>
+                    <input type="checkbox" id="invited_checkbox" v-model=provider.invited
+                           v-on:click="checkboxClicked(provider)">
+                  </td>
+                  <!-- DETAILS -->
+                  <td>
+                    <button class="btn btn-default btn-sm"
+                            v-on:click="addProviderToPopup(provider)">
+                      Más información
+                    </button>
+                  </td>
+                </tr>
+                </tbody>
+              </table>
+            </div>
           </card>
         </div>
       </div>
     </div>
-
+    <!-- NOTIFICATIONS -->
     <div v-if="provider.success" style="text-align: center">
-      <notifications></notifications>
+      <notifications/>
     </div>
-
-
+    <!-- MODALS -->
     <modal v-if="provider.modalOn">
       <template slot="header">
         <label>Registre a un nuevo proveedor</label>
       </template>
       <template slot="body">
         <label class="error" v-if="provider.error">{{provider.errorMessage}}</label>
-        <label class="error" v-if="provider.name.error">{{provider.name.errorMessage}}</label>
-        <fg-input placeholder="Nombre Proveedor" v-model="provider.name.payload"></fg-input>
         <label class="error" v-if="provider.mail.error">{{provider.mail.errorMessage}}</label>
-        <fg-input placeholder="proveedor@suempresa.cl" v-model="provider.mail.payload"></fg-input>
+        <fg-input placeholder="proveedor@suempresa.cl" v-model="provider.mail.payload"/>
+        <label class="error" v-if="provider.name.error">{{provider.name.errorMessage}}</label>
+        <fg-input placeholder="Nombre Proveedor" v-model="provider.name.payload"/>
         <label class="error" v-if="provider.rut.error">{{provider.rut.errorMessage}}</label>
-        <fg-input placeholder="RUT Empresa Proveedor" v-model="provider.rut.payload"></fg-input>
+        <fg-input placeholder="RUT Empresa Proveedor" v-model="provider.rut.payload"/>
       </template>
       <template slot="footer">
-
         <clip-loader :loading="provider.loading" color="#5D8EF9"/>
         <button class="btn btn-primary" v-if="!provider.loading" @click="addProvider">
           Autorizar proveedor
@@ -450,6 +439,10 @@
 <style scoped>
   label.error {
     color: #ff0000
+  }
+
+  table th {
+    font-weight: bold;
   }
 
 </style>
