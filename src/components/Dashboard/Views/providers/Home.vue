@@ -92,7 +92,12 @@
     </modal>
     <!-- SELECTED PROVIDERS MODAL -->
     <modal v-if="selectedModal.show">
-      <h4 slot="header" class="no-margin">Contacto proveedores seleccionados</h4>
+      <template slot="header">
+        <h4 class="no-margin">Contacto proveedores seleccionados</h4>
+        <button type="button" class="btn btn-round btn-default btn-sm" @click="selectedModal.show = false">
+          <span class="btn-label"><i class="fa fa-times"></i></span> Cerrar
+        </button>
+      </template>
       <template slot="body">
         <ul>
           <li v-for="(provider, index) in providersSelected" :key="index">
@@ -103,7 +108,6 @@
         </ul>
       </template>
       <template slot="footer">
-        <button class="btn btn-default" @click="selectedModal.show = false">Cancelar</button>
         <!-- COPY TO CLIPBOARD: Hidden input to simulate select -->
         <input type=hidden id="hiddenInput"/>
         <button class="btn btn-primary"
@@ -111,6 +115,8 @@
                 @click="copySelectedEmailsToClipboard">
           Copiar emails
         </button>
+        <a class="btn btn-warning" target="_blank" :href="`mailto:${selectedProvidersEmails.join(',')}`">
+          Enviar email</a>
       </template>
     </modal>
     <!-- PROVIDER DETAILS -->
@@ -309,12 +315,10 @@
        * Removes the hidden value of the hidden input, set the value to the emails selected, select the value,
        * copy and hide again the input.
        */
-      copySelectedEmailsToClipboard: function () {
+      copySelectedEmailsToClipboard () {
         const hiddenInput = document.getElementById('hiddenInput')
         hiddenInput.setAttribute('type', 'text')
-        hiddenInput.value = this.providersSelected
-          .map(provider => provider.attributes.usersEmail)
-          .filter(email => email).join(', ')
+        hiddenInput.value = this.selectedProvidersEmails.join(', ')
         hiddenInput.select()
         document.execCommand('copy')
         hiddenInput.setAttribute('type', 'hidden')
@@ -345,6 +349,11 @@
       },
       providersSelected: function () {
         return this.filteredProviders.filter(provider => provider.selected)
+      },
+      selectedProvidersEmails () {
+        return this.providersSelected
+          .map(provider => provider.attributes.usersEmail)
+          .filter(email => email)
       }
     }
   }
