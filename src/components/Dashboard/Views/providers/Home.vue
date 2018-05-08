@@ -337,6 +337,10 @@
       const self = this
       usersApi.getCompanies().then(data => {
         self.table.data = self.companiesToTable(data)
+      }).catch(err => {
+        console.error(err)
+        /* The user is not authorized to access here */
+        self.$router.push('/')
       })
     },
     /* COMPUTED DATA */
