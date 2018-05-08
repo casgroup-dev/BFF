@@ -23,11 +23,7 @@
                 </div>
               </div>
             </template>
-            <!-- SEARCH BAR -->
-            <div class="row">
-              <fg-input class="col-6" v-model="search" placeholder="Industria"
-                        addon-right-icon="nc-icon nc-zoom-split"/>
-            </div>
+            <search-bar v-model="search" placeholder="Buscar por industria" style="margin-bottom: 10px;"></search-bar>
             <!-- TABLE WITH PROVIDERS -->
             <div class="table-responsive">
               <table class="table table-hover table-striped">
@@ -142,19 +138,23 @@
   import LTable from 'src/components/UIComponents/Table.vue'
   import Card from 'src/components/UIComponents/Cards/Card.vue'
   import Modal from 'src/components/UIComponents/Modal/Modal.vue'
+  import SearchBar from 'src/components/UIComponents/Inputs/SearchBar.vue'
   import ClipLoader from 'vue-spinner/src/ClipLoader'
   import usersApi from 'src/apis/users'
   import VueNotify from 'vue-notifyjs'
   import PCheckbox from 'src/components/UIComponents/Inputs/Checkbox.vue'
+  import Icons from '../Icons'
 
   export default {
     components: {
+      Icons,
       LTable,
       Card,
       Modal,
       ClipLoader,
       VueNotify,
-      PCheckbox
+      PCheckbox,
+      SearchBar
     },
     /* DATA OF THE COMPONENT */
     data: function () {
