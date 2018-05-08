@@ -75,6 +75,7 @@
       <notifications/>
     </div>
     <!-- MODALS -->
+    <!-- ADD PROVIDER -->
     <modal v-if="provider.modalOn">
       <template slot="header">
         <label>Registre a un nuevo proveedor</label>
@@ -98,7 +99,7 @@
         </button>
       </template>
     </modal>
-
+    <!-- INVITATION -->
     <modal v-if="invited.modalOn">
       <template slot="header">
         <label>Invitar a Licitación</label>
@@ -139,8 +140,7 @@
         <!--TODO: Cuadro de confirmacion se ve desalineado con los botones-->
       </template>
     </modal>
-
-
+    <!-- PROVIDER DETAILS -->
     <modal v-if="detailsPopup.show">
       <template slot="header">
         <label>Detalles del proveedor</label>
@@ -173,26 +173,6 @@
   import usersApi from 'src/apis/users'
   import VueNotify from 'vue-notifyjs'
 
-  const tableColumns = {
-    'attributes': [
-      'Razón social',
-      'Mail Admin Proveedor',
-      'Telefono Admin Proveedor',
-      'Active',
-      'Invitar',
-      'Details'
-    ],
-    'details': {
-      'industries': 'Rubros',
-      'rut': 'RUT',
-      'users': 'Usuarios',
-      'legalRepresentative': 'Representante Legal',
-      'legalRepEmail': 'Email Representante Legal',
-      'legalRepPhone': 'Telefono Representante Legal',
-      'fantasyName': 'Fantasy Name'
-    }
-  }
-
   export default {
     components: {
       LTable,
@@ -201,163 +181,30 @@
       ClipLoader,
       VueNotify
     },
-    methods: {
-      addProvider: function () {
-        if (!this.provider.mail.payload) {
-          this.provider.mail.error = true
-          this.provider.mail.errorMessage = 'El email es obligatorio'
-        } else {
-          const self = this
-          self.provider.loading = true
-          usersApi.registerProvider(
-            this.provider.name.payload,
-            this.provider.rut.payload,
-            this.provider.mail.payload
-          )
-            .then(function () {
-              self.cancelModal()
-              self.provider.success = true
-              self.addNotification()
-            })
-            .catch(function (err) {
-              // TODO: Manage messages per type of error
-              self.provider.error = true
-              self.provider.errorMessage = 'Este proveedor ya existe en el sistema'
-            })
-            .then(function () {
-              self.provider.loading = false
-              self.provider.success = true
-            })
-        }
-      },
-
-      checkboxClicked: function (row) {
-        if (row.invited == true) {
-          var index = this.invited.data.indexOf(row)
-          if (index > -1) {
-            this.invited.data.splice(index, 1)
-          }
-          row.invited = false
-        } else {
-          this.invited.data.push(row)
-          row.invited = true
-        }
-
-      },
-
-      inviteToBidding: function () {
-        if (this.invited.data.length == 0) {
-          //TODO: mensaje de Error
-        } else {
-          this.invited.modalOn = true
-        }
-      },
-
-      companiesToTable: function (companies) {
-        return companies.map(company => {
-          return {
-            'attributes': {
-              'businessName': company['businessName'],
-              'usersEmail': company['users'].filter(user => {
-                return user.role === 'companyAdmin'
-              }).map(user => user.email).join(', '),
-              'usersPhone': company['users'].filter(user => {
-                return user.role === 'companyAdmin'
-              }).map(user => user.phone).join(', ')
-            },
-            'details': {
-              'industries': company['industries'].join(', '),
-              'rut': company['rut'],
-              'users': company['users'].map(user => user.name + ' (' + user.role + ') ').join(', '),
-              'legalRepresentative': company['legalRepresentative'],
-              'legalRepEmail': company['legalRepEmail'],
-              'legalRepPhone': company['legalRepPhone'],
-              'fantasyName': company['fantasyName'],
-            },
-            'active': true,
-            'show': false
-          }
-        })
-      },
-
-      cancelModal: function () {
-        this.provider.modalOn = false
-        this.provider.name.payload =
-          this.provider.rut.payload =
-            this.provider.mail.payload = ''
-        this.provider.error =
-          this.provider.name.error =
-            this.provider.rut.error =
-              this.provider.mail.error = false
-      },
-
-      acceptInvitation: function () {
-        if (this.invited.selectedBidding === '') {
-          //TODO: mensaje: "elegir licitacion"
-        } else {
-          this.invited.acceptButton = false
-          this.invited.confirmButton = true
-          this.invited.selectBidding = false
-          this.invited.confirmation = true
-        }
-      },
-
-      cancelInvitation: function () {
-        this.invited.modalOn = false
-        this.invited.selectedBidding = ''
-        this.invited.acceptButton = true
-        this.invited.confirmButton = false
-        this.invited.confirmation = false
-        this.invited.selectBidding = true
-        this.invited.goBackMessage = 'Cancelar'
-        this.invited.successMessage = false
-      },
-
-      confirmInvitation: async function () {
-        this.invited.confirmButton = false
-        this.invited.confirmationLoading = true
-        this.invited.goBackMessage = 'Volver'
-        usersApi.invitationsToBidding(this.invited.data, this.invited.selectedBidding)
-          .then(function () {
-            this.invited.confirmationLoading = false
-            this.invited.successMessage = true
-          }.bind(this))
-
-      },
-
-      addProviderToPopup: function (provider) {
-        this.detailsPopup.show = true
-        this.detailsPopup.data.businessName = provider.attributes.businessName
-        this.detailsPopup.data.usersEmail = provider.attributes.usersEmail
-        this.detailsPopup.data.usersPhone = provider.attributes.usersPhone
-        this.detailsPopup.data.legalRepresentative = provider.details.legalRepresentative
-        this.detailsPopup.data.legalRepEmail = provider.details.legalRepEmail
-        this.detailsPopup.data.legalRepPhone = provider.details.legalRepPhone
-        this.detailsPopup.data.industries = provider.details.industries
-        this.detailsPopup.data.users = provider.details.users
-        this.detailsPopup.data.fantasyName = provider.details.fantasyName
-        this.detailsPopup.data.rut = provider.details.rut
-      },
-
-      cancelPopup: function () {
-        this.detailsPopup.show = false
-      },
-
-      addNotification: function () {
-        this.$notify({
-          message: 'Proveedor autorizado exitosamente!',
-          horizontalAlign: 'center',
-          verticalAlign: 'top',
-          type: 'success'
-        })
-      }
-
-    },
+    /* DATA OF THE COMPONENT */
     data: function () {
       return {
         search: '',
         table: {
-          columns: tableColumns,
+          columns: {
+            attributes: [
+              'Razón social',
+              'Mail Admin Proveedor',
+              'Telefono Admin Proveedor',
+              'Activo',
+              'Invitar',
+              'Detalles'
+            ],
+            details: {
+              industries: 'Rubros',
+              rut: 'RUT',
+              users: 'Usuarios',
+              legalRepresentative: 'Representante Legal',
+              legalRepEmail: 'Email Representante Legal',
+              legalRepPhone: 'Telefono Representante Legal',
+              fantasyName: 'Fantasy Name'
+            }
+          },
           data: []
         },
         provider: {
@@ -376,8 +223,6 @@
             error: false,
             errorMessage: ''
           },
-          /* error: false,
-          errorMessage: '', */
           modalOn: false,
           loading: false,
           success: false,
@@ -414,22 +259,157 @@
         }
       }
     },
+    /* METHODS OF THE COMPONENTS */
+    methods: {
+      /**
+       * Adds a provider to give him permission to register on the platform.
+       */
+      addProvider: function () {
+        if (!this.provider.mail.payload) {
+          this.provider.mail.error = true
+          this.provider.mail.errorMessage = 'El email es obligatorio'
+        } else {
+          const self = this
+          self.provider.loading = true
+          usersApi.registerProvider(this.provider.name.payload, this.provider.rut.payload, this.provider.mail.payload)
+            .then(function () {
+              self.cancelModal()
+              self.provider.success = true
+              self.addNotification()
+            })
+            .catch(function () {
+              // TODO: Manage messages per type of error
+              self.provider.error = true
+              self.provider.errorMessage = 'Este proveedor ya existe en el sistema'
+            })
+            .then(function () {
+              self.provider.loading = false
+            })
+        }
+      },
+      /**
+       * Invite or not the provider.
+       * @param {Object} provider
+       */
+      checkboxClicked: function (provider) {
+        if (provider.invited === true) {
+          const index = this.invited.data.indexOf(provider)
+          if (index > -1) this.invited.data.splice(index, 1)
+          provider.invited = false
+        } else {
+          this.invited.data.push(provider)
+          provider.invited = true
+        }
+      },
+      inviteToBidding: function () {
+        if (this.invited.data.length === 0) {
+          // TODO: mensaje de Error
+        } else {
+          this.invited.modalOn = true
+        }
+      },
+      companiesToTable: function (companies) {
+        return companies.map(company => {
+          return {
+            attributes: {
+              businessName: company['businessName'],
+              usersEmail: company['users'].filter(user => {
+                return user.role === 'companyAdmin'
+              }).map(user => user.email).join(', '),
+              usersPhone: company['users'].filter(user => {
+                return user.role === 'companyAdmin'
+              }).map(user => user.phone).join(', ')
+            },
+            details: {
+              industries: company['industries'].join(', '),
+              rut: company['rut'],
+              users: company['users'].map(user => user.name + ' (' + user.role + ') ').join(', '),
+              legalRepresentative: company['legalRepresentative'],
+              legalRepEmail: company['legalRepEmail'],
+              legalRepPhone: company['legalRepPhone'],
+              fantasyName: company['fantasyName']
+            },
+            active: true,
+            show: false
+          }
+        })
+      },
+      cancelModal: function () {
+        this.provider.modalOn = false
+        this.provider.name.payload = this.provider.rut.payload = this.provider.mail.payload = ''
+        this.provider.error = this.provider.name.error = this.provider.rut.error = this.provider.mail.error = false
+      },
+      acceptInvitation: function () {
+        if (this.invited.selectedBidding === '') {
+          // TODO: mensaje: "elegir licitacion"
+        } else {
+          this.invited.acceptButton = false
+          this.invited.confirmButton = true
+          this.invited.selectBidding = false
+          this.invited.confirmation = true
+        }
+      },
+      cancelInvitation: function () {
+        this.invited.modalOn = false
+        this.invited.selectedBidding = ''
+        this.invited.acceptButton = true
+        this.invited.confirmButton = false
+        this.invited.confirmation = false
+        this.invited.selectBidding = true
+        this.invited.goBackMessage = 'Cancelar'
+        this.invited.successMessage = false
+      },
+      confirmInvitation: async function () {
+        this.invited.confirmButton = false
+        this.invited.confirmationLoading = true
+        this.invited.goBackMessage = 'Volver'
+        usersApi.invitationsToBidding(this.invited.data, this.invited.selectedBidding)
+          .then(function () {
+            this.invited.confirmationLoading = false
+            this.invited.successMessage = true
+          }.bind(this))
+      },
+      addProviderToPopup: function (provider) {
+        this.detailsPopup.show = true
+        this.detailsPopup.data.businessName = provider.attributes.businessName
+        this.detailsPopup.data.usersEmail = provider.attributes.usersEmail
+        this.detailsPopup.data.usersPhone = provider.attributes.usersPhone
+        this.detailsPopup.data.legalRepresentative = provider.details.legalRepresentative
+        this.detailsPopup.data.legalRepEmail = provider.details.legalRepEmail
+        this.detailsPopup.data.legalRepPhone = provider.details.legalRepPhone
+        this.detailsPopup.data.industries = provider.details.industries
+        this.detailsPopup.data.users = provider.details.users
+        this.detailsPopup.data.fantasyName = provider.details.fantasyName
+        this.detailsPopup.data.rut = provider.details.rut
+      },
+      cancelPopup: function () {
+        this.detailsPopup.show = false
+      },
+      addNotification: function () {
+        this.$notify({
+          message: 'Proveedor autorizado exitosamente!',
+          horizontalAlign: 'center',
+          verticalAlign: 'top',
+          type: 'success'
+        })
+      }
+    },
+    /* HOOKS */
     created: function () {
       const self = this
       usersApi.getCompanies().then(data => {
-        const temp = data
-        self.table.data = self.companiesToTable(temp)
+        self.table.data = self.companiesToTable(data)
       })
     },
-    computed:
-      {
-        filteredProviders: function () {
-          var self = this
-          return this.table.data.filter(function (prov) {
-            return prov.details.industries.toLowerCase().includes(self.search.toLowerCase())
-          })
-        }
+    /* COMPUTED DATA */
+    computed: {
+      filteredProviders: function () {
+        const self = this
+        return this.table.data.filter(function (prov) {
+          return prov.details.industries.toLowerCase().includes(self.search.toLowerCase())
+        })
       }
+    }
   }
 
 </script>
