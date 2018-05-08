@@ -6,18 +6,21 @@
           <card>
             <template slot="header">
               <div class="row">
-                <div class="col-4" style="text-align: left; font-size: xx-large">
-                  <clip-loader :loading="invited.inviteToBiddingLoading" color="#5D8EF9"/>
-                  <button label="Hola!\nhola" class="btn btn-primary btn-lg btn-fill" style="font-size: large" @click="inviteToBidding()">
-                    Invitar a Licitación<br />
-                    ({{this.invited.data.length}} seleccionados)
-                  </button>
-                </div>
-                <div class="col-4" style="text-align: center; font-size: xx-large">
-                  Proveedores
-                </div>
+                <!-- TITLE -->
+                <div class="col-4 offset-4" style="text-align: center; font-size: xx-large">Proveedores</div>
+                <!-- BUTTONS -->
                 <div class="col-4" style="text-align: right; font-size: xx-large">
-                  <button class="btn btn-primary btn-sm" style="font-size: large" @click="provider.modalOn = true">
+                  <!-- INVITE -->
+                  <clip-loader :loading="invited.inviteToBiddingLoading" color="#5D8EF9"/>
+                  <transition name="fade" mode="out-in" appear>
+                    <button class="btn btn-success"
+                            v-if="invited.data.length"
+                            @click="inviteToBidding()" v-tooltip="`${invited.data.length} seleccionados`">
+                      Invitar a Licitación
+                    </button>
+                  </transition>
+                  <!-- ADD PROVIDER -->
+                  <button class="btn btn-primary" @click="provider.modalOn = true">
                     Agregar proveedor
                   </button>
                 </div>
@@ -52,10 +55,12 @@
                         <i class="nc-icon nc-simple-remove" v-else></i>
                       </td>
                       <td>
-                        <input type="checkbox" id="invited_checkbox" v-model=provider.invited v-on:click="checkboxClicked(provider)">
+                        <input type="checkbox" id="invited_checkbox" v-model=provider.invited
+                               v-on:click="checkboxClicked(provider)">
                       </td>
                       <td>
-                        <button class="btn btn-primary" style="font-size: large" v-on:click="addProviderToPopup(provider)">
+                        <button class="btn btn-primary" style="font-size: large"
+                                v-on:click="addProviderToPopup(provider)">
                           Ver Detalles
                         </button>
                       </td>
@@ -155,8 +160,8 @@
         <label><b>Razón Social:</b> {{detailsPopup.data.businessName}}<br></label>
         <label><b>Mail Admin Proveedor:</b> {{detailsPopup.data.usersEmail}}<br></label>
         <label><b>Teléfono Admin Proveedor:</b> {{detailsPopup.data.usersPhone}}<br></label>
-        <label><b>Rubros:</b> {{detailsPopup.data.industries}}<br /></label>
-        <label><b>RUT:</b> {{detailsPopup.data.rut}}<br /></label>
+        <label><b>Rubros:</b> {{detailsPopup.data.industries}}<br/></label>
+        <label><b>RUT:</b> {{detailsPopup.data.rut}}<br/></label>
         <label><b>Usuarios:</b> {{detailsPopup.data.users}}<br></label>
         <label><b>Representante Legal:</b> {{detailsPopup.data.legalRepresentative}}<br></label>
         <label><b>Email Representante Legal:</b> {{detailsPopup.data.legalRepEmail}}<br></label>
@@ -237,26 +242,26 @@
         }
       },
 
-      checkboxClicked: function(row) {
-        if (row.invited == true){
+      checkboxClicked: function (row) {
+        if (row.invited == true) {
           var index = this.invited.data.indexOf(row)
           if (index > -1) {
             this.invited.data.splice(index, 1)
           }
           row.invited = false
-        } else{
+        } else {
           this.invited.data.push(row)
           row.invited = true
         }
 
       },
 
-      inviteToBidding: function(){
-          if(this.invited.data.length == 0){
-            //TODO: mensaje de Error
-          } else{
-            this.invited.modalOn = true
-          }
+      inviteToBidding: function () {
+        if (this.invited.data.length == 0) {
+          //TODO: mensaje de Error
+        } else {
+          this.invited.modalOn = true
+        }
       },
 
       companiesToTable: function (companies) {
@@ -265,16 +270,16 @@
             'attributes': {
               'businessName': company['businessName'],
               'usersEmail': company['users'].filter(user => {
-                return user.role === "companyAdmin"
+                return user.role === 'companyAdmin'
               }).map(user => user.email).join(', '),
               'usersPhone': company['users'].filter(user => {
-                return user.role === "companyAdmin"
+                return user.role === 'companyAdmin'
               }).map(user => user.phone).join(', ')
             },
             'details': {
               'industries': company['industries'].join(', '),
               'rut': company['rut'],
-              'users': company['users'].map(user => user.name + " (" + user.role + ") ").join(', '),
+              'users': company['users'].map(user => user.name + ' (' + user.role + ') ').join(', '),
               'legalRepresentative': company['legalRepresentative'],
               'legalRepEmail': company['legalRepEmail'],
               'legalRepPhone': company['legalRepPhone'],
@@ -297,8 +302,8 @@
               this.provider.mail.error = false
       },
 
-      acceptInvitation: function() {
-        if (this.invited.selectedBidding === ""){
+      acceptInvitation: function () {
+        if (this.invited.selectedBidding === '') {
           //TODO: mensaje: "elegir licitacion"
         } else {
           this.invited.acceptButton = false
@@ -308,21 +313,21 @@
         }
       },
 
-      cancelInvitation: function() {
+      cancelInvitation: function () {
         this.invited.modalOn = false
-        this.invited.selectedBidding = ""
+        this.invited.selectedBidding = ''
         this.invited.acceptButton = true
         this.invited.confirmButton = false
         this.invited.confirmation = false
         this.invited.selectBidding = true
-        this.invited.goBackMessage = "Cancelar"
+        this.invited.goBackMessage = 'Cancelar'
         this.invited.successMessage = false
       },
 
-      confirmInvitation: async function() {
+      confirmInvitation: async function () {
         this.invited.confirmButton = false
         this.invited.confirmationLoading = true
-        this.invited.goBackMessage = "Volver"
+        this.invited.goBackMessage = 'Volver'
         usersApi.invitationsToBidding(this.invited.data, this.invited.selectedBidding)
           .then(function () {
             this.invited.confirmationLoading = false
@@ -394,14 +399,14 @@
           modalOn: false,
           selectBidding: true,
           confirmation: false,
-          biddings: ['Licitacion1','Licitacion2','Licitacion3'],
-          selectedBidding: "",
+          biddings: ['Licitacion1', 'Licitacion2', 'Licitacion3'],
+          selectedBidding: '',
           acceptButton: true,
           confirmButton: false,
           inviteToBiddingLoading: false,
           confirmationLoading: false,
           successMessage: false,
-          goBackMessage: "Cancelar"
+          goBackMessage: 'Cancelar'
         },
         detailsPopup: {
           show: false,
