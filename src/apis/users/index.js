@@ -1,7 +1,8 @@
 import axios from 'axios'
 
 const TOKEN_NAME = 'casGroupTokenAuth'
-const endpoint = 'http://localhost:3000/api'
+let endpoint = window.location.origin + '/api'
+if (endpoint.includes('localhost')) endpoint = 'http://localhost:3000/api'
 const routes = {
   companies: '/companies',
   login: '/auth/login',
@@ -98,7 +99,7 @@ function invitationsToBidding (providers, bidding) {
   return new Promise((resolve, reject) => {
     // Simulate an api call with a timeout of one seconds that resolves or reject the promise with equal probability.
     setTimeout(() => {
-        resolve()
+      resolve()
     }, 1000)
   })
 }
