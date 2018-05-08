@@ -11,11 +11,10 @@
                 <!-- BUTTONS -->
                 <div class="col-4" style="text-align: right; font-size: xx-large">
                   <!-- INVITE -->
-                  <clip-loader :loading="invited.inviteToBiddingLoading" color="#5D8EF9"/>
                   <transition name="fade" mode="out-in" appear>
                     <button class="btn btn-success"
-                            v-if="invited.data.length"
-                            @click="inviteToBidding()" v-tooltip="`${invited.data.length} seleccionados`">
+                            v-if="providersSelected.length"
+                            @click="selectedModal.show = true" v-tooltip="`${providersSelected.length} seleccionados`">
                       Invitar a Licitación
                     </button>
                   </transition>
@@ -35,7 +34,7 @@
                 <!-- HEADERS -->
                 <thead class="thead-light">
                 <tr>
-                  <th v-for="attr in table.columns.attributes" :key="attr" scope="col">{{attr}}</th>
+                  <th v-for="(attr, index) in table.columns.attributes" :key="index" scope="col">{{attr}}</th>
                 </tr>
                 </thead>
                 <!-- BODY -->
@@ -45,18 +44,12 @@
                   <td v-for="(attr, index) in provider.attributes" :key="index">
                     <a style="font-weight:normal; color:#262626;">{{attr}}</a>
                   </td>
-                  <!-- ACTIVE -->
-                  <td>
-                    <i class="nc-icon nc-check-2" v-if="provider.active"></i>
-                    <i class="nc-icon nc-simple-remove" v-else></i>
-                  </td>
                   <!-- SELECT -->
-                  <td>
-                    <input type="checkbox" id="invited_checkbox" v-model=provider.invited
-                           v-on:click="checkboxClicked(provider)">
+                  <td class="align-center">
+                    <p-checkbox v-model="provider.selected" style="margin-top: -7px;"/>
                   </td>
                   <!-- DETAILS -->
-                  <td>
+                  <td class="align-center">
                     <button class="btn btn-default btn-sm"
                             v-on:click="addProviderToPopup(provider)">
                       Más información
@@ -99,45 +92,27 @@
         </button>
       </template>
     </modal>
-    <!-- INVITATION -->
-    <modal v-if="invited.modalOn">
-      <template slot="header">
-        <label>Invitar a Licitación</label>
-      </template>
+    <!-- SELECTED PROVIDERS MODAL -->
+    <modal v-if="selectedModal.show">
+      <h4 slot="header" class="no-margin">Contacto proveedores seleccionados</h4>
       <template slot="body">
-        <div class="modal-body">
-          <slot name="body" v-if="invited.selectBidding">
-            <label>Seleccionar Licitación Activa:</label>
-            <select v-model="invited.selectedBidding">
-              <option v-for="option in invited.biddings" v-bind:value="option">
-                {{ option }}
-              </option>
-            </select>
-          </slot>
-          <slot>
-            <span>Seleccionado: {{ invited.selectedBidding }}</span>
-          </slot>
-          <slot name="body" v-if="invited.confirmation">
-            <label> Proveedores invitados: </label>
-            <li v-for="provider in invited.data">
-              {{ provider.attributes.businessName }} <br> {{provider.attributes.usersEmail}}
-            </li>
-          </slot>
-        </div>
+        <ul>
+          <li v-for="(provider, index) in providersSelected" :key="index">
+            <span v-if="provider.attributes.usersEmail">{{provider.attributes.businessName}}:
+              <span class="email">{{provider.attributes.usersEmail}}</span></span>
+            <span v-else>{{provider.attributes.businessName}} no cuenta con usuarios registrados.</span>
+          </li>
+        </ul>
       </template>
       <template slot="footer">
-        <button class="btn btn-primary" @click="cancelInvitation()">
-          {{invited.goBackMessage}}
+        <button class="btn btn-default" @click="selectedModal.show = false">Cancelar</button>
+        <!-- COPY TO CLIPBOARD: Hidden input to simulate select -->
+        <input type=hidden id="hiddenInput"/>
+        <button class="btn btn-primary"
+                v-if="providersSelected.length && providersSelected.filter(provider => provider.attributes.usersEmail.length).length"
+                @click="copySelectedEmailsToClipboard">
+          Copiar emails
         </button>
-        <clip-loader :loading="invited.confirmationLoading" color="#5D8EF9"/>
-        <button class="btn btn-primary btn-fill" v-if="invited.acceptButton" @click="acceptInvitation()">
-          Aceptar
-        </button>
-        <button class="btn btn-primary btn-fill" v-if="invited.confirmButton" @click="confirmInvitation()">
-          Confirmar
-        </button>
-        <div class="alert alert-success hide" v-if="invited.successMessage">Invitaciones enviadas con éxito</div>
-        <!--TODO: Cuadro de confirmacion se ve desalineado con los botones-->
       </template>
     </modal>
     <!-- PROVIDER DETAILS -->
@@ -170,6 +145,7 @@
   import ClipLoader from 'vue-spinner/src/ClipLoader'
   import usersApi from 'src/apis/users'
   import VueNotify from 'vue-notifyjs'
+  import PCheckbox from 'src/components/UIComponents/Inputs/Checkbox.vue'
 
   export default {
     components: {
@@ -177,7 +153,8 @@
       Card,
       Modal,
       ClipLoader,
-      VueNotify
+      VueNotify,
+      PCheckbox
     },
     /* DATA OF THE COMPONENT */
     data: function () {
@@ -189,8 +166,7 @@
               'Razón social',
               'Mail Admin Proveedor',
               'Telefono Admin Proveedor',
-              'Activo',
-              'Invitar',
+              '',
               ''
             ],
             details: {
@@ -226,19 +202,9 @@
           success: false,
           invited: false
         },
-        invited: {
-          data: [],
-          modalOn: false,
-          selectBidding: true,
-          confirmation: false,
-          biddings: ['Licitacion1', 'Licitacion2', 'Licitacion3'],
-          selectedBidding: '',
-          acceptButton: true,
-          confirmButton: false,
-          inviteToBiddingLoading: false,
-          confirmationLoading: false,
-          successMessage: false,
-          goBackMessage: 'Cancelar'
+        /* Modal to show the selected providers' contact information */
+        selectedModal: {
+          show: false
         },
         detailsPopup: {
           show: false,
@@ -285,35 +251,13 @@
             })
         }
       },
-      /**
-       * Invite or not the provider.
-       * @param {Object} provider
-       */
-      checkboxClicked: function (provider) {
-        if (provider.invited === true) {
-          const index = this.invited.data.indexOf(provider)
-          if (index > -1) this.invited.data.splice(index, 1)
-          provider.invited = false
-        } else {
-          this.invited.data.push(provider)
-          provider.invited = true
-        }
-      },
-      inviteToBidding: function () {
-        if (this.invited.data.length === 0) {
-          // TODO: mensaje de Error
-        } else {
-          this.invited.modalOn = true
-        }
-      },
       companiesToTable: function (companies) {
         return companies.map(company => {
           return {
             attributes: {
               businessName: company['businessName'],
-              usersEmail: company['users'].filter(user => {
-                return user.role === 'companyAdmin'
-              }).map(user => user.email).join(', '),
+              usersEmail: company['users']// .filter(user => user.role === 'companyAdmin')
+                .map(user => user.email).join(', '),
               usersPhone: company['users'].filter(user => {
                 return user.role === 'companyAdmin'
               }).map(user => user.phone).join(', ')
@@ -326,9 +270,7 @@
               legalRepEmail: company['legalRepEmail'],
               legalRepPhone: company['legalRepPhone'],
               fantasyName: company['fantasyName']
-            },
-            active: true,
-            show: false
+            }
           }
         })
       },
@@ -336,36 +278,6 @@
         this.provider.modalOn = false
         this.provider.name.payload = this.provider.rut.payload = this.provider.mail.payload = ''
         this.provider.error = this.provider.name.error = this.provider.rut.error = this.provider.mail.error = false
-      },
-      acceptInvitation: function () {
-        if (this.invited.selectedBidding === '') {
-          // TODO: mensaje: "elegir licitacion"
-        } else {
-          this.invited.acceptButton = false
-          this.invited.confirmButton = true
-          this.invited.selectBidding = false
-          this.invited.confirmation = true
-        }
-      },
-      cancelInvitation: function () {
-        this.invited.modalOn = false
-        this.invited.selectedBidding = ''
-        this.invited.acceptButton = true
-        this.invited.confirmButton = false
-        this.invited.confirmation = false
-        this.invited.selectBidding = true
-        this.invited.goBackMessage = 'Cancelar'
-        this.invited.successMessage = false
-      },
-      confirmInvitation: async function () {
-        this.invited.confirmButton = false
-        this.invited.confirmationLoading = true
-        this.invited.goBackMessage = 'Volver'
-        usersApi.invitationsToBidding(this.invited.data, this.invited.selectedBidding)
-          .then(function () {
-            this.invited.confirmationLoading = false
-            this.invited.successMessage = true
-          }.bind(this))
       },
       addProviderToPopup: function (provider) {
         this.detailsPopup.show = true
@@ -390,6 +302,28 @@
           verticalAlign: 'top',
           type: 'success'
         })
+      },
+      /**
+       * Removes the hidden value of the hidden input, set the value to the emails selected, select the value,
+       * copy and hide again the input.
+       */
+      copySelectedEmailsToClipboard: function () {
+        const hiddenInput = document.getElementById('hiddenInput')
+        hiddenInput.setAttribute('type', 'text')
+        hiddenInput.value = this.providersSelected
+          .map(provider => provider.attributes.usersEmail)
+          .filter(email => email).join(', ')
+        hiddenInput.select()
+        document.execCommand('copy')
+        hiddenInput.setAttribute('type', 'hidden')
+        window.getSelection().removeAllRanges()
+        this.selectedModal.show = false
+        this.$notify({
+          message: 'Emails copiados exitósamente',
+          horizontalAlign: 'center',
+          verticalAlign: 'top',
+          type: 'success'
+        })
       }
     },
     /* HOOKS */
@@ -406,6 +340,9 @@
         return this.table.data.filter(function (prov) {
           return prov.details.industries.toLowerCase().includes(self.search.toLowerCase())
         })
+      },
+      providersSelected: function () {
+        return this.filteredProviders.filter(provider => provider.selected)
       }
     }
   }
@@ -421,6 +358,21 @@
 
   table th {
     font-weight: bold;
+  }
+
+  .align-center {
+    text-align: center;
+  }
+
+  .no-margin {
+    margin: 0;
+  }
+
+  span.email {
+    background-color: #eff0ff;
+    color: #757791;
+    padding: 3px 7px;
+    border-radius: 3px;
   }
 
 </style>
