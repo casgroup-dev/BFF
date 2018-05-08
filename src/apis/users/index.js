@@ -1,7 +1,7 @@
 import axios from 'axios'
 
 const TOKEN_NAME = 'casGroupTokenAuth'
-const endpoint = 'http://localhost:3000'
+const endpoint = 'http://localhost:3000/api'
 const routes = {
   companies: '/companies',
   login: '/auth/login',
@@ -69,6 +69,37 @@ function isShadowUser (email) {
         console.error(err)
         return reject(generalError)
       })
+  })
+}
+
+function getCompanies () {
+  const generalError = new Error('Error de conexion.')
+  return new Promise((resolve, reject) => {
+    axios.get(getRouteWithToken(routes.companies))
+      .then(res => {
+        if (res.data.error && res.data.error.status === 403) {
+          return reject(new Error('No autorizado'))
+        } else if (res.data.error && res.data.error.status === 404) {
+          return reject(new Error('No encontrado'))
+        } else {
+          return resolve(res.data)
+        }
+      })
+      .catch(() => reject(generalError))
+  })
+}
+
+/**
+ *
+ * @param providers {Array} Providers that need to receive the invitation
+ * @param bidding {Object} The bidding that the providers will be invited to
+ */
+function invitationsToBidding (providers, bidding) {
+  return new Promise((resolve, reject) => {
+    // Simulate an api call with a timeout of one seconds that resolves or reject the promise with equal probability.
+    setTimeout(() => {
+        resolve()
+    }, 1000)
   })
 }
 
@@ -185,5 +216,7 @@ export default {
   login,
   logout,
   register,
-  registerProvider
+  registerProvider,
+  getCompanies,
+  invitationsToBidding
 }
