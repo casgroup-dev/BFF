@@ -67,12 +67,14 @@
     <!-- ADD PROVIDER -->
     <modal v-if="provider.modalOn">
       <template slot="header">
-        <label>Registre a un nuevo proveedor</label>
+        <h4 class="no-margin">Registre a un nuevo proveedor</h4>
       </template>
       <template slot="body">
         <label class="error" v-if="provider.error">{{provider.errorMessage}}</label>
+        <label class="gray">Por favor, ingrese el email del proveedor</label><br>
         <label class="error" v-if="provider.mail.error">{{provider.mail.errorMessage}}</label>
         <fg-input placeholder="proveedor@suempresa.cl" v-model="provider.mail.payload"/>
+        <label class="gray">Campos opcionales</label>
         <label class="error" v-if="provider.name.error">{{provider.name.errorMessage}}</label>
         <fg-input placeholder="Nombre Proveedor" v-model="provider.name.payload"/>
         <label class="error" v-if="provider.rut.error">{{provider.rut.errorMessage}}</label>
@@ -373,6 +375,10 @@
     color: #757791;
     padding: 3px 7px;
     border-radius: 3px;
+  }
+
+  .gray {
+    color: #818181;
   }
 
 </style>
