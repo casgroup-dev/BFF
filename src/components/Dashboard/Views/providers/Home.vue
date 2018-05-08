@@ -143,7 +143,10 @@
     <!-- PROVIDER DETAILS -->
     <modal v-if="detailsPopup.show">
       <template slot="header">
-        <label>Detalles del proveedor</label>
+        <h4 style="margin: 0">Detalles del proveedor</h4>
+        <button type="button" class="btn btn-round btn-default btn-sm" @click="cancelPopup">
+          <span class="btn-label"><i class="fa fa-times"></i></span> Cerrar
+        </button>
       </template>
       <template slot="body">
         <label><b>Razón Social:</b> {{detailsPopup.data.businessName}}<br></label>
@@ -156,11 +159,6 @@
         <label><b>Email Representante Legal:</b> {{detailsPopup.data.legalRepEmail}}<br></label>
         <label><b>Telefono Representante Legal:</b> {{detailsPopup.data.legalRepPhone}}<br></label>
         <label><b>Nombre de Fantasía:</b> {{detailsPopup.data.fantasyName}}<br></label>
-      </template>
-      <template slot="footer">
-        <button class="btn btn-primary" @click="cancelPopup">
-          Volver
-        </button>
       </template>
     </modal>
   </div>
@@ -193,7 +191,7 @@
               'Telefono Admin Proveedor',
               'Activo',
               'Invitar',
-              'Detalles'
+              ''
             ],
             details: {
               industries: 'Rubros',
