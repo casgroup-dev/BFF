@@ -82,11 +82,11 @@
       </template>
       <template slot="footer">
         <clip-loader :loading="provider.loading" color="#5D8EF9"/>
-        <button class="btn btn-primary" v-if="!provider.loading" @click="addProvider">
-          Autorizar proveedor
-        </button>
-        <button class="btn btn-primary" v-if="!provider.loading" @click="cancelModal">
+        <button class="btn btn-default" v-if="!provider.loading" @click="cancelModal">
           Cancelar
+        </button>
+        <button class="btn btn-success" v-if="!provider.loading" @click="addProvider">
+          Autorizar proveedor
         </button>
       </template>
     </modal>
