@@ -90,6 +90,28 @@ function getCompanies () {
   })
 }
 
+function getBiddings () {
+  const generalError = new Error('Error de conexion.')
+  return new Promise((resolve, reject) => {
+          var res = [{
+            name: 'Snacks Copec de Rancagua',
+            creationDate: '20 de Marzo de 2018',
+            lastEdition: '25 de Marzo de 2018',
+            state: 'Cerrada',
+            stage: 'Revisión',
+          },
+            {
+                name: 'Snacks Copec de Curico',
+                creationDate: '20 de Marzo de 2018',
+                lastEdition: '25 de Marzo de 2018',
+                state: 'Cerrada',
+                stage: 'Revisión',
+            }
+          ]
+          return resolve(res)
+  })
+}
+
 /**
  *
  * @param providers {Array} Providers that need to receive the invitation
@@ -219,5 +241,6 @@ export default {
   register,
   registerProvider,
   getCompanies,
+  getBiddings,
   invitationsToBidding
 }
