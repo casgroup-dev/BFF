@@ -37,6 +37,13 @@
                   <td v-for="(attr, index) in licit.attributes" :key="index">
                     <a style="font-weight:normal; color:#262626;">{{attr}}</a>
                   </td>
+                  <td class="align-center">
+                    <router-link :to="{ name: 'licitacion'}">
+                      <button class="btn btn-default btn-sm">
+                        Entrar
+                      </button>
+                    </router-link>
+                  </td>
                 </tr>
                 </tbody>
               </table>
