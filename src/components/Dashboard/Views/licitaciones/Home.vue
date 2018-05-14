@@ -128,12 +128,13 @@
         return biddings.map(bidding => {
           return {
             attributes: {
-              name: bidding['name'],
-              creationDate: bidding['creationDate'],
-              lastEdition: bidding['lastEdition'],
-              state: bidding['state'],
-              stage: bidding['stage']
-            }
+              name: bidding.attributes['name'],
+              creationDate: bidding.attributes['creationDate'],
+              lastEdition: bidding.attributes['lastEdition'],
+              state: bidding.attributes['state'],
+              stage: bidding.attributes['stage']
+            },
+            show: bidding['show']
           }
         })
       }

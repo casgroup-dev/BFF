@@ -94,18 +94,22 @@ function getBiddings () {
   const generalError = new Error('Error de conexion.')
   return new Promise((resolve, reject) => {
           var res = [{
-            name: 'Snacks Copec de Rancagua',
-            creationDate: '20 de Marzo de 2018',
-            lastEdition: '25 de Marzo de 2018',
-            state: 'Cerrada',
-            stage: 'Revisión',
+            attributes: {
+              name: 'Snacks Copec de Rancagua',
+              creationDate: '20 de Marzo de 2018',
+              lastEdition: '25 de Marzo de 2018',
+              state: 'Cerrada',
+              stage: 'Revisión',
+            }, show:false
           },
             {
+              attributes: {
                 name: 'Snacks Copec de Curico',
                 creationDate: '20 de Marzo de 2018',
                 lastEdition: '25 de Marzo de 2018',
                 state: 'Cerrada',
                 stage: 'Revisión',
+              }, show:false
             }
           ]
           return resolve(res)
