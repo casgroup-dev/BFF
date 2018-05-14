@@ -25,10 +25,10 @@
             <template>
             <div class="table-responsive">
               <table class="table table-hover table-striped">
-                <thead>
-                <th v-for="attr in table.columns">
-                    <tr scope="col">{{attr}}</tr>
-                </th>
+                <thead class="thead-light">
+                <tr>
+                  <th v-for="attr in table.columns" scope="col">{{attr}}</th>
+                </tr>
                 </thead>
                 <tbody>
                 <template v-for="licit in filteredLicitations">
@@ -42,14 +42,21 @@
                         {{attr}}
                       </a>
                     </td>
-                    <td><a
+                    <td class="align-center">
+                      <router-link :to="{ name: 'licitacion'}">
+                        <button class="btn btn-default btn-sm">
+                          Entrar
+                        </button>
+                      </router-link>
+                    </td>
+                    <!--<td><a
                       style="color:#262626;"
                       data-toggle="collapse"
                       role="button"
                       v-on:click="licit.show = !licit.show">
                       <i class="nc-icon nc-stre-down" v-if="!licit.show"></i>
                       <i class="nc-icon nc-stre-up" v-else></i>
-                    </a></td>
+                    </a></td>-->
                   </tr>
                   <transition name="slide" :duration="500">
                   <tr>
@@ -85,39 +92,6 @@
   import Card from 'src/components/UIComponents/Cards/Card.vue'
   import usersApi from 'src/apis/users'
 
-  const tableColumns = ['Nombre', 'Fecha creación', 'Última edición', 'Estado', 'Etapa']
-  // const tableData = Array(13).fill({
-  //   attributes: {
-  //     nombre: 'Snacks Copec de Rancagua',
-  //     'fecha creación': '20 de Marzo de 2018',
-  //     'última edición': '25 de Marzo de 2018',
-  //     estado: 'Cerrada',
-  //     etapa: 'Revisión',
-  //   },
-  //   show: false
-  // })
-  /*const tableData = [
-    {
-      attributes: {
-        nombre: 'Snacks Copec de Rancagua',
-        'fecha creación': '20 de Marzo de 2018',
-        'última edición': '25 de Marzo de 2018',
-        estado: 'Cerrada',
-        etapa: 'Revisión',
-      },
-      show: false
-    },
-    {
-      attributes: {
-        name: 'Snacks Copec de Curico',
-        creationDate: '20 de Marzo de 2018',
-        lastEdition: '25 de Marzo de 2018',
-        state: 'Cerrada',
-        stage: 'Revisión',
-      },
-      show: false
-    }
-  ]*/
   export default {
     components: {
       LTable,
@@ -137,13 +111,13 @@
             show: bidding['show']
           }
         })
-      }
+      },
     },
     data: function() {
       return {
         search: '',
         table: {
-          columns: [...tableColumns],
+          columns: ['Nombre', 'Cliente', 'Etapa', '', ''],
           data: []
         }
       }
@@ -158,15 +132,13 @@
         self.$router.push('/')
       })
     },
-    computed:
-      {
-        filteredLicitations:function()
-        {
-          var self=this;
-          return this.table.data.filter(function(licit){return licit.attributes.name.toLowerCase().indexOf(self.search.toLowerCase())>=0;});
-          //return this.customers;
-        }
+    computed: {
+      filteredLicitations: function () {
+        var self = this
+        return this.table.data.filter(function(licit){return licit.attributes.name.toLowerCase().indexOf(self.search.toLowerCase()) >= 0
+        })
       }
+    }
   }
 </script>
 <style>
