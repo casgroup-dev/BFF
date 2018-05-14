@@ -80,7 +80,8 @@
             attributes: [
               'Nombre',
               'Cliente',
-              'Etapa'
+              'Etapa',
+              ''
             ]
           },
           data: []
