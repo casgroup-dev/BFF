@@ -37,48 +37,48 @@
             <div class="form-group col-md-4">
               <select v-model="user.role">
                 <option disabled value="">Seleccione el Rol</option>
-                <option>A</option>
-                <option>B</option>
-                <option>C</option>
+                <option>Ingeniero-GLE</option>
+                <option>Revisor</option>
+                <option>Aprobador</option>
               </select>
             </div>
           </div>
         </div>
         <div class="form-group col-2"> <!-- PENDIENTE corregir alineación -->
-          <label>Numero de Periodos</label>
-          <fg-input v-model="periodos.amount"></fg-input>
+          <label>Numero de Estapas</label>
+          <fg-input v-model="etapas.amount"></fg-input>
         </div>
         <div class="form-group">
           <small><label class="error" style="color: red;"
-                        v-if="periodos.error">{{periodos.errorMessage}}</label></small>
+                        v-if="etapas.error">{{etapas.errorMessage}}</label></small>
           <table>
-            <td v-for="period in periodAvailables">
-              <label :for="period.label">{{period.title}}</label>
+            <td v-for="stage in availableStages">
+              <label :for="stage.label"><fg-input v-model="stage.title"></fg-input></label>
               <div>
                 <div class="datepicker-trigger">
                   <input
                     type="text"
-                    :id="period.id"
-                    :placeholder="period.placeholder"
-                    :value="formatDates(period.dateOne, period.dateTwo)">
+                    :id="stage.id"
+                    :placeholder="stage.placeholder"
+                    :value="formatDates(stage.dateOne, stage.dateTwo)">
                   <AirbnbStyleDatepicker
-                    :trigger-element-id="period.id"
+                    :trigger-element-id="stage.id"
                     :mode="'range'"
                     :fullscreen-mobile="true"
-                    :date-one="period.dateOne"
-                    :date-two="period.dateTwo"
-                    @date-one-selected="val => { period.dateOne = val }"
-                    @date-two-selected="val => { period.dateTwo = val }">
+                    :date-one="stage.dateOne"
+                    :date-two="stage.dateTwo"
+                    @date-one-selected="val => { stage.dateOne = val }"
+                    @date-two-selected="val => { stage.dateTwo = val }">
                   </AirbnbStyleDatepicker>
                 </div>
               </div>
             </td>
           </table>
         </div>
-        <!--<div class="custom-file">-->
-        <!--<input type="file" class="custom-file-input" id="customFile">-->
-        <!--<label class="custom-file-label" for="customFile">Subir versión completa Licitación</label>-->
-        <!--</div>-->
+        <div class="custom-file">
+        <input type="file" class="custom-file-input" id="customFile">
+        <label class="custom-file-label" for="customFile">Subir versión completa Licitación</label>
+        </div>
         <br><br>
         <button type="submit" class="btn btn-primary" @click="addBidding">Crear</button>
       </form>
@@ -90,10 +90,11 @@
   import format from 'date-fns/format'
 
   export default {
+    name: 'CreateForm',
     data () {
       return {
         dateFormat: 'D MMM',
-        periodos: {
+        etapas: {
           amount: 3,
           payload: [],
           error: false,
@@ -136,10 +137,10 @@
         return formattedDates
       },
       addBidding () {
-        if (!this.periodos.payload || !this.periodos.payload[0].dateOne || !this.periodos.payload[0].dateTwo) {
-          this.periodos.error = true
-          this.periodos.errorMessage = 'Debe definir las fechas de la Licitación'
-        } else this.periodos.error = false
+        if (!this.etapas.payload || !this.etapas.payload[0].dateOne || !this.etapas.payload[0].dateTwo) {
+          this.etapas.error = true
+          this.etapas.errorMessage = 'Debe definir las fechas de la Licitación'
+        } else this.etapas.error = false
         if (!this.bidding.company.payload) {
           this.bidding.company.error = true
           this.bidding.company.errorMessage = 'Debe asignar la Licitacion a una empresa'
@@ -152,7 +153,7 @@
           this.bidding.bases.error = true
           this.bidding.bases.errorMessage = 'Debe describir las bases de la Licitación'
         } else this.bidding.bases.error = false
-        if (!this.bidding.users.payload || !this.bidding.users.payload[0].name) {
+        if (!this.bidding.users.payload[0].name || (this.bidding.users.payload[0].role === 'Seleccione el Rol')) {
           this.bidding.users.error = true
           this.bidding.users.errorMessage = 'Debe designar al menos un encargado a la Licitación'
         } else this.bidding.users.error = false
@@ -162,20 +163,21 @@
           company: this.bidding.company,
           users: this.bidding.users,
           bases: this.bidding.bases,
-          periods: (function () {
-            let periods = []
-            for (let i = 0; i < self.periodos.amount; ++i) {
-              const dateTable = self.periodos.payload[i]
-              let period = {
+          stages: (function () {
+            let stages = []
+            for (let i = 0; i < self.etapas.amount; ++i) {
+              const dateTable = self.etapas.payload[i]
+              let stage = {
+                title: dateTable.title,
                 dateOne: dateTable.dateOne,
                 dateTwo: dateTable.dateTwo
               }
-              periods.push(period)
+              stages.push(stage)
             }
-            return periods
+            return stages
           })()
         }
-      //  TODO call api
+        //  TODO call api
       }
     },
     computed: {
@@ -191,21 +193,21 @@
         this.bidding.users.payload = users
         return this.bidding.users.payload
       },
-      periodAvailables: function () {
-        let periodos = []
-        for (let i = 1; i <= this.periodos.amount; ++i) {
-          let period = {
-            title: 'Período ' + i,
-            label: 'periodo' + i,
-            placeholder: 'Selecciona duración del Periodo',
+      availableStages: function () {
+        let stages = []
+        for (let i = 1; i <= this.etapas.amount; ++i) {
+          let stage = {
+            title: 'Etapa ' + i,
+            label: 'etapa' + i,
+            placeholder: 'Selecciona duración del Etapa',
             dateOne: '',
             dateTwo: '',
             id: 'datepicker-trigger' + i
           }
-          periodos.push(period)
+          stages.push(stage)
         }
-        this.periodos.payload = periodos
-        return this.periodos.payload
+        this.etapas.payload = stages
+        return this.etapas.payload
       }
     }
   }

@@ -5,22 +5,33 @@
         <div class="col-12">
           <card>
             <template slot="header">
-              <h4 class="card-title">Licitaciones
-                <router-link :to="{ name: 'NewLicit', query: {next: this.$route.query.next}}">
-                  <a style="float: right; width: 250px"><i class="nc-icon nc-simple-add"></i></a>
-                </router-link>
-              </h4>
-              <p class="card-category">Últimas licitaciones realizadas en la plataforma
-                <router-link :to="{ name: 'NewLicit', query: {next: this.$route.query.next}}">
-                <a style="float: right; width: 250px">Nueva Licitación</a>
-                </router-link>
-              </p>
-            </template>
-            <template>
               <div class="row">
-                <fg-input class="col-6" v-model="search" placeholder="Nombre Licitacion" addon-right-icon="nc-icon nc-zoom-split">
-                </fg-input>
+                <!-- TITLE -->
+                <div class="col-4 offset-4" style="text-align: center; font-size: xx-large">
+                  Licitaciones <p class="card-category">Últimas licitaciones realizadas en la plataforma</p>
+                </div>
+                <!-- BUTTONS -->
+                <div class="col-3" style="text-align: right; font-size: xx-large">
+                  <!-- ADD PROVIDER -->
+                  <button class="btn btn-primary" @click="modalOn = true">Nueva Licitación</button>
+                </div>
               </div>
+              <!--<h4 class="card-title">Licitaciones-->
+                <!--<router-link :to="{ name: 'NewLicit', query: {next: this.$route.query.next}}">-->
+                  <!--<a style="float: right; width: 250px"><i class="nc-icon nc-simple-add"></i></a>-->
+                <!--</router-link>-->
+              <!--</h4>-->
+              <!--<p class="card-category">Últimas licitaciones realizadas en la plataforma-->
+                <!--<router-link :to="{ name: 'NewLicit', query: {next: this.$route.query.next}}">-->
+                <!--<a style="float: right; width: 250px">Nueva Licitación</a>-->
+                <!--</router-link>-->
+              <!--</p>-->
+            <!--</template>-->
+            <!--<template>-->
+              <!--<div class="row">-->
+                <!--<fg-input class="col-6" v-model="search" placeholder="Nombre Licitacion" addon-right-icon="nc-icon nc-zoom-split">-->
+                <!--</fg-input>-->
+              <!--</div>-->
             </template>
             <template>
             <div class="table-responsive">
@@ -78,23 +89,16 @@
         </div>
       </div>
     </div>
+    <create-form v-if="modalOn"></create-form>
   </div>
 </template>
+
 <script>
   import LTable from 'src/components/UIComponents/Table.vue'
   import Card from 'src/components/UIComponents/Cards/Card.vue'
+  import CreateForm from 'src/components/Dashboard/Views/Licitaciones/CreateForm.vue'
 
   const tableColumns = ['Nombre', 'Fecha creación', 'Última edición', 'Estado', 'Etapa']
-  // const tableData = Array(13).fill({
-  //   attributes: {
-  //     nombre: 'Snacks Copec de Rancagua',
-  //     'fecha creación': '20 de Marzo de 2018',
-  //     'última edición': '25 de Marzo de 2018',
-  //     estado: 'Cerrada',
-  //     etapa: 'Revisión',
-  //   },
-  //   show: false
-  // })
   const tableData = [
     {
       attributes: {
@@ -120,12 +124,8 @@
   export default {
     components: {
       LTable,
-      Card
-    },
-    methods: {
-      displayLic(){
-
-      }
+      Card,
+      CreateForm
     },
     data: function() {
       return {
@@ -133,11 +133,11 @@
         table: {
           columns: [...tableColumns],
           data: [...tableData]
-        }
+        },
+        modalOn: false
       }
     },
-    computed:
-      {
+    computed: {
         filteredLicitations:function()
         {
           var self=this;
