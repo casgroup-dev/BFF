@@ -55,9 +55,7 @@
             <a class="dropdown-item" href="#">Separated link</a>
           </drop-down>
           <li class="nav-item">
-            <a href="#" class="nav-link">
-              Log out
-            </a>
+            <button class="nav-link btn btn-info btn-round" @click="logout">Log out</button>
           </li>
         </ul>
       </div>
@@ -65,6 +63,8 @@
   </nav>
 </template>
 <script>
+  import usersApi from '../../../apis/users'
+
   export default {
     computed: {
       routeName () {
@@ -92,6 +92,9 @@
       },
       hideSidebar () {
         this.$sidebar.displaySidebar(false)
+      },
+      logout () {
+        usersApi.logout(this.$router)
       }
     }
   }

@@ -20,6 +20,16 @@ function login (email, password) {
 }
 
 /**
+ * Logout the user (remove the token) and redirect him to the login page.
+ * @param {Object} router - Router object of Vue.
+ */
+function logout (router) {
+  if (!router) throw new Error('Router must be provided to call this function.')
+  token.remove()
+  router.push({name: 'login'})
+}
+
+/**
  * Register a new user. If it's all ok the promise is resolved void and if there are errors in the process
  * rejects the promise with a correct error message.
  * @param {String} name
@@ -61,11 +71,16 @@ const token = {
    * Gets the token from the storage.
    * @return {string | null}
    */
-  get: () => localStorage.getItem(TOKEN_NAME)
+  get: () => localStorage.getItem(TOKEN_NAME),
+  /**
+   * Deletes the token from the local storage.
+   */
+  remove: () => localStorage.removeItem(TOKEN_NAME)
 }
 
 export default {
   isLoggedIn,
   login,
+  logout,
   register
 }
