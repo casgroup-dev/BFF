@@ -23,32 +23,24 @@
             Descripción de bases PENDIENTE
           </small>
         </div>
-        <div class="form-row"> <!-- PENDIENTE corregir alineación -->
-          <div class="form-group col-md-7" style="text-align: center">
-          <label>Numero de Usuarios Asociados</label>
-          </div>
-          <div class="form-group col-md-2" style="text-align: center">
-          <fg-input v-model="bidding.users.amount"></fg-input>
-          </div>
+        <div class="row"> <!-- PENDIENTE corregir alineación -->
+          <div class="col-7">Numero de Usuarios Asociados</div>
+          <fg-input class="col-2"  v-model="bidding.users.amount"></fg-input>
         </div>
         <div class="form-group">
           <small><label class="error" style="color: red;"
                         v-if="bidding.users.error">{{bidding.users.errorMessage}}</label></small>
           <div class="form-row" v-for="user in usersAndRoles">
-            <div class="form-group col-md-4">
+            <div class="col-md-4">
               <fg-input placeholder="Usuario" v-model="user.name"></fg-input>
             </div>
             <p-checkbox v-model="user.role.revisor">Revisor</p-checkbox>
             <p-checkbox v-model="user.role.aprobador">Aprobador</p-checkbox>
           </div>
         </div>
-        <div class="form-row"> <!-- PENDIENTE corregir alineación -->
-          <div class="form-group col-md-7" style="text-align: center">
-            <label>Numero de Estapas</label>
-          </div>
-          <div class="form-group col-md-2" style="text-align: center">
-            <fg-input v-model="etapas.amount"></fg-input>
-          </div>
+        <div class="row"> <!-- PENDIENTE corregir alineación -->
+          <div class="col-5">Numero de Etapas</div>
+          <fg-input class="col-2" v-model="etapas.amount"></fg-input>
         </div>
         <div class="form-group">
           <small><label class="error" style="color: red;"
