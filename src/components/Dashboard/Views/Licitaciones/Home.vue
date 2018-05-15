@@ -89,7 +89,17 @@
         </div>
       </div>
     </div>
-    <create-form v-if="modalOn"></create-form>
+    <modal v-if="modalOn">
+      <template slot="header">
+        <h4 style="margin: 0">Nueva Licitación</h4>
+        <button type="button" class="btn btn-round btn-default btn-sm" @click="modalOn = false">
+          <span class="btn-label"><i class="fa fa-times"></i></span> Cerrar
+        </button>
+      </template>
+      <template slot="body">
+        <create-form></create-form>
+      </template>
+    </modal>
   </div>
 </template>
 
@@ -97,6 +107,7 @@
   import LTable from 'src/components/UIComponents/Table.vue'
   import Card from 'src/components/UIComponents/Cards/Card.vue'
   import CreateForm from 'src/components/Dashboard/Views/Licitaciones/CreateForm.vue'
+  import Modal from 'src/components/UIComponents/Modal/Modal.vue'
 
   const tableColumns = ['Nombre', 'Fecha creación', 'Última edición', 'Estado', 'Etapa']
   const tableData = [
@@ -125,7 +136,8 @@
     components: {
       LTable,
       Card,
-      CreateForm
+      CreateForm,
+      Modal
     },
     data: function() {
       return {

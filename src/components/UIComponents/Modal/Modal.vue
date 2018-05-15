@@ -43,7 +43,6 @@
     background-color: rgba(0, 0, 0, .5);
     display: table;
     transition: opacity .3s ease;
-
   }
 
   .modal-wrapper {
@@ -72,6 +71,8 @@
 
   .modal-body {
     margin: 20px 0;
+    max-height: calc(100vh - 210px);
+    overflow-y: auto;
   }
 
   .modal-footer {

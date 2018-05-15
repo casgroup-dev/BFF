@@ -23,9 +23,13 @@
             Descripción de bases PENDIENTE
           </small>
         </div>
-        <div class="form-group col-2"> <!-- PENDIENTE corregir alineación -->
+        <div class="form-row"> <!-- PENDIENTE corregir alineación -->
+          <div class="form-group col-md-7" style="text-align: center">
           <label>Numero de Usuarios Asociados</label>
+          </div>
+          <div class="form-group col-md-2" style="text-align: center">
           <fg-input v-model="bidding.users.amount"></fg-input>
+          </div>
         </div>
         <div class="form-group">
           <small><label class="error" style="color: red;"
@@ -34,19 +38,17 @@
             <div class="form-group col-md-4">
               <fg-input placeholder="Usuario" v-model="user.name"></fg-input>
             </div>
-            <div class="form-group col-md-4">
-              <select v-model="user.role">
-                <option disabled value="">Seleccione el Rol</option>
-                <option>Ingeniero-GLE</option>
-                <option>Revisor</option>
-                <option>Aprobador</option>
-              </select>
-            </div>
+            <p-checkbox v-model="user.role.revisor">Revisor</p-checkbox>
+            <p-checkbox v-model="user.role.aprobador">Aprobador</p-checkbox>
           </div>
         </div>
-        <div class="form-group col-2"> <!-- PENDIENTE corregir alineación -->
-          <label>Numero de Estapas</label>
-          <fg-input v-model="etapas.amount"></fg-input>
+        <div class="form-row"> <!-- PENDIENTE corregir alineación -->
+          <div class="form-group col-md-7" style="text-align: center">
+            <label>Numero de Estapas</label>
+          </div>
+          <div class="form-group col-md-2" style="text-align: center">
+            <fg-input v-model="etapas.amount"></fg-input>
+          </div>
         </div>
         <div class="form-group">
           <small><label class="error" style="color: red;"
@@ -65,6 +67,7 @@
                     :trigger-element-id="stage.id"
                     :mode="'range'"
                     :fullscreen-mobile="true"
+                    :months-to-show="1"
                     :date-one="stage.dateOne"
                     :date-two="stage.dateTwo"
                     @date-one-selected="val => { stage.dateOne = val }"
@@ -88,14 +91,18 @@
 
 <script>
   import format from 'date-fns/format'
+  import PCheckbox from 'src/components/UIComponents/Inputs/Checkbox.vue'
 
   export default {
     name: 'CreateForm',
+    components: {
+      PCheckbox
+    },
     data () {
       return {
         dateFormat: 'D MMM',
         etapas: {
-          amount: 3,
+          amount: 2,
           payload: [],
           error: false,
           errorMessage: ''
@@ -117,7 +124,7 @@
             errorMessage: ''
           },
           users: {
-            amount: 1,
+            amount: 2,
             payload: [],
             error: false,
             errorMessage: ''
@@ -186,7 +193,10 @@
         for (let i = 1; i <= this.bidding.users.amount; ++i) {
           let user = {
             name: '',
-            role: ''
+            role: {
+              revisor: false,
+              aprobador: false
+            }
           }
           users.push(user)
         }
