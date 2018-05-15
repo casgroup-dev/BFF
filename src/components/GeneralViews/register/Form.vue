@@ -1,51 +1,40 @@
 <template>
   <Card>
-    <div slot="header">
-      <h2 class="title text-center">Registro de usuario</h2>
-    </div>
-    <label class="error" v-if="registerErrorMessage">{{registerErrorMessage}}</label>
-    <div class="block">
-      <fg-input class="col-12" placeholder="Juan Pérez González" v-model="name.payload" @enter="register">
-        <label slot="label" v-if="!name.error">Nombre*</label>
-        <label class="error" slot="label" v-else>Ingrese su nombre</label></fg-input>
-    </div>
-    <div class="block">
-      <!-- TODO check email format -->
-      <fg-input class="col-12" placeholder="ejemplo@ejemplo.com" type="email" v-model="email.payload" @enter="register">
-        <label slot="label" v-if="!email.error">Correo electrónico*</label>
-        <label class="error" slot="label" v-else>Ingrese una dirección de correo válida</label></fg-input>
-    </div>
-    <div class="form-group">
-      <fg-input class="col-12" placeholder="CasGroup" v-model="company.payload" @enter="register">
-        <label slot="label" v-if="!company.error">Empresa*</label>
-        <label class="error" slot="label" v-else>Ingrese el nombre de su empresa</label></fg-input>
-    </div>
-    <div class="block">
-      <fg-input class="col-12" placeholder="+56 9 1234 5678" v-model="phone.payload" @enter="register">
-        <label slot="label">Teléfono</label></fg-input>
-    </div>
-    <div class="block">
-      <fg-input class="col-12" placeholder="******" type="password" v-model="password.payload" @enter="register">
-        <label slot="label" v-if="!password.error">Contraseña*</label>
-        <label class="error" slot="label" v-else>Complete la contraseña</label></fg-input>
-    </div>
-    <div class="block">
-      <!-- TODO check matching passwords -->
-      <fg-input class="col-12" placeholder="******" type="password" v-model="passwordConfirm.payload" @enter="register">
-        <label slot="label" v-if="!passwordConfirm.error">Confirmar contraseña*</label>
-        <label class="error" slot="label" v-else>Complete la contraseña</label></fg-input>
-    </div>
-    <label class="error" v-if="differentPasswordsError">Contraseñas no coinciden</label>
-    <div align="center">
-      <button class="btn btn-info btn-fill" @click="register" v-if="registerButton">Registrar</button>
-    </div>
-    <clip-loader :loading="loading" color="#1DC7EA"/>
-    <div class="alert alert-success" v-if="successMessage">
-      Registrado con éxito. Un mail para la verificación de su cuenta ha sido enviado.
-    </div>
-    <div class="col-12" align="center">
+    <!-- TITLE AND GENERAL ERRORS -->
+    <h2 slot="header" class="title text-center">Registro de usuario</h2>
+    <!-- DISABLED INPUTS (PASSED BY PROPS) -->
+    <fg-input disabled :placeholder="email" label="Email"/>
+    <!-- TEXT INPUTS -->
+    <fg-input v-for="(input, index) in inputs.text" :key="index"
+              :placeholder="input.placeholder" v-model="input.payload"
+              @enter="register">
+      <label slot="label" :class="`control-label ${input.error ? 'error' : ''}`">{{ input.label }}</label>
+    </fg-input>
+    <!-- DROP DOWNS -->
+    <!-- TODO: With modal of Seba Puja and checkboxes filtered by a search field, it is its own component -->
+    <!-- PASSWORDS -->
+    <fg-input v-for="(input, index) in inputs.passwords" :key="index"
+              type="password" v-model="input.payload" @enter="register">
+      <label slot="label" :class="`control-label ${input.error ? 'error' : ''}`">{{ input.label }}</label>
+    </fg-input>
+    <!-- FOOTER -->
+    <div class="col-12 align-center">
+      <label v-if="thereAreFormErrors" class="control-label">
+        Hay problemas en su registro, por favor ingrese todos los
+        campos que se encuentran detsacados en rojo.
+      </label>
+      <label v-if="differencePasswordsError" class="control-label error">Las contraseñas no son iguales.</label>
+      <label v-if="success" class="control-label success">Ha realizado con éxito su registro, redireccionando.</label>
+      <label v-if="registerError" class="control-label error">
+        Hemos tenido problemas procesando su registro, por favor
+        inténtelo nuevamente más tarde.
+      </label>
+      <br>
+      <button v-if="!loading" class="btn btn-info btn-fill" @click="register">Registrar</button>
+      <clip-loader :loading="loading" color="#1DC7EA"/>
+      <br>
       <router-link :to="{ name: 'login', query: {next: this.$route.query.next}}">
-        Volver a login.
+        <div style="margin-top: 10px;">¿Ya tienes cuenta? Ingresa aquí</div>
       </router-link>
     </div>
   </Card>
@@ -57,73 +46,133 @@
   import ClipLoader from 'vue-spinner/src/ClipLoader'
 
   export default {
-    name: 'Register',
+    props: {
+      email: {type: String, required: true}
+    },
     data () {
       return {
-        name: {payload: null, error: false},
-        email: {payload: null, error: false},
-        company: {payload: null, error: false},
-        role: {payload: null, error: false},
-        phone: {payload: null, error: false},
-        password: {payload: null, error: false},
-        passwordConfirm: {payload: null, error: false},
-        registerButton: true,
-        loading: false,
-        successMessage: false,
+        inputs: {
+          /* TEXT INPUTS */
+          text: {
+            name: {label: 'Nombre', placeholder: 'Juan Lopez Carrera', payload: null, error: false},
+            businessName: {label: 'Razón social', placeholder: 'CasGroup', payload: null, error: false},
+            fantasyName: {label: 'Nombre de fantasía', placeholder: 'CasGroup', payload: null, error: false},
+            rut: {label: 'RUT de empresa', placeholder: '90193000-7', payload: null, error: false},
+            legalRepresentative: {
+              label: 'Representante legal',
+              placeholder: 'Ernesto Tapia Herrera',
+              payload: null,
+              error: false
+            },
+            legalRepresentativeEmail: {
+              label: 'Email del representante legal',
+              placeholder: 'ejemplo@email.com',
+              payload: null,
+              error: false
+            },
+            legalRepresentativePhone: {
+              label: 'Teléfono del representante legal',
+              placeholder: '+56912345678',
+              payload: null,
+              error: false
+            }
+          },
+          /* DROP DOWN INPUTS */
+          dropDowns: {
+            industries: {
+              options: [],
+              selected: [],
+              error: false
+            }
+          },
+          /* PASSWORD INPUTS */
+          passwords: {
+            first: {label: 'Contraseña', payload: null, error: false},
+            confirmation: {label: 'Confirmación de contraseña', payload: null, error: false}
+          }
+        },
+        /* General errors, not associated to a single input */
+        differencePasswordsError: false,
+        thereAreFormErrors: false,
+        registerError: null,
         success: false,
-        differentPasswordsError: false,
-        registerErrorMessage: null
+        /* General flags */
+        loading: false
       }
     },
+    /* OTHER COMPONENTS USED IN THIS COMPONENT */
     components: {
       Card,
       ClipLoader
     },
+    /* METHODS/FUNCTIONS OF THIS COMPONENT */
     methods: {
+      /**
+       * Validates the form, check for non empty values.
+       */
+      validateForm () {
+        this.thereAreFormErrors = false
+        /* Text fields, must contain text */
+        for (let key of Object.keys(this.inputs.text)) {
+          const input = this.inputs.text[key]
+          if (!input.payload) this.thereAreFormErrors = input.error = true
+          else input.error = false
+        }
+        /* Drop downs: At least one must be selected */
+        for (let key of Object.keys(this.inputs.dropDowns)) {
+          const dropDown = this.inputs.dropDowns[key]
+          // TODO: Uncomment this when the dropdowns are ready
+          // if (dropDown.options.selected.length === 0) this.thereAreFormErrors = dropDown.error = true
+          // else dropDown.error = false
+        }
+        /* Passwords: Must contain same text */
+        const passwords = this.inputs.passwords
+        if (!passwords.first.payload) this.thereAreFormErrors = passwords.first.error = true
+        else passwords.first.error = false
+        if (!passwords.confirmation.payload) this.thereAreFormErrors = passwords.confirmation.error = true
+        else passwords.confirmation.error = false
+        if (passwords.first.payload !== passwords.confirmation.payload) this.thereAreFormErrors = this.differencePasswordsError = true
+        else this.differencePasswordsError = false
+        /* RETURN TRUE IF THERE ARE NO ERRORS */
+        return !this.thereAreFormErrors
+      },
       /**
        * Check that the data of the form is filled (not empty values) and call the register API.
        */
       async register () {
-        if (!this.name.payload) this.name.error = true
-          else this.name.error = false
-        const email_regexp = /^([a-zA-Z0-9_.+-])+\@(([a-zA-Z0-9-])+\.)+([a-zA-Z0-9]{2,4})+$/
-        if (!this.email.payload || !email_regexp.test(this.email.payload)) this.email.error = true
-          else this.email.error = false
-        if (!this.company.payload) this.company.error = true
-          else this.company.error = false
-        if (!this.phone.payload) this.phone.error = true
-          else this.phone.error = false
-        if (!this.password.payload) this.password.error = true
-          else this.password.error = false
-        if (!this.passwordConfirm.payload) this.passwordConfirm.error = true
-          else this.passwordConfirm.error = false
-        if (this.password.payload && this.passwordConfirm.payload){
-          this.differentPasswordsError = false
-          if (this.password.payload !== this.passwordConfirm.payload) this.differentPasswordsError = true
-        }
-        if (this.name.payload && this.email.payload && this.company.payload && this.password.payload && this.passwordConfirm.payload &&
-          (this.passwordConfirm.payload === this.password.payload)) {
+        if (this.validateForm()) {
           this.loading = true
-          this.registerButton = false
-          usersApi.register(this.name.payload, this.email.payload, this.company.payload, this.role.payload, this.phone.payload, this.password.payload, this.passwordConfirm.payload)
+          const self = this
+          usersApi.register({
+            name: this.inputs.text.name.payload,
+            email: this.email,
+            businessName: this.inputs.text.businessName.payload,
+            fantasyName: this.inputs.text.fantasyName.payload,
+            rut: this.inputs.text.rut.payload.replace(/[.-]/g, ''),
+            legalRepresentative: this.inputs.text.legalRepresentative.payload,
+            legalRepEmail: this.inputs.text.legalRepresentativeEmail.payload,
+            legalRepPhone: this.inputs.text.legalRepresentativePhone.payload,
+            // industries: this.inputs.dropDowns.industries.options.filter(opt => opt.selected).map(opt => opt.label),
+            // TODO: Uncomment industries when the drop down is working
+            password: this.inputs.passwords.first.payload
+          })
             .then(function () {
-              this.successMessage = true
-              this.registerErrorMessage = false
-            }.bind(this))
-            .catch(function (err) {
-              this.registerErrorMessage = err.message || 'Hubo un error, lamentamos la situación.'
-              this.registerButton = true
-            }.bind(this))
-            .then(function () { this.loading = false }.bind(this))
+              self.success = true
+              /* Wait two seconds a redirect */
+              setTimeout(() => self.$router.push(self.$route.query.next || {name: 'home'}), 2000)
+            })
+            .catch(err => {
+              self.registerError = err.message
+              self.loading = false
+            })
         }
       },
       /**
        * Focus the first input element of the form.
        */
-      focus () {
-        this.$el.querySelector('input').focus()
-      }
+      focus () { this.$el.querySelector('input').focus() }
     },
+    /* HOOKS OF THE COMPONENT */
     mounted: function () { this.focus() }
   }
 </script>
@@ -131,5 +180,13 @@
 <style scoped>
   label.error {
     color: #ff0000
+  }
+
+  label.success {
+    color: #0ab961
+  }
+
+  .align-center {
+    text-align: center;
   }
 </style>

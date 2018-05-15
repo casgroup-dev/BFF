@@ -11,13 +11,14 @@ import Typography from 'src/components/Dashboard/Views/Typography.vue'
 import Icons from 'src/components/Dashboard/Views/Icons.vue'
 import Maps from 'src/components/Dashboard/Views/Maps.vue'
 import Notifications from 'src/components/Dashboard/Views/Notifications.vue'
-import LicitacionesHome from 'src/components/Dashboard/Views/Licitaciones/Home'
+import LicitacionesHome from 'src/components/Dashboard/Views/licitaciones/Home'
+import ProvidersHome from 'src/components/Dashboard/Views/providers/Home.vue'
 
 const routes = [
   {
     path: '/',
     component: DashboardLayout,
-    redirect: '/admin/overview',
+    redirect: '/licitaciones',
     meta: {
       requiresAuth: true
     }
@@ -33,14 +34,26 @@ const routes = [
     component: Register
   },
   {
-    path: '/Licitaciones',
+    path: '/licitaciones',
+    component: DashboardLayout,
+    meta: {requiresAuth: true},
+    children: [
+      {
+        path: '/',
+        name: 'home',
+        component: LicitacionesHome
+      }
+    ]
+  },
+  {
+    path: '/Providers',
     component: DashboardLayout,
     meta: {requiresAuth: true},
     children: [
       {
         path: '/',
         name: 'Home',
-        component: LicitacionesHome
+        component: ProvidersHome
       }
     ]
   },

@@ -1,8 +1,6 @@
 <template>
-  <div class="wrapper wrapper-full-page" :style="wrapperStyle">
-    <div class="container h-100 w-100">
-      <slot/>
-    </div>
+  <div class="container" :style="style">
+    <slot/>
   </div>
 </template>
 
@@ -16,10 +14,14 @@
       }
     },
     computed: {
-      wrapperStyle () {
+      style () {
         return {
           backgroundImage: `url(${this.backgroundImage})`,
-          backgroundPosition: 'center'
+          backgroundPosition: 'center',
+          backgroundRepeat: 'no-repeat',
+          backgroundSize: 'cover',
+          minHeight: '100vh',
+          minWidth: '100%'
         }
       }
     }
