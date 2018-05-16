@@ -13,8 +13,8 @@
     <!-- DROP DOWNS -->
     <div>
       <label class="typo__label">Rubros</label>
-      <multiselect v-model="inputs.dropDowns.industries.values" :options="inputs.dropDowns.industries.options" :multiple="true" :close-on-select="false" :clear-on-select="false" :hide-selected="true" :preserve-search="true" placeholder="Seleccione sus rubros" label="name" track-by="name" :preselect-first="true">
-        <template slot="tag" slot-scope="props"><span class="custom__tag"><span>{{ props.option.language }}</span><span class="custom__remove" @click="props.remove(props.option)">❌</span></span></template>
+      <multiselect v-model="inputs.dropDowns.industries.values" :options="inputs.dropDowns.industries.options" :multiple="true" :close-on-select="false" :clear-on-select="false" :hide-selected="true" :preserve-search="true" placeholder="Seleccione sus rubros" label="code" track-by="code" :preselect-first="true">
+        <template slot="tag" slot-scope="props"><span class="custom__tag"><span>{{ props.option.name }}</span><span class="custom__remove" @click="props.remove(props.option)">❌</span></span></template>
       </multiselect>
       <!--<pre class="language-json"><code>{{ inputs.dropDowns.industries.values }}</code></pre>-->
     </div>
@@ -88,11 +88,12 @@
           /* DROP DOWN INPUTS */
           dropDowns: {
             industries: {
-              options: [
+              options: usersApi.getIndustries(),
+              /*options: [
                 { name: 'JavaScript', language: 'JavaScript' },
                 { name: 'Ruby', language: 'Ruby' },
                 { name: 'PHP', language: 'PHP' },
-                { name: 'Elixir', language: 'Elixir' }],
+                { name: 'Elixir', language: 'Elixir' }],*/
               values: [],
               error: false
             }
@@ -149,6 +150,9 @@
         /* RETURN TRUE IF THERE ARE NO ERRORS */
         return !this.thereAreFormErrors
       },
+      getIndustries () {
+        return usersApi.getIndustries()
+      },
       /**
        * Check that the data of the form is filled (not empty values) and call the register API.
        */
@@ -186,6 +190,17 @@
       focus () { this.$el.querySelector('input').focus() }
     },
     /* HOOKS OF THE COMPONENT */
+    /* created: function () {
+      const self = this
+      usersApi.getIndustries().then(data => {
+        self.table.data = self.companiesToTable(data)
+      }).catch(err => {
+        console.error(err)
+        /* The user is not authorized to access here
+        self.$router.push('/')
+      })
+    },
+  */
     mounted: function () { this.focus() }
   }
 </script>

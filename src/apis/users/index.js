@@ -7,7 +7,8 @@ const routes = {
   companies: '/companies',
   login: '/auth/login',
   shadowUsers: '/shadow/users',
-  users: '/users'
+  users: '/users',
+  industries: '/industries'
 }
 
 /**
@@ -77,6 +78,27 @@ function getCompanies () {
   const generalError = new Error('Error de conexion.')
   return new Promise((resolve, reject) => {
     axios.get(getRouteWithToken(routes.companies))
+      .then(res => {
+        if (res.data.error && res.data.error.status === 403) {
+          return reject(new Error('No autorizado'))
+        } else if (res.data.error && res.data.error.status === 404) {
+          return reject(new Error('No encontrado'))
+        } else {
+          return resolve(res.data)
+        }
+      })
+      .catch(() => reject(generalError))
+  })
+}
+
+/**
+ * Check if an user is allowed to access the industries. If it is, it returns the industries. Else, it returns an error.
+ * @returns {Promise<any>}
+ */
+function getIndustries () {
+  const generalError = new Error('Error de conexion.')
+  return new Promise((resolve, reject) => {
+    axios.get(getRouteWithToken(routes.industries))
       .then(res => {
         if (res.data.error && res.data.error.status === 403) {
           return reject(new Error('No autorizado'))
@@ -219,5 +241,6 @@ export default {
   register,
   registerProvider,
   getCompanies,
+  getIndustries,
   invitationsToBidding
 }
