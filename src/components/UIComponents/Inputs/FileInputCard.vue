@@ -1,8 +1,8 @@
 <template>
   <div class="file-input-card">
-    <i :class="`fa ${icon} icon`" :style="{color: iconColor}"></i>
+    <i v-if="icon" :class="`fa ${icon} icon`" :style="{color: iconColor}"></i>
     <div class="content">
-      <h2 class="title" :style="{fontSize: titleSize}">{{ title }}</h2>
+      <h2 v-if="title" class="title" :style="{fontSize: titleSize}">{{ title }}</h2>
       <div class="custom-file">
         <input type="file" class="custom-file-input" :multiple="multiple"
                ref="input" @change="setFiles">
