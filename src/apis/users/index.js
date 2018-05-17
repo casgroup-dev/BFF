@@ -202,7 +202,8 @@ async function checkEmail (email) {
   if (!email) {
     throw new Error('Mail is mandatory.')
   }
-  return axios.get(getRouteWithToken(routes.shadowUsers), email).then(res => {
+  return axios.get(endpoint + routes.shadowUsers + '/' + email).then(res => {
+  // return axios.get(getRouteWithToken(routes.users), email).then(res => {
     return !res.data.error
   })
 }

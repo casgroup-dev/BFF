@@ -44,7 +44,7 @@
               <fg-input placeholder="Email Usuario" v-model="user.mail" @input="timedValidation(user)"></fg-input>
             </div>
             <div v-if="user.isNew" class="col-md-4">
-              <fg-input placeholder="Contraseña" v-model="user.pass" typeof="password"></fg-input>
+              <fg-input placeholder="Contraseña" v-model="user.password" type="password"></fg-input>
             </div>
             <div class="row-md-4">
               <p-checkbox v-model="user.role.revisor">Revisor</p-checkbox>
@@ -155,7 +155,7 @@
       },
       timedValidation (user) {
         clearTimeout(this.bidding.users.validateTimeoutID)
-        this.bidding.users.validateTimeoutID = setTimeout(() => { this.validateAccount(user) }, 500)
+        this.bidding.users.validateTimeoutID = setTimeout(() => { this.validateAccount(user) }, 750)
       },
       isMail (mail) {
         return (/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(mail))
@@ -163,13 +163,13 @@
       validateAccount (user) {
         if (!this.isMail(user.mail)) {
           user.error = true
+          user.isNew = false
           user.errorMessage = 'Cuenta no válida. Debe ingresar un correro electrónico'
         } else user.error = false
         if (!user.error) {
           usersApi.checkEmail(user.mail).then(res => { user.isNew = !res })
           user.errorMessage = 'Usuario no creado. Se generará junto con una contraseña'
         }
-        console.log(user.isNew)
       },
       checkBiddingInput () {
         if (!this.etapas.payload || !this.etapas.payload[0].dateOne || !this.etapas.payload[0].dateTwo) {
@@ -215,10 +215,31 @@
           })()
         }
       },
+      createUsers (bidding) {
+        var user
+        for (var i = 0; i < bidding.users.amount; ++i) {
+          user = bidding.users.payload[i]
+          if (user.isNew) {
+            const data = {
+              businessName: null,
+              fantasyName: null,
+              rut: null,
+              industries: null,
+              legalRepresentative: null,
+              legalRepEmail: null,
+              legalRepPhone: null,
+              name: null,
+              password: user.password,
+              email: user.email
+            }
+            usersApi.register(data)
+          }
+        }
+      },
       addBidding () {
         this.checkBiddingInput()
         const bidding = this.parseBidding()
-        //  TODO call api
+        this.createUsers(bidding)
       }
     },
     computed: {
@@ -234,7 +255,7 @@
             error: false,
             errorMessage: '',
             isNew: false,
-            pass: ''
+            password: ''
           }
           users.push(user)
         }
