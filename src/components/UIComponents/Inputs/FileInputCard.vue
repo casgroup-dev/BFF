@@ -172,7 +172,7 @@
        */
       emitUploadedFileEvent (fileName, url) {
         this.notifySuccess(fileName)
-        this.$emit('uploaded', url)
+        this.$emit('uploaded', url, fileName)
       },
       /**
        * Show a notification indicating that the file was uploaded successfully.
