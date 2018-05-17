@@ -4,7 +4,9 @@
     <div class="content">
       <h2 class="title" :style="{fontSize: titleSize}">{{ title }}</h2>
       <div class="custom-file">
-        <input type="file" class="custom-file-input" :multiple="multiple">
+        <input type="file" class="custom-file-input" :multiple="multiple"
+               ref="input"
+               @change="setFileNames">
         <label class="custom-file-label">{{inputLabelComputed}}</label>
       </div>
       <button class="btn btn-fill btn-round btn-upload" :style="{backgroundColor: buttonColor}">
@@ -24,9 +26,7 @@
      */
     data () {
       return {
-        input: {
-          files: []
-        }
+        fileNames: []
       }
     },
     /**
@@ -90,7 +90,9 @@
        * Label to show in the input label.
        */
       inputLabelComputed () {
+        if (this.fileNames.length) return this.fileNames.join(', ')
         if (this.inputLabel) return this.inputLabel
+        /* There is no file or prop with the label for the input. Put a default message */
         const baseMessage = 'Seleccionar archivo'
         if (!this.multiple) return baseMessage
         else return baseMessage + 's'
@@ -99,7 +101,14 @@
     /**
      * Methods of the component.
      */
-    methods: {}
+    methods: {
+      /**
+       * Set the fileNames data to show the names in the input.
+       */
+      setFileNames () {
+        this.fileNames = Array.prototype.map.call(this.$refs.input.files, file => file.name)
+      }
+    }
   }
 </script>
 
@@ -148,5 +157,9 @@
     padding: 5px 18px;
     margin-top: 10px;
     border: 0;
+  }
+
+  .custom-file-label {
+    overflow: auto;
   }
 </style>
