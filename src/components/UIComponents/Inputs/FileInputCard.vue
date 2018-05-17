@@ -158,7 +158,11 @@
               this.notifyError(file.name)
             }
           }
-          /* Back to normality */
+        }).catch(err => {
+          console.error(err)
+          this.fileNames.map(this.notifyError)
+        }).then(() => {
+          /* Always back to normality */
           this.loading = false
           this.files = []
         })
