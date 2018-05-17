@@ -9,7 +9,9 @@
                @change="setFileNames">
         <label class="custom-file-label">{{inputLabelComputed}}</label>
       </div>
-      <button class="btn btn-fill btn-round btn-upload" :style="{backgroundColor: buttonColor}">
+      <clip-loader :loading="loading" color="#1DC7EA" class="clip-loader"/>
+      <button v-if="!loading" class="btn btn-fill btn-round btn-upload" :style="{backgroundColor: buttonColor}"
+              @click="uploadFiles">
         <i class="fa fa-upload"></i> Subir archivos
       </button>
     </div>
@@ -17,16 +19,25 @@
 </template>
 
 <script>
+  import ClipLoader from 'vue-spinner/src/ClipLoader'
+
   const defaultColor = '#03A9F4'
 
   export default {
+    /**
+     * Components to use in this component.
+     */
+    components: {
+      ClipLoader
+    },
     /**
      * Data managed by the component.
      * It is a method because it must need to return a new object for each instance of this component.
      */
     data () {
       return {
-        fileNames: []
+        fileNames: [],
+        loading: false
       }
     },
     /**
@@ -107,6 +118,9 @@
        */
       setFileNames () {
         this.fileNames = Array.prototype.map.call(this.$refs.input.files, file => file.name)
+      },
+      uploadFiles () {
+        this.loading = true
       }
     }
   }
@@ -157,6 +171,10 @@
     padding: 5px 18px;
     margin-top: 10px;
     border: 0;
+  }
+
+  .clip-loader {
+    margin-top: 10px;
   }
 
   .custom-file-label {
