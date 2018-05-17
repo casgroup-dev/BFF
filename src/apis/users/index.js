@@ -193,6 +193,20 @@ async function registerProvider (name, rut, email) {
   })
 }
 
+/**
+ * Check if email exists in database.
+ * @param email
+ * @returns {Promise<any>}
+ */
+async function checkEmail (email) {
+  if (!email) {
+    throw new Error('Mail is mandatory.')
+  }
+  return axios.get(getRouteWithToken(routes.shadowUsers), email).then(res => {
+    return !res.data.error
+  })
+}
+
 const token = {
   /**
    * Saves the token of the user to keep him logged in.
@@ -219,5 +233,6 @@ export default {
   register,
   registerProvider,
   getCompanies,
-  invitationsToBidding
+  invitationsToBidding,
+  checkEmail
 }

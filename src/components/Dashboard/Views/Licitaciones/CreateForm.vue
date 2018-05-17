@@ -23,19 +23,33 @@
             Descripción de bases PENDIENTE
           </small>
         </div>
+        <small><label class="error" style="color: red;"
+                      v-if="bidding.users.error">{{bidding.users.errorMessage}}</label></small>
         <div class="row"> <!-- PENDIENTE corregir alineación -->
           <div class="col-7">Numero de Usuarios Asociados</div>
-          <fg-input class="col-2"  v-model="bidding.users.amount"></fg-input>
+          <fg-input class="col-2" v-model="bidding.users.amount"></fg-input>
         </div>
         <div class="form-group">
-          <small><label class="error" style="color: red;"
-                        v-if="bidding.users.error">{{bidding.users.errorMessage}}</label></small>
           <div class="form-row" v-for="user in usersAndRoles">
-            <div class="col-md-4">
-              <fg-input placeholder="Usuario" v-model="user.name"></fg-input>
+            <div class="col-md-10" style="color: red; font-size: 10px;"
+                 v-if="user.error">{{user.errorMessage}}
             </div>
-            <p-checkbox v-model="user.role.revisor">Revisor</p-checkbox>
-            <p-checkbox v-model="user.role.aprobador">Aprobador</p-checkbox>
+            <div class="col-md-10" style="color: red; font-size: 10px;"
+                 v-if="user.isNew">{{user.errorMessage}}
+            </div>
+            <div v-if="!user.isNew" class="col-md-4">
+              <fg-input placeholder="Email Usuario" v-model="user.mail" @input="timedValidation(user)"></fg-input>
+            </div>
+            <div v-else class="col-md-4">
+              <fg-input placeholder="Email Usuario" v-model="user.mail" @input="timedValidation(user)"></fg-input>
+            </div>
+            <div v-if="user.isNew" class="col-md-4">
+              <fg-input placeholder="Contraseña" v-model="user.pass" typeof="password"></fg-input>
+            </div>
+            <div class="row-md-4">
+              <p-checkbox v-model="user.role.revisor">Revisor</p-checkbox>
+              <p-checkbox v-model="user.role.aprobador">Aprobador</p-checkbox>
+            </div>
           </div>
         </div>
         <div class="row"> <!-- PENDIENTE corregir alineación -->
@@ -47,7 +61,9 @@
                         v-if="etapas.error">{{etapas.errorMessage}}</label></small>
           <table>
             <td v-for="stage in availableStages">
-              <label :for="stage.label"><fg-input v-model="stage.title"></fg-input></label>
+              <label :for="stage.label">
+                <fg-input v-model="stage.title"></fg-input>
+              </label>
               <div>
                 <div class="datepicker-trigger">
                   <input
@@ -71,8 +87,8 @@
           </table>
         </div>
         <div class="custom-file">
-        <input type="file" class="custom-file-input" id="customFile">
-        <label class="custom-file-label" for="customFile">Subir versión completa Licitación</label>
+          <input type="file" class="custom-file-input" id="customFile">
+          <label class="custom-file-label" for="customFile">Subir versión completa Licitación</label>
         </div>
         <br><br>
         <button type="submit" class="btn btn-primary" @click="addBidding">Crear</button>
@@ -83,6 +99,7 @@
 
 <script>
   import format from 'date-fns/format'
+  import usersApi from 'src/apis/users'
   import PCheckbox from 'src/components/UIComponents/Inputs/Checkbox.vue'
 
   export default {
@@ -119,7 +136,8 @@
             amount: 2,
             payload: [],
             error: false,
-            errorMessage: ''
+            errorMessage: '',
+            validateTimeoutID: 0
           }
         }
       }
@@ -135,7 +153,25 @@
         }
         return formattedDates
       },
-      addBidding () {
+      timedValidation (user) {
+        clearTimeout(this.bidding.users.validateTimeoutID)
+        this.bidding.users.validateTimeoutID = setTimeout(() => { this.validateAccount(user) }, 500)
+      },
+      isMail (mail) {
+        return (/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(mail))
+      },
+      validateAccount (user) {
+        if (!this.isMail(user.mail)) {
+          user.error = true
+          user.errorMessage = 'Cuenta no válida. Debe ingresar un correro electrónico'
+        } else user.error = false
+        if (!user.error) {
+          usersApi.checkEmail(user.mail).then(res => { user.isNew = !res })
+          user.errorMessage = 'Usuario no creado. Se generará junto con una contraseña'
+        }
+        console.log(user.isNew)
+      },
+      checkBiddingInput () {
         if (!this.etapas.payload || !this.etapas.payload[0].dateOne || !this.etapas.payload[0].dateTwo) {
           this.etapas.error = true
           this.etapas.errorMessage = 'Debe definir las fechas de la Licitación'
@@ -152,12 +188,14 @@
           this.bidding.bases.error = true
           this.bidding.bases.errorMessage = 'Debe describir las bases de la Licitación'
         } else this.bidding.bases.error = false
-        if (!this.bidding.users.payload[0].name || (this.bidding.users.payload[0].role === 'Seleccione el Rol')) {
+        if (!this.bidding.users.payload[0].mail || (this.bidding.users.payload[0].role === 'Seleccione el Rol')) {
           this.bidding.users.error = true
-          this.bidding.users.errorMessage = 'Debe designar al menos un encargado a la Licitación'
+          this.bidding.users.errorMessage = 'Debe asociar al menos un usuario a la Licitación'
         } else this.bidding.users.error = false
+      },
+      parseBidding () {
         const self = this
-        const bidding = {
+        return {
           name: this.bidding.name,
           company: this.bidding.company,
           users: this.bidding.users,
@@ -176,6 +214,10 @@
             return stages
           })()
         }
+      },
+      addBidding () {
+        this.checkBiddingInput()
+        const bidding = this.parseBidding()
         //  TODO call api
       }
     },
@@ -184,11 +226,15 @@
         let users = []
         for (let i = 1; i <= this.bidding.users.amount; ++i) {
           let user = {
-            name: '',
+            mail: '',
             role: {
               revisor: false,
               aprobador: false
-            }
+            },
+            error: false,
+            errorMessage: '',
+            isNew: false,
+            pass: ''
           }
           users.push(user)
         }
