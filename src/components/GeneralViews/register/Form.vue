@@ -13,11 +13,13 @@
     <!-- DROP DOWNS -->
     <div>
       <label class="typo__label">Rubros</label>
-      <multiselect v-for="option in getOptions" v-bind:value="option.name" v-model="inputs.dropDowns.industries.values" :multiple="true" :close-on-select="false" :clear-on-select="false" :hide-selected="true" :preserve-search="true" placeholder="Seleccione sus rubros" label="code" track-by="code" :preselect-first="true">
+      <multiselect v-model="inputs.dropDowns.industries.values" :options="inputs.dropDowns.industries.options" :multiple="true" :close-on-select="false" :clear-on-select="false" :hide-selected="true"
+                   :preserve-search="false" placeholder="Seleccione sus rubros" label="name" track-by="inputs.dropDowns.name" :preselect-first="false">
         <template slot="tag" slot-scope="props"><span class="custom__tag"><span>{{ props.option.name }}</span><span class="custom__remove" @click="props.remove(props.option)">❌</span></span></template>
       </multiselect>
       <!--<pre class="language-json"><code>{{ inputs.dropDowns.industries.values }}</code></pre>-->
       <!-- :options="inputs.dropDowns.industries.options" -->
+      <!-- inputs.dropDowns.options.industries.name -->
     </div>
     <!-- TODO: With modal of Seba Puja and checkboxes filtered by a search field, it is its own component -->
     <!-- PASSWORDS -->
@@ -29,7 +31,7 @@
     <div class="col-12 align-center">
       <label v-if="thereAreFormErrors" class="control-label">
         Hay problemas en su registro, por favor ingrese todos los
-        campos que se encuentran detsacados en rojo.
+        campos que se encuentran destacados en rojo.
       </label>
       <label v-if="differencePasswordsError" class="control-label error">Las contraseñas no son iguales.</label>
       <label v-if="success" class="control-label success">Ha realizado con éxito su registro, redireccionando.</label>
@@ -89,7 +91,7 @@
           /* DROP DOWN INPUTS */
           dropDowns: {
             industries: {
-              options: usersApi.getIndustries(),
+              options: [],
               /*options: [
                 { name: 'JavaScript', language: 'JavaScript' },
                 { name: 'Ruby', language: 'Ruby' },
@@ -191,15 +193,22 @@
       focus () { this.$el.querySelector('input').focus() }
     },
     /* HOOKS OF THE COMPONENT */
-    created: {
-      getOptions: function () {
-        usersApi.getIndustries().catch(err => {
-          console.error(err)
-        })
-      }
-    },
-    mounted: function () { this.focus() }
+    created: function () {
+      const self = this
+      usersApi.getIndustries().then(data => {
+        var allIndustries = []
+        return Promise.all(data.map(current => {
+          allIndustries = allIndustries.concat(current.industries)
+          return current
+        })).then(() => { self.inputs.dropDowns.industries.options = allIndustries })
+          .catch(err => {
+            console.error(err)
+          })
+      })
+    }
+    // mounted: function () { this.focus() }
   }
+
 </script>
 
 <style src="vue-multiselect/dist/vue-multiselect.min.css"></style>
