@@ -13,10 +13,11 @@
     <!-- DROP DOWNS -->
     <div>
       <label class="typo__label">Rubros</label>
-      <multiselect v-model="inputs.dropDowns.industries.values" :options="inputs.dropDowns.industries.options" :multiple="true" :close-on-select="false" :clear-on-select="false" :hide-selected="true" :preserve-search="true" placeholder="Seleccione sus rubros" label="code" track-by="code" :preselect-first="true">
+      <multiselect v-for="option in getOptions" v-bind:value="option.name" v-model="inputs.dropDowns.industries.values" :multiple="true" :close-on-select="false" :clear-on-select="false" :hide-selected="true" :preserve-search="true" placeholder="Seleccione sus rubros" label="code" track-by="code" :preselect-first="true">
         <template slot="tag" slot-scope="props"><span class="custom__tag"><span>{{ props.option.name }}</span><span class="custom__remove" @click="props.remove(props.option)">❌</span></span></template>
       </multiselect>
       <!--<pre class="language-json"><code>{{ inputs.dropDowns.industries.values }}</code></pre>-->
+      <!-- :options="inputs.dropDowns.industries.options" -->
     </div>
     <!-- TODO: With modal of Seba Puja and checkboxes filtered by a search field, it is its own component -->
     <!-- PASSWORDS -->
@@ -190,17 +191,13 @@
       focus () { this.$el.querySelector('input').focus() }
     },
     /* HOOKS OF THE COMPONENT */
-    /* created: function () {
-      const self = this
-      usersApi.getIndustries().then(data => {
-        self.table.data = self.companiesToTable(data)
-      }).catch(err => {
-        console.error(err)
-        /* The user is not authorized to access here
-        self.$router.push('/')
-      })
+    created: {
+      getOptions: function () {
+        usersApi.getIndustries().catch(err => {
+          console.error(err)
+        })
+      }
     },
-  */
     mounted: function () { this.focus() }
   }
 </script>
