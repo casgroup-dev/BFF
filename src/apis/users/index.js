@@ -73,6 +73,10 @@ function isShadowUser (email) {
   })
 }
 
+/**
+ * Obtains every company
+ * @returns {Promise<any>}
+ */
 function getCompanies () {
   const generalError = new Error('Error de conexion.')
   return new Promise((resolve, reject) => {
@@ -90,6 +94,10 @@ function getCompanies () {
   })
 }
 
+/**
+ * Obtains every bidding that the user is allowed to see
+ * @returns {Promise<any>}
+ */
 function getBiddings () {
   const generalError = new Error('Error de conexion.')
   return new Promise((resolve, reject) => {
@@ -110,6 +118,27 @@ function getBiddings () {
       show: false
     }
     ]
+    return resolve(res)
+  })
+}
+
+function getCurrentBidding() {
+  const generalError = new Error('Error de conexion.')
+  return new Promise((resolve, reject) => {
+    var res = {
+      name: 'licit1',
+      bidderCompany: 'groupcas',
+      users: [{
+        id: '5af0656ab27a8e2d4c3e00ea',
+        role: 'companyAdmin',
+        password: 'pass'
+      }],
+      bases: ['portense bien'],
+      periods: [{
+        start: '1-1-2017',
+        end: '2-2-2017'
+      }]
+    }
     return resolve(res)
   })
 }
