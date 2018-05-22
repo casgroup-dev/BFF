@@ -4,11 +4,8 @@
 
 <script>
   export default {
-    name: 'licitation',
-    data: function () {
-      return {
-        title: "Nombre"
-      }
+    props: {
+      title: {type: String, required: true}
     }
   }
 </script>

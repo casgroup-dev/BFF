@@ -1,7 +1,7 @@
 <template>
   <ul class="flex-container">
     <ul class="flex-row">
-      <Title class="flex-row-item"></Title>
+      <Title class="flex-row-item" :title="bidding.name"></Title>
       <div class="flex-row-item">Stage</div>
       <div class="flex-row-item">Time Remaining</div>
     </ul>
@@ -23,6 +23,7 @@
 
 <script>
   import Title from './Components/Title'
+  import Participants from './Components/Participants'
   import usersApi from 'src/apis/users'
   export default {
     name: 'Layout',
@@ -31,11 +32,31 @@
     },
     data () {
       return {
-        bidding: []
+        bidding: {
+          name: {type: String},
+          bidderCompany: {type: String},
+          users: [{
+            id: {type: String},
+            role: {type: String},
+            password: {type: String}
+          }],
+          bases: [{type: String}],
+          periods: [{
+            start: {type: String},
+            end: {type: String}
+          }]
+        }
       }
     },
     created: function () {
-      //TODO: get bidding from API to fill children data
+      const self = this
+      usersApi.getCurrentBidding().then(data => {
+        self.bidding = data
+      }).catch(err => {
+        console.error(err)
+        /* The user is not authorized to access here */
+        self.$router.push('/')
+      })
     }
   }
 </script>
@@ -44,7 +65,7 @@
   .flex-row{
     display: flex;
     flex-direction: row;
-    background: blue;
+    /*background: blue;*/
     width: 100%;
     height: 10%;
     padding: 0;
@@ -53,12 +74,12 @@
 
   .flex-row-item {
     flex-grow: 1;
-    background: tomato;
+    /*background: tomato;*/
     padding: 5px;
     margin-top: 10px;
 
     line-height: 150px;
-    color: white;
+    /*color: white;*/
     font-weight: bold;
     font-size: 3em;
     text-align: center;

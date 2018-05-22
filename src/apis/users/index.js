@@ -124,9 +124,12 @@ function getBiddings () {
 
 function getCurrentBidding() {
   const generalError = new Error('Error de conexion.')
+  /* TODO: no traerse todo, solo lo que entregue la llamada a la API
+      que no debiese ser informacion sensible
+   */
   return new Promise((resolve, reject) => {
     var res = {
-      name: 'licit1',
+      name: 'Licitacion de Groupcas',
       bidderCompany: 'groupcas',
       users: [{
         id: '5af0656ab27a8e2d4c3e00ea',
@@ -273,5 +276,6 @@ export default {
   registerProvider,
   getCompanies,
   getBiddings,
+  getCurrentBidding,
   invitationsToBidding
 }
