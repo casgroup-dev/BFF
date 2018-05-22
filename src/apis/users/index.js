@@ -122,7 +122,11 @@ function getBiddings () {
   })
 }
 
-function getCurrentBidding() {
+/**
+ * Obtains the information of the selected bidding to fill the dashboard
+ * @returns {Promise<any>}
+ */
+function getCurrentBidding () {
   const generalError = new Error('Error de conexion.')
   /* TODO: no traerse todo, solo lo que entregue la llamada a la API
       que no debiese ser informacion sensible
@@ -140,7 +144,9 @@ function getCurrentBidding() {
       periods: [{
         start: '1-1-2017',
         end: '2-2-2017'
-      }]
+      }],
+      step: 2,
+      stages: 2
     }
     return resolve(res)
   })

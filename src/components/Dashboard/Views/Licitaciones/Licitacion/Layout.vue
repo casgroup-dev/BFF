@@ -2,7 +2,7 @@
   <ul class="flex-container">
     <ul class="flex-row">
       <Title class="flex-row-item" :title="bidding.name"></Title>
-      <div class="flex-row-item">Stage</div>
+      <div class="flex-row-item">Step</div>
       <div class="flex-row-item">Time Remaining</div>
     </ul>
     <ul class="flex-row">
@@ -11,11 +11,11 @@
     <ul class="flex-row">
       <div class="flex-row-item">Bases</div>
     </ul>
-    <ul class="flex-row">
-      <div class="flex-row-item">Oferta Tecnica</div>
-      <div class="flex-row-item">Oferta Economica</div>
+    <ul class="flex-row" v-if="seeTecOffer || seeEcoOffer">
+      <div class="flex-row-item" v-if="seeTecOffer">Oferta Tecnica</div>
+      <div class="flex-row-item" v-if="seeEcoOffer">Oferta Economica</div>
     </ul>
-    <ul class="flex-row">
+    <ul class="flex-row" v-if="seeResult">
       <div class="flex-row-item">Resultado</div>
     </ul>
   </ul>
@@ -44,7 +44,53 @@
           periods: [{
             start: {type: String},
             end: {type: String}
-          }]
+          }],
+          step: {type: Number},
+          stages: {type: Number}
+        },
+        seeTecOffer: false,
+        seeEcoOffer: false,
+        uploadTecOffer: false,
+        uploadEcoOffer: false,
+        seeResult: false,
+
+        /* authorized only */
+        downloadTecOffers: false,
+        downloadEcoOffers: false,
+        giveResult: false,
+        uploadRules: false
+      }
+    },
+    methods: {
+      showComponents: function (self) {
+        if (self.bidding.stages === 1) {
+          if (self.bidding.step >= 2) {
+            self.seeTecOffer = true
+            self.seeEcoOffer = true
+          }
+          if (self.bidding.step === 2) {
+            self.uploadTecOffer = true
+            self.uploadEcoOffer = true
+          }
+          if (self.data.bidding.step === 4) {
+            self.seeResult = true
+          }
+        } else {
+          if (self.bidding.step >= 2) {
+            self.seeTecOffer = true
+          }
+          if (self.bidding.step === 2) {
+            self.uploadTecOffer = true
+          }
+          if (self.bidding.step >= 3) {
+            self.seeEcoOffer = true
+          }
+          if (self.bidding.step === 4) {
+            self.uploadEcoOffer = true
+          }
+          if (self.bidding.step === 5) {
+            self.seeResult = true
+          }
         }
       }
     },
@@ -52,6 +98,7 @@
       const self = this
       usersApi.getCurrentBidding().then(data => {
         self.bidding = data
+        self.showComponents(self)
       }).catch(err => {
         console.error(err)
         /* The user is not authorized to access here */
