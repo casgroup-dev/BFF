@@ -11,9 +11,11 @@
     <ul class="flex-row">
       <div class="flex-row-item">Bases</div>
     </ul>
-    <ul class="flex-row" v-if="seeTecOffer || seeEcoOffer">
-      <FileInputCard class="flex-row-item" :title="'Oferta Técnica'" v-if="seeTecOffer"></FileInputCard>
-      <FileInputCard class="flex-row-item" :title="'Oferta Económica'" :iconColor="'#D32F2F'" v-if="seeEcoOffer"></FileInputCard>
+    <ul class="flex-row" v-if="uploadTecOffer || uploadEcoOffer || downloadTecOffers || downloadEcoOffers">
+      <FileInputCard class="flex-row-item" :title="'Subir Oferta Técnica'" v-if="uploadTecOffer"></FileInputCard>
+      <div class="flex-row-item" v-if="downloadTecOffers">Download Tec</div>
+      <FileInputCard class="flex-row-item" :title="'Subir Oferta Económica'" :iconColor="'#D32F2F'" v-if="uploadEcoOffer"></FileInputCard>
+      <div class="flex-row-item" v-if="downloadEcoOffers">Download Eco</div>
     </ul>
     <ul class="flex-row" v-if="seeResult">
       <div class="flex-row-item">Resultado</div>
@@ -50,48 +52,42 @@
           step: {type: Number},
           stages: {type: Number}
         },
-        seeTecOffer: false,
-        seeEcoOffer: false,
         uploadTecOffer: false,
         uploadEcoOffer: false,
-        seeResult: false,
-
-        /* authorized only */
         downloadTecOffers: false,
         downloadEcoOffers: false,
+        seeResult: false,
         giveResult: false,
         uploadRules: false
       }
     },
     methods: {
-      showComponents: function (self) {
+      showProviderComponents: function (self) {
         if (self.bidding.stages === 1) {
-          if (self.bidding.step >= 2) {
-            self.seeTecOffer = true
-            self.seeEcoOffer = true
-          }
           if (self.bidding.step === 2) {
             self.uploadTecOffer = true
             self.uploadEcoOffer = true
           }
-          if (self.data.bidding.step === 4) {
+          if (self.bidding.step >= 3) {
+            self.downloadTecOffers = true
+            self.downloadEcoOffers = true
+          }
+          if (self.bidding.step === 4) {
             self.seeResult = true
           }
         } else {
-          if (self.bidding.step >= 2) {
-            self.seeTecOffer = true
-          }
           if (self.bidding.step === 2) {
             self.uploadTecOffer = true
           }
           if (self.bidding.step >= 3) {
-            self.seeEcoOffer = true
+            self.downloadTecOffers = true
           }
           if (self.bidding.step === 4) {
             self.uploadEcoOffer = true
           }
           if (self.bidding.step === 5) {
             self.seeResult = true
+            self.downloadEcoOffers = true
           }
         }
       }
@@ -100,7 +96,7 @@
       const self = this
       usersApi.getCurrentBidding().then(data => {
         self.bidding = data
-        self.showComponents(self)
+        self.showProviderComponents(self)
       }).catch(err => {
         console.error(err)
         /* The user is not authorized to access here */
