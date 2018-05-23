@@ -9,13 +9,16 @@
       <div class="flex-row-item">Timeline</div>
     </ul>
     <ul class="flex-row" v-if="uploadRules || downloadRules">
-      <FileInputCard class="flex-row-item" :title="'Subir Bases'" :iconColor="'#22a045'" v-if="uploadRules"></FileInputCard>
+      <FileInputCard class="flex-row-item" :title="'Subir Bases'" :iconColor="'#22a045'" v-if="uploadRules"
+                     @uploaded="handleUploadedRules"></FileInputCard>
       <div class="flex-row-item" v-if="downloadRules">Descargar Bases</div>
     </ul>
     <ul class="flex-row" v-if="uploadTecOffer || uploadEcoOffer || downloadTecOffers || downloadEcoOffers">
-      <FileInputCard class="flex-row-item" :title="'Subir Oferta Técnica'" v-if="uploadTecOffer"></FileInputCard>
+      <FileInputCard class="flex-row-item" :title="'Subir Oferta Técnica'" v-if="uploadTecOffer"
+                     @uploaded="handleUploadedTecnicalOffer"></FileInputCard>
       <div class="flex-row-item" v-if="downloadTecOffers">Descargar Oferta Técnica</div>
-      <FileInputCard class="flex-row-item" :title="'Subir Oferta Económica'" :iconColor="'#D32F2F'" v-if="uploadEcoOffer"></FileInputCard>
+      <FileInputCard class="flex-row-item" :title="'Subir Oferta Económica'" :iconColor="'#D32F2F'" v-if="uploadEcoOffer"
+                     @uploaded="handleUploadedEconomicOffer"></FileInputCard>
       <div class="flex-row-item" v-if="downloadEcoOffers">Descargar Oferta Económica</div>
     </ul>
     <ul class="flex-row" v-if="seeResult">
@@ -99,6 +102,15 @@
         self.downloadTecOffers = true
         self.giveResult = true
         self.uploadRules = true
+      },
+      handleUploadedRules: function (url) {
+
+      },
+      handleUploadedTecnicalOffer: function (url) {
+
+      },
+      handleUploadedEconomicOffer: function (url) {
+
       }
     },
     created: function () {
