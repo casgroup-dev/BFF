@@ -146,7 +146,7 @@ function getCurrentBidding () {
         start: '1-1-2017',
         end: '2-2-2017'
       }],
-      step: 2,
+      step: 4,
       stages: 2
     }
     return resolve(res)

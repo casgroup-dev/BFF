@@ -12,8 +12,8 @@
       <div class="flex-row-item">Bases</div>
     </ul>
     <ul class="flex-row" v-if="seeTecOffer || seeEcoOffer">
-      <div class="flex-row-item" v-if="seeTecOffer">Oferta Tecnica</div>
-      <div class="flex-row-item" v-if="seeEcoOffer">Oferta Economica</div>
+      <FileInputCard class="flex-row-item" :title="'Oferta Técnica'" v-if="seeTecOffer"></FileInputCard>
+      <FileInputCard class="flex-row-item" :title="'Oferta Económica'" :iconColor="'#D32F2F'" v-if="seeEcoOffer"></FileInputCard>
     </ul>
     <ul class="flex-row" v-if="seeResult">
       <div class="flex-row-item">Resultado</div>
@@ -24,10 +24,12 @@
 <script>
   import Title from './Components/Title'
   import Participants from './Components/Participants'
+  import FileInputCard from 'src/components/UIComponents/Inputs/FileInputCard'
   import usersApi from 'src/apis/users'
   export default {
     name: 'Layout',
     components: {
+      FileInputCard,
       Title
     },
     data () {
@@ -125,10 +127,10 @@
     padding: 5px;
     margin-top: 10px;
 
-    line-height: 150px;
-    /*color: white;*/
-    font-weight: bold;
-    font-size: 3em;
+    /*line-height: 150px;*/
+    /* color: white; */
+    /* font-weight: bold; */
+    /* font-size: 3em; */
     text-align: center;
   }
 
