@@ -135,7 +135,7 @@ function getCurrentBidding () {
   return new Promise((resolve, reject) => {
     var res = {
       name: 'Licitacion de Groupcas',
-      bidderCompany: 'groupcas',
+      bidderCompany: '',
       users: [{
         id: '5af0656ab27a8e2d4c3e00ea',
         role: 'companyAdmin',

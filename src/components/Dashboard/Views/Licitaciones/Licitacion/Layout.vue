@@ -2,20 +2,21 @@
   <ul class="flex-container">
     <ul class="flex-row">
       <Title class="flex-row-item" :title="bidding.name"></Title>
-      <div class="flex-row-item">Step</div>
+      <div class="flex-row-item"></div>
       <div class="flex-row-item">Time Remaining</div>
     </ul>
     <ul class="flex-row">
       <div class="flex-row-item">Timeline</div>
     </ul>
-    <ul class="flex-row">
-      <div class="flex-row-item">Bases</div>
+    <ul class="flex-row" v-if="uploadRules || downloadRules">
+      <FileInputCard class="flex-row-item" :title="'Subir Bases'" :iconColor="'#22a045'" v-if="uploadRules"></FileInputCard>
+      <div class="flex-row-item" v-if="downloadRules">Descargar Bases</div>
     </ul>
     <ul class="flex-row" v-if="uploadTecOffer || uploadEcoOffer || downloadTecOffers || downloadEcoOffers">
       <FileInputCard class="flex-row-item" :title="'Subir Oferta Técnica'" v-if="uploadTecOffer"></FileInputCard>
-      <div class="flex-row-item" v-if="downloadTecOffers">Download Tec</div>
+      <div class="flex-row-item" v-if="downloadTecOffers">Descargar Oferta Técnica</div>
       <FileInputCard class="flex-row-item" :title="'Subir Oferta Económica'" :iconColor="'#D32F2F'" v-if="uploadEcoOffer"></FileInputCard>
-      <div class="flex-row-item" v-if="downloadEcoOffers">Download Eco</div>
+      <div class="flex-row-item" v-if="downloadEcoOffers">Descargar Oferta Económica</div>
     </ul>
     <ul class="flex-row" v-if="seeResult">
       <div class="flex-row-item">Resultado</div>
@@ -58,11 +59,13 @@
         downloadEcoOffers: false,
         seeResult: false,
         giveResult: false,
-        uploadRules: false
+        uploadRules: false,
+        downloadRules: false
       }
     },
     methods: {
       showProviderComponents: function (self) {
+        self.downloadRules = true
         if (self.bidding.stages === 1) {
           if (self.bidding.step === 2) {
             self.uploadTecOffer = true
@@ -90,13 +93,24 @@
             self.downloadEcoOffers = true
           }
         }
+      },
+      showAdminComponents: function (self) {
+        self.downloadEcoOffers = true
+        self.downloadTecOffers = true
+        self.giveResult = true
+        self.uploadRules = true
       }
     },
     created: function () {
       const self = this
       usersApi.getCurrentBidding().then(data => {
         self.bidding = data
-        self.showProviderComponents(self)
+        /* Check permissions to see components */
+        if (self.bidding.bidderCompany.length === 0) {
+          self.showProviderComponents(self)
+        } else {
+          self.showAdminComponents(self)
+        }
       }).catch(err => {
         console.error(err)
         /* The user is not authorized to access here */
@@ -110,7 +124,6 @@
   .flex-row{
     display: flex;
     flex-direction: row;
-    /*background: blue;*/
     width: 100%;
     height: 10%;
     padding: 0;
@@ -119,14 +132,8 @@
 
   .flex-row-item {
     flex-grow: 1;
-    /*background: tomato;*/
     padding: 5px;
     margin-top: 10px;
-
-    /*line-height: 150px;*/
-    /* color: white; */
-    /* font-weight: bold; */
-    /* font-size: 3em; */
     text-align: center;
   }
 
