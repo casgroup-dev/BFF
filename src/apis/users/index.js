@@ -7,7 +7,8 @@ const routes = {
   companies: '/companies',
   login: '/auth/login',
   shadowUsers: '/shadow/users',
-  users: '/users'
+  users: '/users',
+  signPutObject: '/auth/sign/put'
 }
 
 /**
@@ -273,6 +274,20 @@ const token = {
   remove: () => localStorage.removeItem(TOKEN_NAME)
 }
 
+/**
+ * Returns a promise that resolves with the signed url to put the object in S3 and the url where the object will reside.
+ * @param {String} fileName
+ * @param {String} contentType
+ * @returns {Promise<AxiosResponse<Object>>}
+ */
+function getSignedUrlToPutObject (fileName, contentType) {
+  return axios.get(getRouteWithToken(routes.signPutObject) + `&fileName=${fileName}&contentType=${contentType}`)
+    .then(res => {
+      if (res.data.signedRequest && res.data.url) return res.data
+      if (res.data.error) throw new Error('Problem with the request to sign the url to put an object.')
+    })
+}
+
 export default {
   isLoggedIn,
   isShadowUser,
@@ -283,5 +298,6 @@ export default {
   getCompanies,
   getBiddings,
   getCurrentBidding,
-  invitationsToBidding
+  invitationsToBidding,
+  getSignedUrlToPutObject
 }
