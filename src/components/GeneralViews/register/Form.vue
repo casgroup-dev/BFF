@@ -13,13 +13,10 @@
     <!-- DROP DOWNS -->
     <div>
       <label class="typo__label">Rubros</label>
-      <multiselect v-model="inputs.dropDowns.industries.values" :options="inputs.dropDowns.industries.options" :multiple="true" :close-on-select="false" :clear-on-select="false" :hide-selected="true"
-                   :preserve-search="false" placeholder="Seleccione sus rubros" label="name" track-by="inputs.dropDowns.name" :preselect-first="false">
+      <multiselect v-model="inputs.dropDowns.industries.values" :options="inputs.dropDowns.industries.options" :multiple="true" :close-on-select="false" :clear-on-select="true" :hide-selected="true" :preserve-search="false" placeholder="Selecciones sus rubros" label="name" track-by="name" :preselect-first="true">
         <template slot="tag" slot-scope="props"><span class="custom__tag"><span>{{ props.option.name }}</span><span class="custom__remove" @click="props.remove(props.option)">❌</span></span></template>
       </multiselect>
-      <!--<pre class="language-json"><code>{{ inputs.dropDowns.industries.values }}</code></pre>-->
-      <!-- :options="inputs.dropDowns.industries.options" -->
-      <!-- inputs.dropDowns.options.industries.name -->
+      <pre class="language-json"><code>{{ value  }}</code></pre>
     </div>
     <!-- TODO: With modal of Seba Puja and checkboxes filtered by a search field, it is its own component -->
     <!-- PASSWORDS -->
@@ -139,8 +136,8 @@
         for (let key of Object.keys(this.inputs.dropDowns)) {
           const dropDown = this.inputs.dropDowns[key]
           // TODO: Uncomment this when the dropdowns are ready
-          // if (dropDown.options.selected.length === 0) this.thereAreFormErrors = dropDown.error = true
-          // else dropDown.error = false
+          if (dropDown.options.selected.length === 0) this.thereAreFormErrors = dropDown.error = true
+          else dropDown.error = false
         }
         /* Passwords: Must contain same text */
         const passwords = this.inputs.passwords
