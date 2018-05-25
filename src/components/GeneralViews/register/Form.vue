@@ -14,7 +14,7 @@
     <div>
       <label class="typo__label">Rubros</label>
       <multiselect v-model="inputs.dropDowns.industries.values" :options="inputs.dropDowns.industries.options" :multiple="true" :close-on-select="false" :clear-on-select="true" :hide-selected="true" :preserve-search="false" placeholder="Selecciones sus rubros" label="name" track-by="name" :preselect-first="true">
-        <template slot="tag" slot-scope="props"><span class="custom__tag"><span>{{ props.option.name }}</span><span class="custom__remove" @click="props.remove(props.option)">❌</span></span></template>
+        <template slot="tag" slot-scope="props"><span class="custom__tag"><span>{{ props.option.name }}</span><span class="custom__remove" @click="props.remove(props.option)">❌<br></span></span></template>
       </multiselect>
     </div>
     <!-- TODO: With modal of Seba Puja and checkboxes filtered by a search field, it is its own component -->
