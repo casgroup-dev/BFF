@@ -16,7 +16,6 @@
       <multiselect v-model="inputs.dropDowns.industries.values" :options="inputs.dropDowns.industries.options" :multiple="true" :close-on-select="false" :clear-on-select="true" :hide-selected="true" :preserve-search="false" placeholder="Selecciones sus rubros" label="name" track-by="name" :preselect-first="true">
         <template slot="tag" slot-scope="props"><span class="custom__tag"><span>{{ props.option.name }}</span><span class="custom__remove" @click="props.remove(props.option)">❌</span></span></template>
       </multiselect>
-      <pre class="language-json"><code>{{ value  }}</code></pre>
     </div>
     <!-- TODO: With modal of Seba Puja and checkboxes filtered by a search field, it is its own component -->
     <!-- PASSWORDS -->
@@ -89,11 +88,6 @@
           dropDowns: {
             industries: {
               options: [],
-              /*options: [
-                { name: 'JavaScript', language: 'JavaScript' },
-                { name: 'Ruby', language: 'Ruby' },
-                { name: 'PHP', language: 'PHP' },
-                { name: 'Elixir', language: 'Elixir' }],*/
               values: [],
               error: false
             }
