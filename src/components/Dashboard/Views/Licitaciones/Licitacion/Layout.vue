@@ -9,17 +9,31 @@
       <div class="flex-row-item">Timeline</div>
     </ul>
     <ul class="flex-row" v-if="uploadRules || downloadRules">
-      <FileInputCard class="flex-row-item" :title="'Subir Bases'" :iconColor="'#22a045'" v-if="uploadRules"
-                     @uploaded="handleUploadedRules"></FileInputCard>
-      <div class="flex-row-item" v-if="downloadRules">Descargar Bases</div>
+      <FileInputCard class="flex-row-item" :title="'Subir Bases'" @uploaded="handleUploadedRules"
+                     :iconColor="'#22a045'"
+                     :buttonColor="'#22a045'"
+                     v-if="uploadRules"></FileInputCard>
+      <FileDownloadCard class="flex-row-item"
+                        :iconColor="'#f49521'"
+                        :buttonColor="'#f49521'"
+                        :files="bidding.rules"
+                        v-if="downloadRules">Descargar Bases</FileDownloadCard>
     </ul>
     <ul class="flex-row" v-if="uploadTecOffer || uploadEcoOffer || downloadTecOffers || downloadEcoOffers">
-      <FileInputCard class="flex-row-item" :title="'Subir Oferta Técnica'" v-if="uploadTecOffer"
-                     @uploaded="handleUploadedTecnicalOffer"></FileInputCard>
-      <div class="flex-row-item" v-if="downloadTecOffers">Descargar Oferta Técnica</div>
-      <FileInputCard class="flex-row-item" :title="'Subir Oferta Económica'" :iconColor="'#D32F2F'" v-if="uploadEcoOffer"
-                     @uploaded="handleUploadedEconomicOffer"></FileInputCard>
-      <div class="flex-row-item" v-if="downloadEcoOffers">Descargar Oferta Económica</div>
+      <FileInputCard class="flex-row-item" :title="'Subir Oferta Técnica'" @uploaded="handleUploadedTecOffer"
+                     v-if="uploadTecOffer"></FileInputCard>
+      <FileDownloadCard class="flex-row-item" :title="'Descargar Oferta Técnica'"
+                        :files="bidding.tecOffers"
+                        v-if="downloadTecOffers">Descargar Oferta Técnica</FileDownloadCard>
+      <FileInputCard class="flex-row-item" :title="'Subir Oferta Económica'" @uploaded="handleUploadedEcoOffer"
+                     :iconColor="'#d319a7'"
+                     :buttonColor="'#d319a7'"
+                     v-if="uploadEcoOffer"></FileInputCard>
+      <FileDownloadCard class="flex-row-item" :title="'Descargar Oferta Económica'"
+                        :iconColor="'#d319a7'"
+                        :buttonColor="'#d319a7'"
+                        :files="bidding.ecoOffers"
+                        v-if="downloadEcoOffers">Descargar Oferta Económica</FileDownloadCard>
     </ul>
     <ul class="flex-row" v-if="seeResult">
       <div class="flex-row-item">Resultado</div>
@@ -32,9 +46,11 @@
   import Participants from './Components/Participants'
   import FileInputCard from 'src/components/UIComponents/Inputs/FileInputCard'
   import usersApi from 'src/apis/users'
+  import FileDownloadCard from '../../../../UIComponents/Inputs/FileDownloadCard';
   export default {
     name: 'Layout',
     components: {
+      FileDownloadCard,
       FileInputCard,
       Title
     },
@@ -48,13 +64,33 @@
             role: {type: String},
             password: {type: String}
           }],
-          bases: [{type: String}],
+          rules: [{
+            fileName: {type: String},
+            url: {type: String},
+            user: {
+              id: {type: String}
+            }
+          }],
           periods: [{
             start: {type: String},
             end: {type: String}
           }],
           step: {type: Number},
-          stages: {type: Number}
+          stages: {type: Number},
+          tecOffers: [{
+            fileName: {type: String},
+            url: {type: String},
+            user: {
+              id: {type: String}
+            }
+          }],
+          ecoOffers: [{
+            fileName: {type: String},
+            url: {type: String},
+            user: {
+              id: {type: String}
+            }
+          }]
         },
         uploadTecOffer: false,
         uploadEcoOffer: false,
@@ -103,14 +139,36 @@
         self.giveResult = true
         self.uploadRules = true
       },
-      handleUploadedRules: function (url) {
-
+      handleUploadedRules: function (url, fileName) {
+        this.bidding.rules.fileName = fileName
+        this.bidding.rules.url = url
+        // TODO: PUT to API and overwrite rules
       },
-      handleUploadedTecnicalOffer: function (url) {
-
+      handleUploadedTecOffer: function (url, fileName) {
+        // TODO: que pasa si el proveedor quiere sobreescribir un archivo anterior?
+        const newTecOffer = {
+          fileName: fileName,
+          url: url,
+          user: {
+            /* I assume that I receive only my user if I'm a provider */
+            id: this.bidding.users[0].id
+          }
+        }
+        this.bidding.tecOffers.append(newTecOffer)
+        // TODO: PUT to API adding a new downloadable file
       },
-      handleUploadedEconomicOffer: function (url) {
-
+      handleUploadedEcoOffer: function (url, fileName) {
+        // TODO: que pasa si el proveedor quiere sobreescribir un archivo anterior?
+        const newEcoOffer = {
+          fileName: fileName,
+          url: url,
+          user: {
+            /* I assume that I receive only my user if I'm a provider */
+            id: this.bidding.users[0].id
+          }
+        }
+        this.bidding.ecoOffers.append(newEcoOffer)
+        // TODO: PUT to API adding a new downloadable file
       }
     },
     created: function () {
