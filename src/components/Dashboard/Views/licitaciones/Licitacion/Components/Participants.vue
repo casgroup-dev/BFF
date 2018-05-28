@@ -1,35 +1,58 @@
 <template>
-  <stats-card>
-    <div slot="header" class="icon-success">
-      <i v-if="icon" :class="`fa ${icon} icon`" :style="{color: iconColor}"></i>
-    </div>
-    <div slot="content" class="numbers">
-      <p>Participantes</p>{{ participants.length }}
-    </div>
-    <div slot="footer">
-      <button v-if="participants.length" class="btn btn-fill btn-round"
-              :style="{backgroundColor: buttonColor}">
-        <i class="fa fa-users"></i> Ver Participantes
-      </button>
-    </div>
-  </stats-card>
+  <div class="content">
+    <stats-card>
+      <div slot="header" class="icon-success">
+        <i v-if="icon" :class="`fa ${icon} icon`" :style="{color: iconColor}"></i>
+      </div>
+      <div slot="content" class="numbers">
+        <p>Participantes</p>{{ participants.length }}
+      </div>
+      <div slot="footer">
+        <button v-if="participants.length" class="btn btn-fill btn-round"
+                :style="{backgroundColor: buttonColor}"
+                @click="showParticipantsModal()">
+          <i class="fa fa-users"></i> Ver Participantes
+        </button>
+      </div>
+    </stats-card>
+    <modal v-if="showParticipants">
+      <template slot="header">
+        <h4 class="no-margin">Participantes</h4>
+      </template>
+      <template slot="body">
+        <l-table class="table table-hover table-striped" :columns="tableColumns" :data="tableData">
+        </l-table>
+      </template>
+      <template slot="footer">
+        <button class="btn btn-round btn-default" @click="cancelModal">
+          <span class="btn-label"><i class="fa fa-times"></i></span> Regresar
+        </button>
+      </template>
+    </modal>
+  </div>
 </template>
 
 <script>
   import StatsCard from 'src/components/UIComponents/Cards/StatsCard.vue'
+  import Modal from 'src/components/UIComponents/Modal/Modal.vue'
+  import LTable from 'src/components/UIComponents/Table.vue'
 
   const defaultColor = '#02B2A9'
+  const emptyArray = []
 
   export default {
-
-    components: {
-      StatsCard
-    },
-
     data () {
       return {
-        participants: [136689]
+        tableColumns: ['Razón Social', 'Email Admin Proveedor', 'Telefono Admin Proveedor'],
+        tableData: [],
+        showParticipants: false
       }
+    },
+
+    components: {
+      StatsCard,
+      Modal,
+      LTable
     },
 
     props: {
@@ -52,6 +75,10 @@
       titleSize: {
         type: String,
         default: '30px'
+      },
+      participants: {
+        type: Array,
+        default: emptyArray
       }
     },
 
@@ -60,7 +87,13 @@
     },
 
     methods: {
-
+      showParticipantsModal: function () {
+        this.showParticipants = true
+        this.tableData = this.participants
+      },
+      cancelModal: function () {
+        this.showParticipants = false
+      }
     }
   }
 </script>
