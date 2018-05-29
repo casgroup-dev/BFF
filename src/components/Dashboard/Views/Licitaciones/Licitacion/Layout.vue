@@ -2,17 +2,13 @@
   <div class="full-height">
     <div class="flex-container" v-if="bidding">
       <!-- TITLE -->
-      <div class="flex-row"><Title class="flex-row-item" :title="bidding.name"></Title></div>
+      <div class="flex-row"><h1 class="title">{{ bidding.name }}</h1></div>
+      <!-- SUMMARY -->
       <div class="flex-row" v-if="bidding.rulesSummary"><p class="rules-summary">{{ bidding.rulesSummary }}</p></div>
-      <div class="flex-row">
-        <div class="flex-row-item">Timeline</div>
-      </div>
-      <!-- RULES: Upload and download the bidding rules. -->
+      <!-- TIMELINE -->
+      <!-- <div class="flex-row"></div> -->
+      <!-- RULES -->
       <div class="flex-row" v-if="uploadRules || downloadRules">
-        <FileInputCard class="flex-row-item" title="Subir Bases" @uploaded="handleUploadedRules"
-                       :iconColor="'#22a045'"
-                       :buttonColor="'#22a045'"
-                       v-if="uploadRules"/>
         <FileDownloadCard class="flex-row-item"
                           :iconColor="'#f49521'"
                           :buttonColor="'#f49521'"
@@ -40,15 +36,16 @@
         </FileDownloadCard>
       </div>
       <!-- FINAL RESULT OF THE BIDDING -->
+      <!--
       <div class="flex-row" v-if="seeResult">
         <div class="flex-row-item">Resultado</div>
       </div>
+      -->
     </div>
   </div>
 </template>
 
 <script>
-  import Title from './Components/Title'
   import FileInputCard from 'src/components/UIComponents/Inputs/FileInputCard'
   import usersApi from 'src/apis/users'
   import FileDownloadCard from '../../../../UIComponents/Inputs/FileDownloadCard'
@@ -57,7 +54,6 @@
     components: {
       FileDownloadCard,
       FileInputCard,
-      Title
     },
     data () {
       return {
@@ -108,11 +104,6 @@
         self.downloadTecOffers = true
         self.giveResult = true
         self.uploadRules = true
-      },
-      handleUploadedRules: function (url, fileName) {
-        this.bidding.rules.fileName = fileName
-        this.bidding.rules.url = url
-        // TODO: PUT to API and overwrite rules
       },
       handleUploadedTecOffer: function (url, fileName) {
         // TODO: que pasa si el proveedor quiere sobreescribir un archivo anterior?
@@ -197,6 +188,11 @@
   }
 
   .rules-summary {
-    margin: 0 20px;
+    margin: 0 20px 20px;
+  }
+
+  .title {
+    font-weight: 400;
+    color: #616161;
   }
 </style>
