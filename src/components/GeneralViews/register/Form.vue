@@ -11,6 +11,16 @@
       <label slot="label" :class="`control-label ${input.error ? 'error' : ''}`">{{ input.label }}</label>
     </fg-input>
     <!-- DROP DOWNS -->
+    <div>
+      <label class="typo__label">Rubros</label>
+      <multiselect v-model="inputs.dropDowns.industries.values" :options="inputs.dropDowns.industries.options"
+                   :multiple="true" :close-on-select="false" :clear-on-select="true" :hide-selected="true"
+                   :preserve-search="false" placeholder="Seleccione sus rubros" label="name" track-by="name"
+                   :preselect-first="true">
+        <template slot="tag" slot-scope="props"><span class="custom__tag"><span>{{ props.option.name }}</span><span
+          title="Eliminar" class="custom__remove" @click="props.remove(props.option)">&nbsp;❌<br></span></span></template>
+      </multiselect>
+    </div>
     <!-- TODO: With modal of Seba Puja and checkboxes filtered by a search field, it is its own component -->
     <!-- PASSWORDS -->
     <fg-input v-for="(input, index) in inputs.passwords" :key="index"
@@ -21,7 +31,7 @@
     <div class="col-12 align-center">
       <label v-if="thereAreFormErrors" class="control-label">
         Hay problemas en su registro, por favor ingrese todos los
-        campos que se encuentran detsacados en rojo.
+        campos que se encuentran destacados en rojo.
       </label>
       <label v-if="differencePasswordsError" class="control-label error">Las contraseñas no son iguales.</label>
       <label v-if="success" class="control-label success">Ha realizado con éxito su registro, redireccionando.</label>
@@ -44,6 +54,7 @@
   import Card from '../../UIComponents/Cards/Card'
   import usersApi from '../../../apis/users'
   import ClipLoader from 'vue-spinner/src/ClipLoader'
+  import Multiselect from 'vue-multiselect'
 
   export default {
     props: {
@@ -81,7 +92,7 @@
           dropDowns: {
             industries: {
               options: [],
-              selected: [],
+              values: [],
               error: false
             }
           },
@@ -103,7 +114,8 @@
     /* OTHER COMPONENTS USED IN THIS COMPONENT */
     components: {
       Card,
-      ClipLoader
+      ClipLoader,
+      Multiselect
     },
     /* METHODS/FUNCTIONS OF THIS COMPONENT */
     methods: {
@@ -122,8 +134,8 @@
         for (let key of Object.keys(this.inputs.dropDowns)) {
           const dropDown = this.inputs.dropDowns[key]
           // TODO: Uncomment this when the dropdowns are ready
-          // if (dropDown.options.selected.length === 0) this.thereAreFormErrors = dropDown.error = true
-          // else dropDown.error = false
+          if (dropDown.options.selected.length === 0) this.thereAreFormErrors = dropDown.error = true
+          else dropDown.error = false
         }
         /* Passwords: Must contain same text */
         const passwords = this.inputs.passwords
@@ -135,6 +147,9 @@
         else this.differencePasswordsError = false
         /* RETURN TRUE IF THERE ARE NO ERRORS */
         return !this.thereAreFormErrors
+      },
+      getIndustries () {
+        return usersApi.getIndustries()
       },
       /**
        * Check that the data of the form is filled (not empty values) and call the register API.
@@ -173,9 +188,25 @@
       focus () { this.$el.querySelector('input').focus() }
     },
     /* HOOKS OF THE COMPONENT */
-    mounted: function () { this.focus() }
+    created: function () {
+      const self = this
+      usersApi.getIndustries().then(data => {
+        let allIndustries = []
+        return Promise.all(data.map(current => {
+          allIndustries = allIndustries.concat(current.industries)
+          return current
+        })).then(() => { self.inputs.dropDowns.industries.options = allIndustries })
+          .catch(err => {
+            console.error(err)
+          })
+      })
+    }
+    // mounted: function () { this.focus() }
   }
+
 </script>
+
+<style src="vue-multiselect/dist/vue-multiselect.min.css"></style>
 
 <style scoped>
   label.error {
