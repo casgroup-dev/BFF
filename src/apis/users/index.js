@@ -9,7 +9,8 @@ const routes = {
   shadowUsers: '/shadow/users',
   users: '/users',
   industries: '/industries',
-  signPutObject: '/auth/sign/put'
+  signPutObject: '/auth/sign/put',
+  biddings: '/biddings'
 }
 
 /**
@@ -289,6 +290,64 @@ async function registerProvider (name, rut, email) {
   })
 }
 
+/**
+ * Check if email exists in database.
+ * @param email
+ * @returns {Promise<any>}
+ */
+async function checkEmail (email) {
+  if (!email) {
+    throw new Error('Mail is mandatory.')
+  }
+  return axios.get(endpoint + routes.shadowUsers + '/' + email).then(res => {
+  // return axios.get(getRouteWithToken(routes.users), email).then(res => {
+    return !res.data.error
+  })
+}
+
+
+/**
+ * Creates a bidding
+ * @param bidding
+ * @returns {Promise<any>}
+ */
+async function registerBidding (bidding) {
+  if (!bidding.name.payload) throw new Error('No name assigned.')
+  if (!bidding.company.payload) throw new Error('No company assigned.')
+  if (!bidding.users.payload) throw new Error('No users assigned.')
+  // if (!bidding.stages.payload) throw new Error('No stages defined.')
+  const data = {
+    name: bidding.name.payload,
+    bidderCompany: bidding.company.payload,
+    users: bidding.users.payload,
+    bases: [bidding.bases.payload, null],
+    periods: bidding.stages,
+    biddingType: bidding.type
+  }
+  return axios.post(getRouteWithToken(routes.biddings), data).then(res => {
+    if (res.data.error) throw new Error('Lo sentimos, intente más tarde.')
+  })
+}
+
+/**
+ * Register a new client for bidding
+ * @param {Object} data
+ * @param {String} data.email
+ * @param {String} data.password
+ * @returns {Promise<void>}
+ */
+async function registerClient (data) {
+  const generalError = new Error('Tuvimos un error procesando el registro de cliente, por favor intenta nuevamente más tarde.')
+  console.log(data)
+  const user = {
+    email: data.email,
+    password: data.password
+  }
+  return axios.post(getRouteWithToken(routes.users), user).then(res => {
+    if (res.data.error) throw new Error(generalError)
+  })
+}
+
 const token = {
   /**
    * Saves the token of the user to keep him logged in.
@@ -333,5 +392,8 @@ export default {
   getCurrentBidding,
   getIndustries,
   invitationsToBidding,
-  getSignedUrlToPutObject
+  getSignedUrlToPutObject,
+  checkEmail,
+  registerClient,
+  registerBidding
 }

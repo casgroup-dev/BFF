@@ -1,12 +1,8 @@
 <template>
-
 </template>
 
 <script>
-  export default {
-    name: 'Title.vue'
-  }
+  export default {}
 </script>
 
-<style scoped>
-</style>
+<style scoped></style>

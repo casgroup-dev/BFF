@@ -11,17 +11,11 @@
                 <!-- BUTTONS -->
                 <div class="col-4" style="text-align: right; font-size: xx-large">
                   <!-- NEW BIDDING -->
-                  <transition name="fade" mode="out-in" appear>
-                    <router-link :to="{ name: 'NewLicit', query: {next: this.$route.query.next}}">
-                      <button class="btn btn-primary">
-                        Nueva Licitación
-                      </button>
-                    </router-link>
-                  </transition>
+                  <button class="btn btn-primary" @click="modalOn = true">Nueva Licitación</button>
                 </div>
               </div>
             </template>
-            <search-bar v-model="search" placeholder="Buscar por nombre" style="margin-bottom: 10px;"></search-bar>
+            <search-bar v-model="search" placeholder="Buscar por nombre" style="margin-bottom: 10px;"/>
             <!-- TABLE WITH BIDDINGS -->
             <div class="table-responsive">
               <table class="table table-hover table-striped">
@@ -52,6 +46,17 @@
         </div>
       </div>
     </div>
+    <modal v-if="modalOn">
+      <template slot="header">
+        <h4 style="margin: 0">Nueva Licitación</h4>
+        <button type="button" class="btn btn-round btn-default btn-sm" @click="modalOn = false">
+          <span class="btn-label"><i class="fa fa-times"></i></span> Cerrar
+        </button>
+      </template>
+      <template slot="body">
+        <create-form v-on:endModal="modalOn = false"></create-form>
+      </template>
+    </modal>
   </div>
 </template>
 <script>
@@ -59,12 +64,16 @@
   import Card from 'src/components/UIComponents/Cards/Card.vue'
   import usersApi from 'src/apis/users'
   import SearchBar from 'src/components/UIComponents/Inputs/SearchBar.vue'
+  import CreateForm from 'src/components/Dashboard/Views/Licitaciones/CreateForm.vue'
+  import Modal from 'src/components/UIComponents/Modal/Modal.vue'
 
   export default {
     components: {
       LTable,
       Card,
-      SearchBar
+      SearchBar,
+      CreateForm,
+      Modal
     },
     /* DATA OF THE COMPONENT */
     data: function () {
@@ -80,7 +89,8 @@
             ]
           },
           data: []
-        }
+        },
+        modalOn: false
       }
     },
     /* METHODS OF THE COMPONENTS */
@@ -112,7 +122,6 @@
       filteredLicitations: function () {
         const self = this
         return this.table.data.filter(function (licit) { return licit.attributes.name.toLowerCase().indexOf(self.search.toLowerCase()) >= 0 })
-          // return this.customers
       }
     }
   }

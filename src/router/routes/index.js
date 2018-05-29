@@ -1,11 +1,9 @@
-// General views
 import DashboardLayout from '../../components/Dashboard/Layout/DashboardLayout.vue'
 import NotFound from '../../components/GeneralViews/NotFoundPage.vue'
 import Login from '../../components/GeneralViews/login/Layout'
 import Register from '../../components/GeneralViews/register/Layout'
 import NuevaLicitacion from 'src/components/Dashboard/Views/Licitaciones/Nueva/Home'
 import LicitacionLayout from 'src/components/Dashboard/Views/Licitaciones/Licitacion/Layout'
-// Dashboard pages
 import LicitacionesHome from 'src/components/Dashboard/Views/Licitaciones/Home'
 import ProvidersHome from 'src/components/Dashboard/Views/providers/Home.vue'
 
@@ -13,7 +11,7 @@ const routes = [
   {
     path: '/',
     component: DashboardLayout,
-    redirect: '/licitaciones',
+    redirect: '/Licitaciones',
     meta: {
       requiresAuth: true
     }
@@ -29,7 +27,7 @@ const routes = [
     component: Register
   },
   {
-    path: '/licitaciones',
+    path: '/Licitaciones',
     component: DashboardLayout,
     meta: {requiresAuth: true},
     children: [
