@@ -1,7 +1,7 @@
 <template>
   <div class="wrapper">
-    <side-bar>
-      <mobile-menu slot="content"/>
+    <side-bar title="CasGroup">
+      <!-- <mobile-menu slot="content"/> -->
       <sidebar-link to="/licitaciones">
         <i class="nc-icon nc-notes"></i>
         <p>Licitaciones</p>
@@ -10,6 +10,10 @@
         <i class="nc-icon nc-delivery-fast"></i>
         <p>Proveedores</p>
       </sidebar-link>
+      <button class="btn btn-round logout-button" @click="logout">
+        <i class="fa fa-sign-out"></i> Salir
+      </button>
+      <!--
       <sidebar-link to="/admin/overview">
         <i class="nc-icon nc-chart-pie-35"></i>
         <p>Dashboard</p>
@@ -38,6 +42,7 @@
         <i class="nc-icon nc-bell-55"></i>
         <p>Notifications</p>
       </sidebar-link>
+      -->
     </side-bar>
     <div class="main-panel">
       <top-navbar/>
@@ -47,14 +52,12 @@
     </div>
   </div>
 </template>
-<style lang="scss">
-
-</style>
 <script>
   import TopNavbar from './TopNavbar.vue'
   import ContentFooter from './ContentFooter.vue'
   import DashboardContent from './Content.vue'
   import MobileMenu from './MobileMenu.vue'
+  import api from '../../../apis/users'
 
   export default {
     components: {
@@ -68,8 +71,16 @@
         if (this.$sidebar.showSidebar) {
           this.$sidebar.displaySidebar(false)
         }
+      },
+      logout () {
+        api.logout(this.$router)
       }
     }
   }
-
 </script>
+<style>
+  .logout-button {
+    width: 80%;
+    margin-left: 10%;
+  }
+</style>

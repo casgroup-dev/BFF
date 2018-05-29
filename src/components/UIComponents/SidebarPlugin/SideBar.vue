@@ -6,9 +6,9 @@
     <div class="sidebar-wrapper">
       <div class="logo">
         <a href="#" class="simple-text">
-            <div class="logo-img">
-                <img src="static/img/vue-logo.png" alt="">
-            </div>
+          <div class="logo-img">
+            <img src="static/img/logo-casgroup-consulting-solo.png" alt="">
+          </div>
           {{title}}
         </a>
       </div>
