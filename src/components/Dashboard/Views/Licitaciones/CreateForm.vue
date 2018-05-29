@@ -210,7 +210,7 @@
           company: this.bidding.company,
           users: this.bidding.users,
           bases: this.bidding.bases,
-          type: 'Tipo: '+this.bidding.type,
+          type: this.bidding.type + ' etapa',
           stages: (function () {
             let stages = []
             for (let i = 0; i < self.etapas.amount; ++i) {
@@ -227,8 +227,8 @@
         }
       },
       createUsers (users) {
-        var user
-        for (var i = 0; i < users.amount; ++i) {
+        let user
+        for (let i = 0; i < users.amount; ++i) {
           user = users.payload[i]
           if (user.isNew) {
             const data = {
@@ -252,6 +252,7 @@
         const bidding = this.parseBidding()
         this.createUsers(bidding.users)
         usersApi.registerBidding(bidding)
+        this.$emit('endModal', null)
       }
     },
     computed: {
