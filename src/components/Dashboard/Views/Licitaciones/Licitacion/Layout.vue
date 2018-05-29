@@ -1,10 +1,9 @@
 <template>
   <div class="full-height">
     <div class="flex-container">
+      <!-- TITLE -->
       <div class="flex-row">
         <Title class="flex-row-item" :title="bidding.name"></Title>
-        <div class="flex-row-item"></div>
-        <div class="flex-row-item">Time Remaining</div>
       </div>
       <div class="flex-row">
         <div class="flex-row-item">Timeline</div>

@@ -1,5 +1,5 @@
 <template>
-  <label>{{title}}</label>
+  <h1 class="title">{{title}}</h1>
 </template>
 
 <script>
@@ -11,4 +11,8 @@
 </script>
 
 <style>
+  .title {
+    font-weight: 400;
+    color: #616161;
+  }
 </style>
