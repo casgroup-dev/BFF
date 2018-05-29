@@ -182,7 +182,7 @@
         }
       },
       checkBiddingInput () {
-        if (!this.etapas.payload || !this.etapas.payload[0].dateOne || !this.etapas.payload[0].dateTwo) {
+        if (!this.etapas.payload || !this.etapas.payload[0][0].dateOne || !this.etapas.payload[0][0].dateTwo) {
           this.etapas.error = true
           this.etapas.errorMessage = 'Debe definir las fechas de la Licitación'
         } else this.etapas.error = false
@@ -210,6 +210,7 @@
           company: this.bidding.company,
           users: this.bidding.users,
           bases: this.bidding.bases,
+          type: 'Tipo: '+this.bidding.type,
           stages: (function () {
             let stages = []
             for (let i = 0; i < self.etapas.amount; ++i) {
@@ -250,6 +251,7 @@
         this.checkBiddingInput()
         const bidding = this.parseBidding()
         this.createUsers(bidding.users)
+        usersApi.registerBidding(bidding)
       }
     },
     computed: {

@@ -7,7 +7,8 @@ const routes = {
   companies: '/companies',
   login: '/auth/login',
   shadowUsers: '/shadow/users',
-  users: '/users'
+  users: '/users',
+  biddings: '/biddings'
 }
 
 /**
@@ -208,6 +209,30 @@ async function checkEmail (email) {
   })
 }
 
+
+/**
+ * Creates a bidding
+ * @param bidding
+ * @returns {Promise<any>}
+ */
+async function registerBidding (bidding) {
+  if (!bidding.name.payload) throw new Error('No name assigned.')
+  if (!bidding.company.payload) throw new Error('No company assigned.')
+  if (!bidding.users.payload) throw new Error('No users assigned.')
+  // if (!bidding.stages.payload) throw new Error('No stages defined.')
+  const data = {
+    name: bidding.name.payload,
+    bidderCompany: bidding.company.payload,
+    users: bidding.users.payload,
+    bases: [bidding.bases.payload, null],
+    periods: bidding.stages,
+    biddingType: bidding.type
+  }
+  return axios.post(getRouteWithToken(routes.biddings), data).then(res => {
+    if (res.data.error) throw new Error('Lo sentimos, intente más tarde.')
+  })
+}
+
 const token = {
   /**
    * Saves the token of the user to keep him logged in.
@@ -235,5 +260,6 @@ export default {
   registerProvider,
   getCompanies,
   invitationsToBidding,
-  checkEmail
+  checkEmail,
+  registerBidding
 }
