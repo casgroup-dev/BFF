@@ -1,10 +1,9 @@
 <template>
   <div class="full-height">
-    <div class="flex-container">
+    <div class="flex-container" v-if="bidding">
       <!-- TITLE -->
-      <div class="flex-row">
-        <Title class="flex-row-item" :title="bidding.name"></Title>
-      </div>
+      <div class="flex-row"><Title class="flex-row-item" :title="bidding.name"></Title></div>
+      <div class="flex-row" v-if="bidding.rulesSummary"><p class="rules-summary">{{ bidding.rulesSummary }}</p></div>
       <div class="flex-row">
         <div class="flex-row-item">Timeline</div>
       </div>
@@ -17,7 +16,7 @@
         <FileDownloadCard class="flex-row-item"
                           :iconColor="'#f49521'"
                           :buttonColor="'#f49521'"
-                          :files="bidding.rules"
+                          :files="bidding.rulesFiles"
                           title="Descargar bases"
                           v-if="downloadRules"/>
       </div>
@@ -62,42 +61,7 @@
     },
     data () {
       return {
-        bidding: {
-          name: {type: String},
-          bidderCompany: {type: String},
-          users: [{
-            id: {type: String},
-            role: {type: String},
-            password: {type: String}
-          }],
-          rules: [{
-            fileName: {type: String},
-            url: {type: String},
-            user: {
-              id: {type: String}
-            }
-          }],
-          periods: [{
-            start: {type: String},
-            end: {type: String}
-          }],
-          step: {type: Number},
-          stages: {type: Number},
-          tecOffers: [{
-            fileName: {type: String},
-            url: {type: String},
-            user: {
-              id: {type: String}
-            }
-          }],
-          ecoOffers: [{
-            fileName: {type: String},
-            url: {type: String},
-            user: {
-              id: {type: String}
-            }
-          }]
-        },
+        bidding: undefined,
         uploadTecOffer: false,
         uploadEcoOffer: false,
         downloadTecOffers: false,
@@ -230,5 +194,9 @@
 
   .full-height {
     min-height: 100vh;
+  }
+
+  .rules-summary {
+    margin: 0 20px;
   }
 </style>

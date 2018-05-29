@@ -110,14 +110,14 @@ function getBiddings () {
       },
       show: false
     },
-    {
-      attributes: {
-        name: 'Snacks Copec de Curico',
-        client: 'Copec',
-        currentStage: '3'
-      },
-      show: false
-    }
+      {
+        attributes: {
+          name: 'Snacks Copec de Curico',
+          client: 'Copec',
+          currentStage: '3'
+        },
+        show: false
+      }
     ]
     return resolve(res)
   })
@@ -127,30 +127,24 @@ function getBiddings () {
  * Obtains the information of the selected bidding to fill the dashboard
  * @returns {Promise<any>}
  */
-function getCurrentBidding () {
-  const generalError = new Error('Error de conexion.')
-  /* TODO: no traerse todo, solo lo que entregue la llamada a la API
-      que no debiese ser informacion sensible
-   */
-  return new Promise((resolve, reject) => {
-    var res = {
-      name: 'Licitacion de Groupcas',
-      bidderCompany: '',
-      users: [{
-        id: '5af0656ab27a8e2d4c3e00ea',
-        role: 'companyAdmin',
-        password: 'pass'
-      }],
-      bases: ['portense bien'],
-      periods: [{
-        start: '1-1-2017',
-        end: '2-2-2017'
-      }],
-      step: 2,
-      stages: 1
-    }
-    return resolve(res)
-  })
+async function getCurrentBidding () {
+  return {
+    name: 'Licitacion de Groupcas',
+    bidderCompany: '',
+    users: [{
+      id: '5af0656ab27a8e2d4c3e00ea',
+      role: 'companyAdmin',
+      password: 'pass'
+    }],
+    files: [],
+    rulesSummary: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.',
+    periods: [{
+      start: '1-1-2017',
+      end: '2-2-2017'
+    }],
+    step: 2,
+    stages: 1
+  }
 }
 
 /**
