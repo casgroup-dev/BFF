@@ -233,6 +233,25 @@ async function registerBidding (bidding) {
   })
 }
 
+/**
+ * Register a new client for bidding
+ * @param {Object} data
+ * @param {String} data.email
+ * @param {String} data.password
+ * @returns {Promise<void>}
+ */
+async function registerClient (data) {
+  const generalError = new Error('Tuvimos un error procesando el registro de cliente, por favor intenta nuevamente más tarde.')
+  console.log(data)
+  const user = {
+    email: data.email,
+    password: data.password
+  }
+  return axios.post(getRouteWithToken(routes.users), user).then(res => {
+    if (res.data.error) throw new Error(generalError)
+  })
+}
+
 const token = {
   /**
    * Saves the token of the user to keep him logged in.
@@ -261,5 +280,6 @@ export default {
   getCompanies,
   invitationsToBidding,
   checkEmail,
+  registerClient,
   registerBidding
 }

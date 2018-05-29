@@ -232,18 +232,10 @@
           user = users.payload[i]
           if (user.isNew) {
             const data = {
-              businessName: null,
-              fantasyName: null,
-              rut: null,
-              industries: null,
-              legalRepresentative: null,
-              legalRepEmail: null,
-              legalRepPhone: null,
-              name: null,
               password: user.password,
-              email: user.email
+              email: user.mail
             }
-            usersApi.register(data)
+            usersApi.registerClient(data)
           }
         }
       },
