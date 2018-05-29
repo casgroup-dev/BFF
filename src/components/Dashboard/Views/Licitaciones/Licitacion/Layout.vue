@@ -51,7 +51,6 @@
 
 <script>
   import Title from './Components/Title'
-  // import Participants from './Components/Participants'
   import FileInputCard from 'src/components/UIComponents/Inputs/FileInputCard'
   import usersApi from 'src/apis/users'
   import FileDownloadCard from '../../../../UIComponents/Inputs/FileDownloadCard'
