@@ -2,7 +2,7 @@
   <ul class="flex-container">
     <ul class="flex-row">
       <Title class="flex-row-item" :title="bidding.name"></Title>
-      <div class="flex-row-item">Step</div>
+      <Participants class="flex-row-item" :participants="bidding.participants"></Participants>
       <div class="flex-row-item">Time Remaining</div>
     </ul>
     <ul class="flex-row">
@@ -31,6 +31,7 @@
   export default {
     name: 'Layout',
     components: {
+      Participants,
       FileInputCard,
       Title
     },
@@ -58,7 +59,8 @@
         downloadEcoOffers: false,
         seeResult: false,
         giveResult: false,
-        uploadRules: false
+        uploadRules: false,
+        participants: []
       }
     },
     methods: {

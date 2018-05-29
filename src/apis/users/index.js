@@ -153,6 +153,16 @@ function getCurrentBidding () {
           businessName: 'Microsoft',
           usersEmail: 'email@example.com',
           usersPhone: '+56912345678'
+        },
+        {
+          businessName: 'Microsoft',
+          usersEmail: 'email@example.com',
+          usersPhone: '+56912345678'
+        },
+        {
+          businessName: 'Microsoft',
+          usersEmail: 'email@example.com',
+          usersPhone: '+56912345678'
         }
       ]
     }

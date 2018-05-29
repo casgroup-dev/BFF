@@ -20,8 +20,25 @@
         <h4 class="no-margin">Participantes</h4>
       </template>
       <template slot="body">
-        <l-table class="table table-hover table-striped" :columns="tableColumns" :data="tableData">
-        </l-table>
+        <div class="table-responsive">
+          <table class="table table-hover table-striped">
+            <!-- HEADERS -->
+            <thead class="thead-light">
+            <tr>
+              <th v-for="(attr, index) in tableColumns" :key="index" scope="col">{{attr}}</th>
+            </tr>
+            </thead>
+            <!-- BODY -->
+            <tbody>
+            <tr v-for="(provider, index) in participants" :key="index">
+              <!-- PROVIDER ATTRIBUTES -->
+              <td v-for="(attr, index) in provider" :key="index">
+                <a style="font-weight:normal; color:#262626;">{{attr}}</a>
+              </td>
+            </tr>
+            </tbody>
+          </table>
+        </div>
       </template>
       <template slot="footer">
         <button class="btn btn-round btn-default" @click="cancelModal">
@@ -44,7 +61,6 @@
     data () {
       return {
         tableColumns: ['Razón Social', 'Email Admin Proveedor', 'Telefono Admin Proveedor'],
-        tableData: [],
         showParticipants: false
       }
     },
@@ -89,7 +105,6 @@
     methods: {
       showParticipantsModal: function () {
         this.showParticipants = true
-        this.tableData = this.participants
       },
       cancelModal: function () {
         this.showParticipants = false
