@@ -47,11 +47,6 @@
                 </tr>
                 </tbody>
               </table>
-              <div class="row">
-                <div class="col-12" style="text-align: center">
-                  <button class="btn btn-center btn-info btn-round">Cargar más</button>
-                </div>
-              </div>
             </div>
           </card>
         </div>
