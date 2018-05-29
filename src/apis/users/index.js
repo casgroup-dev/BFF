@@ -110,14 +110,14 @@ function getBiddings () {
       },
       show: false
     },
-      {
-        attributes: {
-          name: 'Snacks Copec de Curico',
-          client: 'Copec',
-          currentStage: '3'
-        },
-        show: false
-      }
+    {
+      attributes: {
+        name: 'Snacks Copec de Curico',
+        client: 'Copec',
+        currentStage: '3'
+      },
+      show: false
+    }
     ]
     return resolve(res)
   })
@@ -143,7 +143,24 @@ async function getCurrentBidding () {
       end: '2-2-2017'
     }],
     step: 2,
-    stages: 1
+    stages: 1,
+    participants: [
+      {
+        businessName: 'Microsoft',
+        usersEmail: 'email@example.com',
+        usersPhone: '+56912345678'
+      },
+      {
+        businessName: 'Microsoft',
+        usersEmail: 'email@example.com',
+        usersPhone: '+56912345678'
+      },
+      {
+        businessName: 'Microsoft',
+        usersEmail: 'email@example.com',
+        usersPhone: '+56912345678'
+      }
+    ]
   }
 }
 
