@@ -31,7 +31,7 @@
         <small><label class="error" style="color: red;"
                       v-if="bidding.users.error">{{bidding.users.errorMessage}}</label></small>
         <div class="row"> <!-- PENDIENTE corregir alineación -->
-          <div class="col-7">Numero de Usuarios Asociados</div>
+          <div class="col-7">Número de Usuarios Asociados</div>
           <fg-input class="col-2" v-model="bidding.users.amount"></fg-input>
         </div>
         <div class="form-group">
@@ -58,27 +58,27 @@
           </div>
         </div>
         <div class="row"> <!-- PENDIENTE corregir alineación -->
-          <div class="col-5">Numero de Períodos</div>
+          <div class="col-5">Número de Períodos</div>
           <fg-input class="col-2" v-model="etapas.amount"></fg-input>
         </div>
         <div class="form-group">
           <small><label class="error" style="color: red;"
                         v-if="etapas.error">{{etapas.errorMessage}}</label></small>
           <table>
-            <tr v-for="tuple in availableStages">
-              <td v-for="stage in tuple">
+            <tr v-for="(tuple, index0) in availableStages">
+              <td v-for="(stage, index1) in tuple">
                 <label :for="stage.label">
                   <fg-input v-model="stage.title"></fg-input>
                 </label>
                 <div>
                   <div class="datepicker-trigger">
-                    <input
+                    <fg-input
                       type="text"
-                      :id="stage.id"
+                      :id="stage.id + index0 + index1"
                       :placeholder="stage.placeholder"
-                      :value="formatDates(stage.dateOne, stage.dateTwo)">
+                      :value="formatDates(stage.dateOne, stage.dateTwo)"></fg-input>
                     <AirbnbStyleDatepicker
-                      :trigger-element-id="stage.id"
+                      :trigger-element-id="stage.id + index0 + index1"
                       :mode="'range'"
                       :fullscreen-mobile="true"
                       :months-to-show="1"
@@ -274,7 +274,7 @@
           let j = 0
           for (; j < 2 && i + j <= this.etapas.amount; ++j) {
             let stage = {
-              title: 'Etapa ' + (i +j),
+              title: 'Etapa ' + (i + j),
               label: 'etapa' + (i + j),
               placeholder: 'Selecciona duración de la Período',
               dateOne: '',
