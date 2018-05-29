@@ -2,7 +2,7 @@
   <transition name="modal">
     <div class="modal-mask">
       <div class="modal-wrapper">
-        <div class="modal-container">
+        <div class="modal-container" :style="{maxWidth: width}">
 
           <div class="modal-header">
             <slot name="header">
@@ -28,7 +28,9 @@
 
 <script>
   export default {
-    name: 'Modal'
+    props: {
+      width: {type: String, default: '90vw'}
+    }
   }
 </script>
 
@@ -52,7 +54,6 @@
 
   .modal-container {
     /*width: 500px;*/
-    width: 30%;
     margin: 0px auto;
     padding: 20px 30px;
     background-color: #fff;

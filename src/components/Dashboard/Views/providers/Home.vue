@@ -65,7 +65,7 @@
     </div>
     <!-- MODALS -->
     <!-- ADD PROVIDER -->
-    <modal v-if="provider.modalOn">
+    <modal v-if="provider.modalOn" width="30%">
       <template slot="header">
         <h4 class="no-margin">Registre a un nuevo proveedor</h4>
       </template>
@@ -91,7 +91,7 @@
       </template>
     </modal>
     <!-- SELECTED PROVIDERS MODAL -->
-    <modal v-if="selectedModal.show">
+    <modal v-if="selectedModal.show" width="30%">
       <template slot="header">
         <h4 class="no-margin">Contacto proveedores seleccionados</h4>
         <button type="button" class="btn btn-round btn-default btn-sm" @click="selectedModal.show = false">
@@ -120,7 +120,7 @@
       </template>
     </modal>
     <!-- PROVIDER DETAILS -->
-    <modal v-if="detailsPopup.show">
+    <modal v-if="detailsPopup.show" width="30%">
       <template slot="header">
         <h4 style="margin: 0">Detalles del proveedor</h4>
         <button type="button" class="btn btn-round btn-default btn-sm" @click="cancelPopup">
