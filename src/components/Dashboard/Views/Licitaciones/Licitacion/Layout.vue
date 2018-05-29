@@ -9,8 +9,9 @@
       <div class="flex-row">
         <div class="flex-row-item">Timeline</div>
       </div>
+      <!-- RULES: Upload and download the bidding rules. -->
       <div class="flex-row" v-if="uploadRules || downloadRules">
-        <FileInputCard class="flex-row-item" :title="'Subir Bases'" @uploaded="handleUploadedRules"
+        <FileInputCard class="flex-row-item" title="Subir Bases" @uploaded="handleUploadedRules"
                        :iconColor="'#22a045'"
                        :buttonColor="'#22a045'"
                        v-if="uploadRules"/>
@@ -18,9 +19,10 @@
                           :iconColor="'#f49521'"
                           :buttonColor="'#f49521'"
                           :files="bidding.rules"
-                          v-if="downloadRules">Descargar Bases
-        </FileDownloadCard>
+                          title="Descargar bases"
+                          v-if="downloadRules"/>
       </div>
+      <!-- OFFERS: Download or upload the offers of the bidding -->
       <div class="flex-row" v-if="uploadTecOffer || uploadEcoOffer || downloadTecOffers || downloadEcoOffers">
         <FileInputCard class="flex-row-item" :title="'Subir Oferta Técnica'" @uploaded="handleUploadedTecOffer"
                        v-if="uploadTecOffer"/>
@@ -39,6 +41,7 @@
                           v-if="downloadEcoOffers">Descargar Oferta Económica
         </FileDownloadCard>
       </div>
+      <!-- FINAL RESULT OF THE BIDDING -->
       <div class="flex-row" v-if="seeResult">
         <div class="flex-row-item">Resultado</div>
       </div>
@@ -54,7 +57,6 @@
   import FileDownloadCard from '../../../../UIComponents/Inputs/FileDownloadCard'
 
   export default {
-    name: 'Layout',
     components: {
       FileDownloadCard,
       FileInputCard,
