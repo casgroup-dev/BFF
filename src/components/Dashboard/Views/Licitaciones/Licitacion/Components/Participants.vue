@@ -1,18 +1,11 @@
 <template>
   <div class="content">
-    <stats-card>
-      <div slot="header" class="icon-success">
+    <stats-card class="stats-card">
+      <div slot="header" class="icon-success" @click="showParticipantsModal">
         <i v-if="icon" :class="`fa ${icon} icon`" :style="{color: iconColor}"></i>
       </div>
-      <div slot="content" class="numbers">
+      <div slot="content">
         <p>Participantes</p>{{ participants.length }}
-      </div>
-      <div slot="footer">
-        <button v-if="participants.length" class="btn btn-fill btn-round"
-                :style="{backgroundColor: buttonColor}"
-                @click="showParticipantsModal()">
-          <i class="fa fa-users"></i> Ver Participantes
-        </button>
       </div>
     </stats-card>
     <modal v-if="showParticipants">
@@ -55,7 +48,6 @@
   import LTable from 'src/components/UIComponents/Table.vue'
 
   const defaultColor = '#02B2A9'
-  const emptyArray = []
 
   export default {
     data () {
@@ -64,13 +56,11 @@
         showParticipants: false
       }
     },
-
     components: {
       StatsCard,
       Modal,
       LTable
     },
-
     props: {
       icon: {
         type: String,
@@ -94,14 +84,9 @@
       },
       participants: {
         type: Array,
-        default: emptyArray
+        required: true
       }
     },
-
-    computed: {
-
-    },
-
     methods: {
       showParticipantsModal: function () {
         this.showParticipants = true
@@ -114,5 +99,12 @@
 </script>
 
 <style scoped>
+  .stats-card {
+    margin: 0;
+    height: 100%;
+  }
 
+  .content {
+    margin: 5px;
+  }
 </style>

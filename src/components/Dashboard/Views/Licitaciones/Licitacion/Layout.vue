@@ -9,6 +9,8 @@
       <!-- <div class="flex-row"></div> -->
       <!-- RULES -->
       <div class="flex-row" v-if="uploadRules || downloadRules">
+        <participants class="flex-row-item"
+                      :participants="bidding.participants"/>
         <FileDownloadCard class="flex-row-item"
                           :iconColor="'#f49521'"
                           :buttonColor="'#f49521'"
@@ -46,14 +48,18 @@
 </template>
 
 <script>
-  import FileInputCard from 'src/components/UIComponents/Inputs/FileInputCard'
-  import usersApi from 'src/apis/users'
+  /* Components */
   import FileDownloadCard from '../../../../UIComponents/Inputs/FileDownloadCard'
+  import FileInputCard from 'src/components/UIComponents/Inputs/FileInputCard'
+  import Participants from './Components/Participants'
+  /* Api */
+  import api from 'src/apis/users'
 
   export default {
     components: {
       FileDownloadCard,
       FileInputCard,
+      Participants
     },
     data () {
       return {
@@ -134,7 +140,7 @@
     },
     created: function () {
       const self = this
-      usersApi.getCurrentBidding().then(data => {
+      api.getCurrentBidding().then(data => {
         self.bidding = data
         /* Check permissions to see components */
         if (self.bidding.bidderCompany.length === 0) {
