@@ -1,45 +1,47 @@
 <template>
-  <div class="flex-container">
-    <div class="flex-row">
-      <Title class="flex-row-item" :title="bidding.name"></Title>
-      <div class="flex-row-item"></div>
-      <div class="flex-row-item">Time Remaining</div>
-    </div>
-    <div class="flex-row">
-      <div class="flex-row-item">Timeline</div>
-    </div>
-    <div class="flex-row" v-if="uploadRules || downloadRules">
-      <FileInputCard class="flex-row-item" :title="'Subir Bases'" @uploaded="handleUploadedRules"
-                     :iconColor="'#22a045'"
-                     :buttonColor="'#22a045'"
-                     v-if="uploadRules"/>
-      <FileDownloadCard class="flex-row-item"
-                        :iconColor="'#f49521'"
-                        :buttonColor="'#f49521'"
-                        :files="bidding.rules"
-                        v-if="downloadRules">Descargar Bases
-      </FileDownloadCard>
-    </div>
-    <div class="flex-row" v-if="uploadTecOffer || uploadEcoOffer || downloadTecOffers || downloadEcoOffers">
-      <FileInputCard class="flex-row-item" :title="'Subir Oferta Técnica'" @uploaded="handleUploadedTecOffer"
-                     v-if="uploadTecOffer"/>
-      <FileDownloadCard class="flex-row-item" :title="'Descargar Oferta Técnica'"
-                        :files="bidding.tecOffers"
-                        v-if="downloadTecOffers">Descargar Oferta Técnica
-      </FileDownloadCard>
-      <FileInputCard class="flex-row-item" :title="'Subir Oferta Económica'" @uploaded="handleUploadedEcoOffer"
-                     :iconColor="'#d319a7'"
-                     :buttonColor="'#d319a7'"
-                     v-if="uploadEcoOffer"/>
-      <FileDownloadCard class="flex-row-item" :title="'Descargar Oferta Económica'"
-                        :iconColor="'#d319a7'"
-                        :buttonColor="'#d319a7'"
-                        :files="bidding.ecoOffers"
-                        v-if="downloadEcoOffers">Descargar Oferta Económica
-      </FileDownloadCard>
-    </div>
-    <div class="flex-row" v-if="seeResult">
-      <div class="flex-row-item">Resultado</div>
+  <div class="full-height">
+    <div class="flex-container">
+      <div class="flex-row">
+        <Title class="flex-row-item" :title="bidding.name"></Title>
+        <div class="flex-row-item"></div>
+        <div class="flex-row-item">Time Remaining</div>
+      </div>
+      <div class="flex-row">
+        <div class="flex-row-item">Timeline</div>
+      </div>
+      <div class="flex-row" v-if="uploadRules || downloadRules">
+        <FileInputCard class="flex-row-item" :title="'Subir Bases'" @uploaded="handleUploadedRules"
+                       :iconColor="'#22a045'"
+                       :buttonColor="'#22a045'"
+                       v-if="uploadRules"/>
+        <FileDownloadCard class="flex-row-item"
+                          :iconColor="'#f49521'"
+                          :buttonColor="'#f49521'"
+                          :files="bidding.rules"
+                          v-if="downloadRules">Descargar Bases
+        </FileDownloadCard>
+      </div>
+      <div class="flex-row" v-if="uploadTecOffer || uploadEcoOffer || downloadTecOffers || downloadEcoOffers">
+        <FileInputCard class="flex-row-item" :title="'Subir Oferta Técnica'" @uploaded="handleUploadedTecOffer"
+                       v-if="uploadTecOffer"/>
+        <FileDownloadCard class="flex-row-item" :title="'Descargar Oferta Técnica'"
+                          :files="bidding.tecOffers"
+                          v-if="downloadTecOffers">Descargar Oferta Técnica
+        </FileDownloadCard>
+        <FileInputCard class="flex-row-item" :title="'Subir Oferta Económica'" @uploaded="handleUploadedEcoOffer"
+                       :iconColor="'#d319a7'"
+                       :buttonColor="'#d319a7'"
+                       v-if="uploadEcoOffer"/>
+        <FileDownloadCard class="flex-row-item" :title="'Descargar Oferta Económica'"
+                          :iconColor="'#d319a7'"
+                          :buttonColor="'#d319a7'"
+                          :files="bidding.ecoOffers"
+                          v-if="downloadEcoOffers">Descargar Oferta Económica
+        </FileDownloadCard>
+      </div>
+      <div class="flex-row" v-if="seeResult">
+        <div class="flex-row-item">Resultado</div>
+      </div>
     </div>
   </div>
 </template>
@@ -226,4 +228,7 @@
     justify-content: space-around;
   }
 
+  .full-height {
+    min-height: 100vh;
+  }
 </style>
