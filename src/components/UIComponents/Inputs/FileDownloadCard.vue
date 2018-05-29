@@ -132,6 +132,7 @@
   .file-download-card {
     margin: 5px;
     padding: 10px;
+    background-color: #FFFFFF;
     /* Display */
     display: flex;
     flex-direction: row;
