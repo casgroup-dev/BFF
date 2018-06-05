@@ -13,7 +13,7 @@
         <tbody>
         <tr v-for="(file, index) in files" :key="index">
           <th>{{ index + 1 }}</th>
-          <th><a :href="file.url">{{ file.name }}</a></th>
+          <th><a :href="file.url" download>{{ file.name }}</a></th>
           <th>
             <button class="btn btn-round btn-xs"
                     title="Eliminar archivo"
@@ -32,7 +32,7 @@
 </template>
 
 <script>
-  import Card from './CardV2'
+  import Card from '../CardV2'
 
   export default {
     components: {
@@ -56,7 +56,7 @@
   }
 </script>
 
-<style scoped src="./assets/title.css"></style>
+<style scoped src="../assets/title.css"></style>
 <style scoped>
   .table th {
     text-align: center !important;

@@ -7,7 +7,7 @@
 </template>
 
 <script>
-  import Card from './CardV2'
+  import Card from '../CardV2'
 
   export default {
     components: {
@@ -27,7 +27,7 @@
   }
 </script>
 
-<style scoped src="./assets/title.css"></style>
+<style scoped src="../assets/title.css"></style>
 <style scoped>
   .button-card {
     cursor: pointer;
