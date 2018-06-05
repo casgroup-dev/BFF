@@ -1,11 +1,11 @@
 <template>
   <div class="container-fluid">
-    <div class="row align-items-center">
+    <div class="row">
       <!-- TECHNICAL -->
       <div class="col">
         <!-- INPUT FILES -->
         <file-input-card class="flex-1"
-                         title="Subir oferta técnica"
+                         :title="`Subir oferta ${showEconomicalOffer ? 'técnica': ''}`"
                          iconColor="#5C6BC0"
                          buttonColor="#5C6BC0"
                          multiple
@@ -14,13 +14,13 @@
         <list-files-card :files="files.technicals"/>
       </div>
       <!-- ECONOMICAL -->
-      <div v-if="showEconomicalOfferInputCard" class="col">
+      <div v-if="showEconomicalOffer" class="col">
         <!-- FORM BUTTON -->
-        <button-card text="Responder oferta económica"
+        <button-card text="Tabla oferta económica"
                      icon="fa-book"
                      @click="toggleEconomicalFormModal"/>
         <!-- INPUT FILES -->
-        <file-input-card v-if="showEconomicalOfferInputCard"
+        <file-input-card v-if="showEconomicalOffer"
                          class="flex-1"
                          title="Subir anexos oferta económica"
                          iconColor="#42A5F5"
@@ -31,9 +31,10 @@
         <list-files-card :files="files.economicals"/>
       </div>
     </div>
-    <modal v-if="showEconomicalOfferModal">
-      <!-- TODO: ECONOMICAL FORM -->
-    </modal>
+    <!-- ECONOMICAL FORM MODAL -->
+    <economical-form-modal v-show="showEconomicalOfferModal"
+                           :bidding-id="biddingId"
+                           @close="toggleEconomicalFormModal"/>
   </div>
 </template>
 
@@ -43,7 +44,7 @@
   import Card from './CardV2'
   import FileInputCard from '../../../../../UIComponents/Inputs/FileInputCard'
   import ListFilesCard from './ListFilesCard'
-  import Modal from './../../../../../UIComponents/Modal/Modal'
+  import EconomicalFormModal from './EconomicalFormModal'
 
   export default {
     components: {
@@ -51,7 +52,7 @@
       Card,
       FileInputCard,
       ListFilesCard,
-      Modal
+      EconomicalFormModal
     },
     data () {
       return {
@@ -65,12 +66,12 @@
        */
       biddingId: {
         type: String,
-        required: true
+        default: '5b16e5d99142d57f6de4e767'
       },
       /**
        * Boolean that indicates if the economical offer must be shown.
        */
-      showEconomicalOfferInputCard: {
+      showEconomicalOffer: {
         type: Boolean,
         default: true
       }
