@@ -23,7 +23,7 @@
 
 <script>
   import Card from '../../UIComponents/Cards/Card'
-  import usersApi from '../../../apis/users/index'
+  import usersApi from '../../../api/index'
   import ClipLoader from 'vue-spinner/src/ClipLoader'
 
   export default {

@@ -20,7 +20,7 @@
 
 <script>
   import ClipLoader from 'vue-spinner/src/ClipLoader'
-  import api from '../../../apis/users'
+  import api from '../../../api/index'
   import axios from 'axios'
 
   const defaultColor = '#03A9F4'

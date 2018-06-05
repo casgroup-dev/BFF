@@ -53,7 +53,7 @@
   import FileInputCard from 'src/components/UIComponents/Inputs/FileInputCard'
   import Participants from './Components/Participants'
   /* Api */
-  import api from 'src/apis/users'
+  import api from 'src/api/index'
 
   export default {
     components: {

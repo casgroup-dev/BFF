@@ -106,7 +106,7 @@
 
 <script>
   import format from 'date-fns/format'
-  import usersApi from 'src/apis/users'
+  import usersApi from 'src/api/index'
   import PCheckbox from 'src/components/UIComponents/Inputs/Checkbox.vue'
   import PRadio from 'src/components/UIComponents/Inputs/Radio.vue'
 

@@ -62,7 +62,7 @@
 <script>
   import LTable from 'src/components/UIComponents/Table.vue'
   import Card from 'src/components/UIComponents/Cards/Card.vue'
-  import usersApi from 'src/apis/users'
+  import usersApi from 'src/api/index'
   import SearchBar from 'src/components/UIComponents/Inputs/SearchBar.vue'
   import CreateForm from 'src/components/Dashboard/Views/Licitaciones/CreateForm.vue'
   import Modal from 'src/components/UIComponents/Modal/Modal.vue'
