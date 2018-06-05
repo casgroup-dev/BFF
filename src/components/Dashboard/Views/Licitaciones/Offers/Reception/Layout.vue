@@ -38,6 +38,7 @@
 </template>
 
 <script>
+  import api from '../../../../../../api/biddings/documents'
   import ButtonCard from './ButtonCard'
   import Card from './CardV2'
   import FileInputCard from '../../../../../UIComponents/Inputs/FileInputCard'
@@ -60,6 +61,13 @@
     },
     props: {
       /**
+       * Id of the actual bidding.
+       */
+      biddingId: {
+        type: String,
+        required: true
+      },
+      /**
        * Boolean that indicates if the economical offer must be shown.
        */
       showEconomicalOfferInputCard: {
@@ -74,16 +82,19 @@
        * @param {String} filename
        */
       putTechnicalOffer (url, filename) {
-        // TODO: Call api
+        api.putDocument(this.biddingId, 'technical', filename, url).catch(err => console.error(err))
       },
       /**
-       * Puts the ecnomical offer's url and name into the backend.
+       * Puts the economical offer's url and name into the backend.
        * @param {String} url
        * @param {String} filename
        */
       putEconomicalOffer (url, filename) {
-        // TODO: Call api
+        api.putDocument(this.biddingId, 'economical', filename, url).catch(err => console.error(err))
       },
+      /**
+       * Shows or hide the modal that contains the form to upload the economical offers table.
+       */
       toggleEconomicalFormModal () {
         this.showEconomicalOfferModal = !this.showEconomicalOfferModal
       }
