@@ -1,29 +1,48 @@
 <template>
-  <div class="offers-container">
-    <!-- Technical offer -->
-    <file-input-card class="flex-item"
-                     title="Subir oferta técnica"
-                     iconColor="#5C6BC0"
-                     buttonColor="#5C6BC0"
-                     multiple
-                     @uploaded="putTechnicalOffer"/>
-    <!-- Economical offer -->
-    <file-input-card v-if="showEconomicalOfferInputCard"
-                     class="flex-item"
-                     title="Subir oferta económica"
-                     iconColor="#42A5F5"
-                     buttonColor="#42A5F5"
-                     multiple
-                     @uploaded="putEconomicalOffer"/>
+  <div class="container-fluid">
+    <div class="row align-items-center">
+      <!-- TECHNICAL -->
+      <div class="col">
+        <!-- INPUT -->
+        <file-input-card class="flex-1"
+                         title="Subir oferta técnica"
+                         iconColor="#5C6BC0"
+                         buttonColor="#5C6BC0"
+                         multiple
+                         @uploaded="putTechnicalOffer"/>
+        <!-- UPLOADED FILES -->
+        <list-files-card :files="files.technicals"/>
+      </div>
+      <!-- ECONOMICAL -->
+      <div v-if="showEconomicalOfferInputCard" class="col">
+        <!-- INPUT -->
+        <file-input-card v-if="showEconomicalOfferInputCard"
+                         class="flex-1"
+                         title="Subir oferta económica"
+                         iconColor="#42A5F5"
+                         buttonColor="#42A5F5"
+                         multiple
+                         @uploaded="putEconomicalOffer"/>
+        <!-- UPLOADED FILES -->
+        <list-files-card :files="files.economicals"/>
+      </div>
+    </div>
   </div>
 </template>
 
 <script>
   import FileInputCard from '../../../../../UIComponents/Inputs/FileInputCard'
+  import ListFilesCard from './ListFilesCard'
 
   export default {
     components: {
-      FileInputCard
+      FileInputCard,
+      ListFilesCard
+    },
+    data () {
+      return {
+        files: {economicals: [], technicals: []}
+      }
     },
     props: {
       /**
@@ -51,19 +70,13 @@
       putEconomicalOffer (url, filename) {
         // TODO: Call api
       }
+    },
+    created: () => {
+      // TODO: Call api and get files
     }
   }
 </script>
 
 <style scoped>
-  .offers-container {
-    display: flex;
-    flex-direction: row;
-    flex-wrap: wrap;
-    align-items: center;
-  }
 
-  .flex-item {
-    flex-grow: 1;
-  }
 </style>
