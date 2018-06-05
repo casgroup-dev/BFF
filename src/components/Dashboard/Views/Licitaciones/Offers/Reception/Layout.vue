@@ -3,7 +3,7 @@
     <div class="row align-items-center">
       <!-- TECHNICAL -->
       <div class="col">
-        <!-- INPUT -->
+        <!-- INPUT FILES -->
         <file-input-card class="flex-1"
                          title="Subir oferta técnica"
                          iconColor="#5C6BC0"
@@ -15,10 +15,14 @@
       </div>
       <!-- ECONOMICAL -->
       <div v-if="showEconomicalOfferInputCard" class="col">
-        <!-- INPUT -->
+        <!-- FORM BUTTON -->
+        <button-card text="Responder oferta económica"
+                     icon="fa-book"
+                     @click="toggleEconomicalFormModal"/>
+        <!-- INPUT FILES -->
         <file-input-card v-if="showEconomicalOfferInputCard"
                          class="flex-1"
-                         title="Subir oferta económica"
+                         title="Subir anexos oferta económica"
                          iconColor="#42A5F5"
                          buttonColor="#42A5F5"
                          multiple
@@ -27,21 +31,31 @@
         <list-files-card :files="files.economicals"/>
       </div>
     </div>
+    <modal v-if="showEconomicalOfferModal">
+      <!-- TODO: ECONOMICAL FORM -->
+    </modal>
   </div>
 </template>
 
 <script>
+  import ButtonCard from './ButtonCard'
+  import Card from './CardV2'
   import FileInputCard from '../../../../../UIComponents/Inputs/FileInputCard'
   import ListFilesCard from './ListFilesCard'
+  import Modal from './../../../../../UIComponents/Modal/Modal'
 
   export default {
     components: {
+      ButtonCard,
+      Card,
       FileInputCard,
-      ListFilesCard
+      ListFilesCard,
+      Modal
     },
     data () {
       return {
-        files: {economicals: [], technicals: []}
+        files: {economicals: [], technicals: []},
+        showEconomicalOfferModal: false
       }
     },
     props: {
@@ -69,6 +83,9 @@
        */
       putEconomicalOffer (url, filename) {
         // TODO: Call api
+      },
+      toggleEconomicalFormModal () {
+        this.showEconomicalOfferModal = !this.showEconomicalOfferModal
       }
     },
     created: () => {
