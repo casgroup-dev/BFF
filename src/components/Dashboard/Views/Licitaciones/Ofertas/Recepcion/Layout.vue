@@ -11,7 +11,8 @@
                          multiple
                          @uploaded="putTechnicalOffer"/>
         <!-- UPLOADED FILES -->
-        <list-files-card :files="files.technical"/>
+        <list-files-card :files="files.technical"
+                         @delete="file => deleteDocument(file, 'technical')"/>
       </div>
       <!-- ECONOMICAL -->
       <div v-if="showEconomicalOffer" class="col">
@@ -28,7 +29,8 @@
                          multiple
                          @uploaded="putEconomicalOffer"/>
         <!-- UPLOADED FILES -->
-        <list-files-card :files="files.economical"/>
+        <list-files-card :files="files.economical"
+                         @delete="file => deleteDocument(file, 'economical')"/>
       </div>
     </div>
     <!-- ECONOMICAL FORM MODAL -->
@@ -84,7 +86,7 @@
        */
       putTechnicalOffer (url, filename) {
         api.putDocument(this.biddingId, 'technical', filename, url)
-          .then(() => this.getMyFiles())
+          .then(() => this.getMyDocuments())
           .catch(err => console.error(err))
       },
       /**
@@ -94,14 +96,23 @@
        */
       putEconomicalOffer (url, filename) {
         api.putDocument(this.biddingId, 'economical', filename, url)
-          .then(() => this.getMyFiles())
+          .then(() => this.getMyDocuments())
           .catch(err => console.error(err))
       },
       /**
        * Get the files' names and urls of the user from the backend.
        */
-      getMyFiles () {
-        api.getMyFiles(this.biddingId).then(response => { this.files = response })
+      getMyDocuments () {
+        api.getMyDocuments(this.biddingId).then(response => { this.files = response })
+      },
+      /**
+       * Deletes a file from the backend.
+       * @params {Object} file - Object with the files properties.
+       * @params {String} file.name - Name of the file to delete.
+       * @params {String} type - Type of the document to delete (economical or technical).
+       */
+      deleteDocument (file, type) {
+        api.deleteDocument(this.biddingId, file.name, type).then(() => this.getMyDocuments())
       },
       /**
        * Shows or hide the modal that contains the form to upload the economical offers table.
@@ -114,7 +125,7 @@
      * After creation get the files of the user to show them in the correspondent component.
      */
     created: function () {
-      this.getMyFiles()
+      this.getMyDocuments()
     }
   }
 </script>
