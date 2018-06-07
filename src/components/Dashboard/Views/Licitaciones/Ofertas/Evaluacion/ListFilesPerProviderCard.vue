@@ -1,7 +1,6 @@
 <template>
   <card class="container-fluid">
     <div class="row text-center"><h3 class="title col">{{ title }}</h3></div>
-    <hr class="no-margin">
     <!-- TABLE -->
     <table class="table" v-if="providers.length">
       <thead>
