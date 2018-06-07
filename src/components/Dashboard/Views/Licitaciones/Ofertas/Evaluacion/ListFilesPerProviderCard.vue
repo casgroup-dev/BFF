@@ -25,12 +25,22 @@
           <h5 class="title" v-else>No presentó documentos.</h5>
         </td>
         <td>
-          <p-checkbox/>
+          <p-checkbox v-model="provider.selected"/>
         </td>
       </tr>
       </tbody>
     </table>
+    <!-- Message if there is no provider -->
     <h5 class="title" v-else style="margin: 50px;">No hay ofertas aún que mostrar.</h5>
+    <!-- APPROVE BUTTON -->
+    <div class="row text-center" v-if="showApproveButton">
+      <div class="col">
+        <button class="btn btn-fill btn-primary"
+                @click="emitApproveSelected">
+          <i class="fa fa-check"></i> Aprobar ofertas técnicas de los seleccionados
+        </button>
+      </div>
+    </div>
   </card>
 </template>
 
@@ -57,6 +67,21 @@
       providers: {
         type: Array,
         required: true
+      },
+      showApproveButton: {
+        type: Boolean,
+        default: false
+      }
+    },
+    methods: {
+      /**
+       * Emit an event to indicate that the user is approving the selected providers. Pass the selected providers
+       * with the event.
+       */
+      emitApproveSelected () {
+        const selected = this.providers.filter(p => p.selected)
+        if (!selected.length) return alert('No has seleccionado a nadie.')
+        this.$emit('approve', selected)
       }
     }
   }

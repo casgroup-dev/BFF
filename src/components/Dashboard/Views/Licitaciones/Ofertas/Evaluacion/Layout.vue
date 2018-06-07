@@ -1,9 +1,13 @@
 <template>
   <div class="container-fluid">
     <!-- TECHNICAL OFFERS -->
-    <list-files-per-provider-card :providers="providersTechnicalDocuments" title="Ofertas técnicas"/>
+    <list-files-per-provider-card title="Ofertas técnicas"
+                                  :providers="providersTechnicalDocuments"
+                                  show-approve-button
+                                  @approve="approveProviders"/>
     <!-- ECONOMICAL OFFERS -->
-    <list-files-per-provider-card title="Anexos ofertas económicas" :providers="providersEconomicalDocuments"/>
+    <list-files-per-provider-card title="Anexos ofertas económicas"
+                                  :providers="providersEconomicalDocuments"/>
   </div>
 </template>
 
@@ -38,6 +42,12 @@
       },
       providersEconomicalDocuments () {
         return this.providers.map(provider => ({provider: provider.provider, documents: provider.documents.economical}))
+      }
+    },
+    methods: {
+      approveProviders (providers) {
+        console.log(providers)
+        // TODO: Api call to approve technically the given providers
       }
     }
   }
