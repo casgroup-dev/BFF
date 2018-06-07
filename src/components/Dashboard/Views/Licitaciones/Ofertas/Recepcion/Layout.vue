@@ -11,7 +11,7 @@
                          multiple
                          @uploaded="putTechnicalOffer"/>
         <!-- UPLOADED FILES -->
-        <list-files-card :files="files.technicals"/>
+        <list-files-card :files="files.technical"/>
       </div>
       <!-- ECONOMICAL -->
       <div v-if="showEconomicalOffer" class="col">
@@ -28,7 +28,7 @@
                          multiple
                          @uploaded="putEconomicalOffer"/>
         <!-- UPLOADED FILES -->
-        <list-files-card :files="files.economicals"/>
+        <list-files-card :files="files.economical"/>
       </div>
     </div>
     <!-- ECONOMICAL FORM MODAL -->
@@ -56,7 +56,7 @@
     },
     data () {
       return {
-        files: {economicals: [], technicals: []},
+        files: {economical: [], technical: []},
         showEconomicalOfferModal: false
       }
     },
@@ -83,7 +83,9 @@
        * @param {String} filename
        */
       putTechnicalOffer (url, filename) {
-        api.putDocument(this.biddingId, 'technical', filename, url).catch(err => console.error(err))
+        api.putDocument(this.biddingId, 'technical', filename, url)
+          .then(() => this.getMyFiles())
+          .catch(err => console.error(err))
       },
       /**
        * Puts the economical offer's url and name into the backend.
@@ -91,7 +93,15 @@
        * @param {String} filename
        */
       putEconomicalOffer (url, filename) {
-        api.putDocument(this.biddingId, 'economical', filename, url).catch(err => console.error(err))
+        api.putDocument(this.biddingId, 'economical', filename, url)
+          .then(() => this.getMyFiles())
+          .catch(err => console.error(err))
+      },
+      /**
+       * Get the files' names and urls of the user from the backend.
+       */
+      getMyFiles () {
+        api.getMyFiles(this.biddingId).then(response => { this.files = response })
       },
       /**
        * Shows or hide the modal that contains the form to upload the economical offers table.
@@ -100,8 +110,11 @@
         this.showEconomicalOfferModal = !this.showEconomicalOfferModal
       }
     },
-    created: () => {
-      // TODO: Call api and get files
+    /**
+     * After creation get the files of the user to show them in the correspondent component.
+     */
+    created: function () {
+      this.getMyFiles()
     }
   }
 </script>

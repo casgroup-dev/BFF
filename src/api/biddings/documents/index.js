@@ -11,13 +11,27 @@ const {routes, getRouteWithToken} = routesManager
  * @params {String} url - URL of the file to download from.
  * @returns {Promise<void>}
  */
-async function putDocument (biddingId, type, name, url) {
+function putDocument (biddingId, type, name, url) {
   const endpoint = getRouteWithToken(routes.biddingDocuments(biddingId, type))
   return axios.put(endpoint, {name, url}).then(res => {
     if (res.data.error) throw new Error(res.data.error.message)
   })
 }
 
+/**
+ * Get the files uploaded by the user to the given bidding.
+ * @param {String} biddingId - Identifier of the bidding.
+ * @returns {Promise<Object>}
+ */
+function getMyFiles (biddingId) {
+  const endpoint = getRouteWithToken(routes.biddingDocuments(biddingId))
+  return axios.get(endpoint).then(res => {
+    if (res.data.error) throw new Error(res.data.error.message)
+    return res.data
+  })
+}
+
 export default {
+  getMyFiles,
   putDocument
 }
