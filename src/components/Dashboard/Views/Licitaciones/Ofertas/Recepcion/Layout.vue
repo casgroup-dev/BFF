@@ -68,7 +68,7 @@
        */
       biddingId: {
         type: String,
-        default: '5b16e5d99142d57f6de4e767'
+        required: true
       },
       /**
        * Boolean that indicates if the economical offer must be shown.

@@ -3,23 +3,26 @@
     <div class="row text-center"><h3 class="title col">{{ title }}</h3></div>
     <hr class="no-margin">
     <!-- TABLE -->
-    <table class="table" v-if="Object.keys(files).length">
+    <table class="table" v-if="providers.length">
       <thead>
       <tr>
         <th class="text-center">Proveedor</th>
-        <th class="text-center">Archivo</th>
+        <th class="text-center">Archivos</th>
         <th class="text-center">Aprobados</th>
       </tr>
       </thead>
       <tbody>
-      <tr v-for="(providerFiles, provider) in files" :key="provider">
-        <td>{{ provider }}</td>
+      <tr v-for="(provider, index) in providers" :key="index">
+        <td>{{ provider.provider }}</td>
         <td>
-          <ul class="no-margin">
-            <li v-for="(file, index) in providerFiles" :key="index">
+          <!-- List documents -->
+          <ul class="no-margin" v-if="provider.documents.length">
+            <li v-for="(file, index) in provider.documents" :key="index">
               <a :href="file.url" download>{{ file.name }}</a>
             </li>
           </ul>
+          <!-- Show message if there is no document -->
+          <h5 class="title" v-else>No presentó documentos.</h5>
         </td>
         <td>
           <p-checkbox/>
@@ -49,14 +52,10 @@
         required: true
       },
       /**
-       * Files per provider. Example:
-       * {
-       *   'Microsoft': [{name: 'file', url: 'https://www.copec.cl/file.pdf'}, ...]
-       *   ...
-       * }
+       * Array with objects as {provider: String, documents: [{name: String, url: String, date: Date}]}
        */
-      files: {
-        type: Object,
+      providers: {
+        type: Array,
         required: true
       }
     }

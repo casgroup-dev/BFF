@@ -46,8 +46,22 @@ function getMyDocuments (biddingId) {
   })
 }
 
+/**
+ * Get all the documents of a bidding.
+ * @param {String} biddingId
+ * @returns {Promise<Object>}
+ */
+function getAllDocuments (biddingId) {
+  const endpoint = getRouteWithToken(routes.biddingDocuments(biddingId, 'all'))
+  return axios.get(endpoint).then(res => {
+    if (res.data.error) throw new Error(res.data.error.message)
+    return res.data
+  })
+}
+
 export default {
   deleteDocument,
+  getAllDocuments,
   getMyDocuments,
   putDocument
 }
