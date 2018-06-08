@@ -66,7 +66,7 @@
   </nav>
 </template>
 <script>
-  import usersApi from '../../../apis/users'
+  import usersApi from '../../../api/index'
 
   export default {
     computed: {

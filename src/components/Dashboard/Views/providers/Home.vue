@@ -148,7 +148,7 @@
   import Modal from 'src/components/UIComponents/Modal/Modal.vue'
   import SearchBar from 'src/components/UIComponents/Inputs/SearchBar.vue'
   import ClipLoader from 'vue-spinner/src/ClipLoader'
-  import usersApi from 'src/apis/users'
+  import usersApi from 'src/api/index'
   import VueNotify from 'vue-notifyjs'
   import PCheckbox from 'src/components/UIComponents/Inputs/Checkbox.vue'
   import Icons from '../Icons'

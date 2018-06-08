@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 import routes from './routes'
-import usersApi from '../apis/users'
+import usersApi from '../api/index'
 
 Vue.use(Router)
 

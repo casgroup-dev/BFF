@@ -55,7 +55,7 @@
   import Participants from './Components/Participants'
   import CreateNotice from './Components/CreateNotice'
   /* Api */
-  import api from 'src/apis/users'
+  import api from 'src/api/index'
 
   export default {
     components: {
@@ -181,14 +181,8 @@
     padding: 0;
     margin: 0;
     list-style: none;
-
-    display: -webkit-box;
-    display: -moz-box;
-    display: -ms-flexbox;
-    display: -webkit-flex;
     display: flex;
-
-    -webkit-flex-flow: row wrap;
+    flex-flow: row wrap;
     justify-content: space-around;
   }
 

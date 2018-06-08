@@ -57,7 +57,7 @@
   import ContentFooter from './ContentFooter.vue'
   import DashboardContent from './Content.vue'
   import MobileMenu from './MobileMenu.vue'
-  import api from '../../../apis/users'
+  import api from '../../../api/index'
 
   export default {
     components: {
