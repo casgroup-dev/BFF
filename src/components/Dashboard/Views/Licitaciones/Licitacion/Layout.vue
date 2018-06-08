@@ -9,7 +9,7 @@
       <!-- <div class="flex-row"></div> -->
       <!-- RULES -->
       <div class="flex-row" v-if="uploadRules || downloadRules">
-        <participants class="flex-row-item"
+        <Participants class="flex-row-item"
                       :participants="bidding.participants"/>
         <FileDownloadCard class="flex-row-item"
                           :iconColor="'#f49521'"
@@ -17,6 +17,7 @@
                           :files="bidding.rulesFiles"
                           title="Descargar bases"
                           v-if="downloadRules"/>
+        <CreateNotice class="flex-row-item"/>
       </div>
       <!-- OFFERS: Download or upload the offers of the bidding -->
       <div class="flex-row" v-if="uploadTecOffer || uploadEcoOffer || downloadTecOffers || downloadEcoOffers">
@@ -52,6 +53,7 @@
   import FileDownloadCard from '../../../../UIComponents/Inputs/FileDownloadCard'
   import FileInputCard from 'src/components/UIComponents/Inputs/FileInputCard'
   import Participants from './Components/Participants'
+  import CreateNotice from './Components/CreateNotice'
   /* Api */
   import api from 'src/api/index'
 
@@ -59,7 +61,8 @@
     components: {
       FileDownloadCard,
       FileInputCard,
-      Participants
+      Participants,
+      CreateNotice
     },
     data () {
       return {
