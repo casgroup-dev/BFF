@@ -26,7 +26,8 @@
           horizontalAlign: 'right',
           verticalAlign: 'bottom',
           timeout: 20000
-        }
+        },
+        myDate: null
       }
     },
     components: {
@@ -60,8 +61,16 @@
       // TODO: se clickeo el boton y se debe hacer POST del notice al endpoint
       postText: function () {
         this.loading = true
-        if (this.text.length) return this.notifySuccess()
-        else return this.notifyError()
+        if (this.text.length) {
+          this.setTextActualDate()
+          this.notifySuccess()
+          console.log(this.myDate)
+        } else {
+          return this.notifyError()
+        }
+      },
+      setTextActualDate () {
+        this.myDate = new Date().toISOString().split('T')[0]
       },
       /**
        * Show a notification indicating that the text was submitted correctly.
@@ -79,12 +88,21 @@
        * Show a notification as a warning indicating that there was an error.
        */
       notifyError () {
-        this.$notify({
-          ...this.baseNotification,
-          component: {template: `<span>Ocurrió un problema<br>Inténtalo nuevamente.</span>`},
-          icon: 'fa fa-exclamation',
-          type: 'warning'
-        })
+        if (this.text.length) {
+          this.$notify({
+            ...this.baseNotification,
+            component: {template: `<span>Ocurrió un problema<br>Inténtalo nuevamente.</span>`},
+            icon: 'fa fa-exclamation',
+            type: 'warning'
+          })
+        } else {
+          this.$notify({
+            ...this.baseNotification,
+            component: {template: `<span>Debes ingresar un texto<br>Inténtalo nuevamente.</span>`},
+            icon: 'fa fa-exclamation',
+            type: 'warning'
+          })
+        }
         this.loading = false
       }
     }
