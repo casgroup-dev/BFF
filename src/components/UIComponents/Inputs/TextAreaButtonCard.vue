@@ -1,5 +1,5 @@
 <template>
-  <card>
+  <card class="text-area-card">
     <h4 slot="header" class="title" :style="{fontSize: titleSize}">{{ title }}</h4>
     <div class="form-group">
       <textarea class="form-control" title="text" v-model="text" placeholder="Ingrese texto..."></textarea>
@@ -110,6 +110,13 @@
 </script>
 
 <style scoped>
+
+  .text-area-card {
+    /* Border */
+    --border-color: #e4e4e4;
+    border: solid 1px var(--border-color);
+    border-radius: 5px;
+  }
 
   .title {
     margin: 0 10px 10px;
