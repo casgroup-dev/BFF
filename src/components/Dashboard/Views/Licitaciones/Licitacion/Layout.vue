@@ -12,7 +12,7 @@
       <!-- Participants -->
       <div class="flex-row" v-if="bidding.permissions.seeParticipants">
         <Participants class="flex-row-item"
-                      :participants="bidding.users"/>
+                      :participants="participantsComponentUsers"/>
         <!-- <CreateNotice class="flex-row-item"/> -->
       </div>
       <!-- FINAL RESULT OF THE BIDDING -->
@@ -55,7 +55,8 @@
     },
     data () {
       return {
-        bidding: undefined
+        bidding: undefined,
+        participantsComponentUsers: undefined
       }
     },
     methods: {
@@ -90,10 +91,11 @@
       const self = this
       api.getCurrentBidding().then(data => {
         self.bidding = data
-        /* Check permissions to see components */
+        self.participantsComponentUsers = Object.assign([], data.users)
+        delete self.participantsComponentUsers.documents
+        delete self.participantsComponentUsers.economicalFormAnswers
       }).catch(err => {
         console.error(err)
-        /* The user is not authorized to access here */
         self.$router.push('/')
       })
     }
