@@ -2,120 +2,152 @@
   <div class="content">
     <div class="container-fluid">
       <form>
-        <div class="form-group">
-          <label>Nombre Licitacion</label><br style="margin: 0.5%;">
+        <div v-if="formPage === 1">
+          <div class="form-group">
+            <label>Nombre Licitacion</label><br style="margin: 0.5%;">
+            <small><label class="error" style="color: red;"
+                          v-if="bidding.name.error">{{bidding.name.errorMessage}}</label></small>
+            <fg-input placeholder="Nombre Licitación" v-model="bidding.name.payload"></fg-input>
+          </div>
+          <div class="form-group">
+            <label>Empresa Autora</label><br style="margin: 0.5%;">
+            <small><label class="error" style="color: red;"
+                          v-if="bidding.company.error">{{bidding.company.errorMessage}}</label></small>
+            <fg-input placeholder="CasGroup" v-model="bidding.company.payload"></fg-input>
+          </div>
+          <div class="form-group">
+            <label>Tipo de Licitación</label><br style="margin: 0.5%;">
+            <p-radio v-model="bidding.type" label="1">Licitación de 1 etapa</p-radio>
+            <p-radio v-model="bidding.type" label="2">Licitación de 2 etapas</p-radio>
+          </div>
+          <div class="form-group">
+            <label>Bases</label><br style="margin: 0.5%;">
+            <small><label class="error" style="color: red;"
+                          v-if="bidding.bases.error">{{bidding.bases.errorMessage}}</label></small>
+            <textarea class="form-control" v-model="bidding.bases.payload" style="height: 50px;"></textarea>
+            <small id="basesHelpBlock" class="form-text text-muted">
+              Descripción de bases PENDIENTE
+            </small>
+          </div>
+          <FileInputCard class="col-4" title="Subir Bases"></FileInputCard>
+          <br/>
+          <button type="submit" class="btn btn-default" @click="formPage = formPage + 1">Siguiente</button>
+        </div>
+        <div v-else-if="formPage === 2">
           <small><label class="error" style="color: red;"
-                        v-if="bidding.name.error">{{bidding.name.errorMessage}}</label></small>
-          <fg-input placeholder="Nombre Licitación" v-model="bidding.name.payload"></fg-input>
-        </div>
-        <div class="form-group">
-          <label>Empresa Autora</label><br style="margin: 0.5%;">
-          <small><label class="error" style="color: red;"
-                        v-if="bidding.company.error">{{bidding.company.errorMessage}}</label></small>
-          <fg-input placeholder="CasGroup" v-model="bidding.company.payload"></fg-input>
-        </div>
-        <div class="form-group">
-          <label>Tipo de Licitación</label><br style="margin: 0.5%;">
-          <p-radio v-model="bidding.type" label="1">Licitación de 1 etapa</p-radio>
-          <p-radio v-model="bidding.type" label="2">Licitación de 2 etapas</p-radio>
-        </div>
-        <div class="form-group">
-          <label>Bases</label><br style="margin: 0.5%;">
-          <small><label class="error" style="color: red;"
-                        v-if="bidding.bases.error">{{bidding.bases.errorMessage}}</label></small>
-          <textarea class="form-control" v-model="bidding.bases.payload" style="height: 150px;"></textarea>
-          <small id="basesHelpBlock" class="form-text text-muted">
-            Descripción de bases PENDIENTE
-          </small>
-        </div>
-        <small><label class="error" style="color: red;"
-                      v-if="bidding.users.error">{{bidding.users.errorMessage}}</label></small>
-        <div class="row"> <!-- PENDIENTE corregir alineación -->
-          <div class="col-3">Número de Usuarios Asociados</div>
-          <fg-input class="col-1" v-model="bidding.users.amount"></fg-input>
-        </div>
-        <div class="form-group">
-          <div class="form-row" v-for="user in usersAndRoles">
-            <div class="col-md-10" style="color: red; font-size: 10px;"
-                 v-if="user.error">{{user.errorMessage}}
-            </div>
-            <div class="col-md-10" style="color: red; font-size: 10px;"
-                 v-if="user.isNew">{{user.errorMessage}}
-            </div>
-            <div v-if="!user.isNew" class="col-md-4">
-              <fg-input placeholder="Email Usuario" v-model="user.mail" @input="timedValidation(user)"></fg-input>
-            </div>
-            <div v-else class="col-md-4">
-              <fg-input placeholder="Email Usuario" v-model="user.mail" @input="timedValidation(user)"></fg-input>
-            </div>
-            <div v-if="user.isNew" class="col-md-4">
-              <fg-input placeholder="Contraseña" v-model="user.password" type="password"></fg-input>
-            </div>
-            <div class="row-md-4">
-              <p-checkbox v-model="user.role.revisor">Revisor</p-checkbox>
-              <p-checkbox v-model="user.role.aprobador">Aprobador</p-checkbox>
+                        v-if="bidding.users.error">{{bidding.users.errorMessage}}</label></small>
+          <div class="row"> <!-- PENDIENTE corregir alineación -->
+            <div class="col-3">Número de Usuarios Asociados</div>
+            <fg-input class="col-1" v-model="bidding.users.amount"></fg-input>
+          </div>
+          <div class="form-group">
+            <div class="form-row" v-for="user in usersAndRoles">
+              <div class="col-md-10" style="color: red; font-size: 10px;"
+                   v-if="user.error">{{user.errorMessage}}
+              </div>
+              <div class="col-md-10" style="color: red; font-size: 10px;"
+                   v-if="user.isNew">{{user.errorMessage}}
+              </div>
+              <div v-if="!user.isNew" class="col-md-4">
+                <fg-input placeholder="Email Usuario" v-model="user.mail" @input="timedValidation(user)"></fg-input>
+              </div>
+              <div v-else class="col-md-4">
+                <fg-input placeholder="Email Usuario" v-model="user.mail" @input="timedValidation(user)"></fg-input>
+              </div>
+              <div v-if="user.isNew" class="col-md-4">
+                <fg-input placeholder="Contraseña" v-model="user.password" type="password"></fg-input>
+              </div>
+              <div class="row-md-4">
+                <p-checkbox v-model="user.role.revisor">Revisor</p-checkbox>
+                <p-checkbox v-model="user.role.aprobador">Aprobador</p-checkbox>
+              </div>
             </div>
           </div>
+          <button type="submit" class="btn btn-default" @click="formPage = formPage - 1">Anterior</button>
+          <button type="submit" class="btn btn-default" @click="formPage = formPage + 1">Siguiente</button>
         </div>
-        <div class="form-group">
+        <div v-else-if="formPage === 3">
+          <div class="row"> <!-- PENDIENTE corregir alineación -->
+            <div class="col-3">Número de Productos Deseados</div>
+            <fg-input class="col-1"@input="bidding.requests.amount = parseInt(bidding.requests.amount)"
+                      v-model="bidding.requests.amount"/>
+          </div>
           <small><label class="error" style="color: red;"
-                        v-if="etapas.error">{{etapas.errorMessage}}</label></small>
-          <table class="table-bordered">
-            <td v-for="stage in availableStages">
-              <label :for="stage.label">
-                <fg-input v-model="stage.title"></fg-input>
-              </label>
-              <!--<div class="col-1 nc-icon nc-stre-right"></div>-->
-              <div class="datepicker-trigger">
-                <fg-input
-                  type="text"
-                  :id="stage.id"
-                  :placeholder="stage.placeholder"
-                  :value="formatDates(stage.dateOne, stage.dateTwo)"></fg-input>
-                <AirbnbStyleDatepicker
-                  :trigger-element-id="stage.id"
-                  :mode="'range'"
-                  :fullscreen-mobile="true"
-                  :months-to-show="1"
-                  :date-one="stage.dateOne"
-                  :date-two="stage.dateTwo"
-                  @date-one-selected="val => { stage.dateOne = val }"
-                  @date-two-selected="val => { stage.dateTwo = val }">
-                </AirbnbStyleDatepicker>
-              </div>
-              <table>
-                <td>
-                  <tr>Hora Inicio</tr>
-                  <select class="custom-select custom-select-sm" v-model="stage.timeOne.hour">
-                    <!--<option selected :value="stage.timeOne.hour">Hora</option>-->
-                    <option v-for="hour in time.hours" :value="hour.value">{{hour.show}}</option>
-                  </select>
-                  <select class="custom-select custom-select-sm" v-model="stage.timeOne.minute">
-                    <!--<option selected :value="stage.timeOne.minute">Minutos</option>-->
-                    <option v-for="minute in time.minutes" :value="minute.value">{{minute.show}}</option>
-                  </select>
-                </td>
-                <td>
-                  <tr>Hora Término</tr>
-                  <select class="custom-select custom-select-sm" v-model="stage.timeTwo.hour">
-                    <!--<option selected :value="stage.timeOne.hour">Hora</option>-->
-                    <option v-for="hour in time.hours" :value="hour.value">{{hour.show}}</option>
-                  </select>
-                  <select class="custom-select custom-select-sm" v-model="stage.timeTwo.minute">
-                    <!--<option selected :value="stage.timeTwo.minute">Minutos</option>-->
-                    <option v-for="minute in time.minutes" :value="minute.value">{{minute.show}}</option>
-                  </select>
-                </td>
-              </table>
-            </td>
-          </table>
+                        v-if="bidding.requests.error">{{bidding.requests.errorMessage}}</label></small>
+          <div class="row">
+            <label class="col-4" >Nombre del Producto</label>
+            <label class="col-4" >Cantidad</label>
+            <label class="col-4" >Unidad de medida</label>
+          </div>
+          <div class="row" v-for="i in bidding.requests.amount">
+            <fg-input class="col-4" placeholder="Producto" v-model="bidding.requests.names[i]"/>
+            <fg-input class="col-4" placeholder="Cantidad" v-model="bidding.requests.amountPerItem[i]"/>
+            <fg-input class="col-4" placeholder="Unidad de Medida" v-model="bidding.requests.measurePerItem[i]"/>
+          </div>
+          <button type="submit" class="btn btn-default" @click="formPage = formPage - 1">Anterior</button>
+          <button type="submit" class="btn btn-default" @click="formPage = formPage + 1">Siguiente</button>
         </div>
-        <div class="custom-file">
-          <input type="file" class="custom-file-input" id="customFile">
-          <label class="custom-file-label" for="customFile">Subir versión completa Licitación</label>
+        <div v-else-if="formPage === 4">
+          <div class="form-group">
+            <small><label class="error" style="color: red;"
+                          v-if="etapas.error">{{etapas.errorMessage}}</label></small>
+            <table class="table-bordered">
+              <td v-for="stage in availableStages">
+                <label :for="stage.label">
+                  <fg-input v-model="stage.title"></fg-input>
+                </label>
+                <!--<div class="col-1 nc-icon nc-stre-right"></div>-->
+                <div class="datepicker-trigger">
+                  <fg-input
+                    type="text"
+                    :id="stage.id"
+                    :placeholder="stage.placeholder"
+                    :value="formatDates(stage.dateOne, stage.dateTwo)"></fg-input>
+                  <AirbnbStyleDatepicker
+                    :trigger-element-id="stage.id"
+                    :mode="'range'"
+                    :fullscreen-mobile="true"
+                    :months-to-show="1"
+                    :date-one="stage.dateOne"
+                    :date-two="stage.dateTwo"
+                    @date-one-selected="val => { stage.dateOne = val }"
+                    @date-two-selected="val => { stage.dateTwo = val }">
+                  </AirbnbStyleDatepicker>
+                </div>
+                <table>
+                  <td>
+                    <tr>Hora Inicio</tr>
+                    <select class="custom-select custom-select-sm" v-model="stage.timeOne.hour">
+                      <!--<option selected :value="stage.timeOne.hour">Hora</option>-->
+                      <option v-for="hour in time.hours" :value="hour.value">{{hour.show}}</option>
+                    </select>
+                    <select class="custom-select custom-select-sm" v-model="stage.timeOne.minute">
+                      <!--<option selected :value="stage.timeOne.minute">Minutos</option>-->
+                      <option v-for="minute in time.minutes" :value="minute.value">{{minute.show}}</option>
+                    </select>
+                  </td>
+                  <td>
+                    <tr>Hora Término</tr>
+                    <select class="custom-select custom-select-sm" v-model="stage.timeTwo.hour">
+                      <!--<option selected :value="stage.timeOne.hour">Hora</option>-->
+                      <option v-for="hour in time.hours" :value="hour.value">{{hour.show}}</option>
+                    </select>
+                    <select class="custom-select custom-select-sm" v-model="stage.timeTwo.minute">
+                      <!--<option selected :value="stage.timeTwo.minute">Minutos</option>-->
+                      <option v-for="minute in time.minutes" :value="minute.value">{{minute.show}}</option>
+                    </select>
+                  </td>
+                </table>
+              </td>
+            </table>
+          </div>
+          <small><label class="error" style="color: red;"
+                        v-if="bidding.generalError">{{bidding.generalErrorMessage}}</label></small>
+          <div>
+            <button type="submit" class="btn btn-default" @click="formPage = formPage - 1">Anterior</button>
+            <button type="submit" class="btn btn-primary" @click="addBidding">{{buttonCaption}}</button>
+          </div>
         </div>
-        <br><br>
-        <button type="submit" class="btn btn-primary" @click="addBidding">Crear</button>
       </form>
     </div>
   </div>
@@ -126,15 +158,24 @@
   import usersApi from 'src/api/index'
   import PCheckbox from 'src/components/UIComponents/Inputs/Checkbox.vue'
   import PRadio from 'src/components/UIComponents/Inputs/Radio.vue'
+  import FileInputCard from 'src/components/UIComponents/Inputs/FileInputCard'
 
   export default {
     name: 'CreateForm',
+    props: {
+      buttonCaption: {
+        type: String,
+        default: 'Crear'
+      }
+    },
     components: {
       PCheckbox,
-      PRadio
+      PRadio,
+      FileInputCard
     },
     data () {
       return {
+        formPage: 1,
         dateFormat: 'D MMM',
         time: {
           hours: [
@@ -162,18 +203,20 @@
           ],
           payload: [],
           error: false,
-          errorMessage: ''
+          errorMessage: 'Debe definir las fechas de la Licitación'
         },
         bidding: {
+          generalError: false,
+          generalErrorMessage: 'Faltan campos obligatorios por rellenar',
           name: {
             payload: '',
             error: false,
-            errorMessage: ''
+            errorMessage: 'Debe asignar un nombre a la Licitación'
           },
           company: {
             payload: '',
             error: false,
-            errorMessage: ''
+            errorMessage: 'Debe asignar la Licitacion a una empresa'
           },
           type: 2,
           bases: {
@@ -181,11 +224,19 @@
             error: false,
             errorMessage: ''
           },
+          requests: {
+            amount: 5,
+            names: [],
+            amountPerItem: [],
+            measurePerItem:[],
+            error: false,
+            errorMessage: 'Debe asignar los nombres, medidas y/o cantidades a los productos pedidos'
+          },
           users: {
             amount: 2,
             payload: [],
             error: false,
-            errorMessage: '',
+            errorMessage: 'Debe asociar al menos un usuario a la Licitación',
             validateTimeoutID: 0
           }
         }
@@ -221,26 +272,19 @@
         }
       },
       checkBiddingInput () {
-        if (!this.etapas.payload || !this.etapas.payload[0].dateOne || !this.etapas.payload[0].dateTwo) {
-          this.etapas.error = true
-          this.etapas.errorMessage = 'Debe definir las fechas de la Licitación'
-        } else this.etapas.error = false
-        if (!this.bidding.company.payload) {
-          this.bidding.company.error = true
-          this.bidding.company.errorMessage = 'Debe asignar la Licitacion a una empresa'
-        } else this.bidding.company.error = false
-        if (!this.bidding.name.payload) {
-          this.bidding.name.error = true
-          this.bidding.name.errorMessage = 'Debe asignar un nombre a la Licitación'
-        } else this.bidding.name.error = false
-        // if (!this.bidding.bases.payload) {
-        //   this.bidding.bases.error = true
-        //   this.bidding.bases.errorMessage = 'Debe describir las bases de la Licitación'
-        // } else this.bidding.bases.error = false
-        if (!this.bidding.users.payload[0].mail || (this.bidding.users.payload[0].role === 'Seleccione el Rol')) {
-          this.bidding.users.error = true
-          this.bidding.users.errorMessage = 'Debe asociar al menos un usuario a la Licitación'
-        } else this.bidding.users.error = false
+        this.etapas.error = !this.etapas.payload || !this.etapas.payload[0].dateOne || !this.etapas.payload[0].dateTwo
+        this.bidding.company.error = !this.bidding.company.payload
+        this.bidding.name.error = !this.bidding.name.payload
+        this.bidding.requests.error =
+          this.bidding.requests.amount > 0 && (
+            !this.bidding.requests.amountPerItem[0] ||
+            !this.bidding.requests.names[0] ||
+            !this.bidding.requests.measurePerItem[0]
+          )
+        this.bidding.users.error =
+          !this.bidding.users.payload[0].mail || (this.bidding.users.payload[0].role === 'Seleccione el Rol')
+        this.bidding.generalError = this.bidding.company.error || this.bidding.name.error ||
+          this.bidding.requests.error || this.bidding.users.error || this.etapas.error
       },
       parseBidding () {
         const self = this
@@ -290,7 +334,7 @@
         const bidding = this.parseBidding()
         this.createUsers(bidding.users)
         usersApi.registerBidding(bidding)
-        this.$emit('endModal', null)
+        // this.$emit('endModal', null)
       }
     },
     computed: {
