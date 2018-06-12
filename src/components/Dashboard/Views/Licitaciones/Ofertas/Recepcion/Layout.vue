@@ -36,6 +36,7 @@
     <!-- ECONOMICAL FORM MODAL -->
     <economical-form-modal v-show="showEconomicalOfferModal"
                            :bidding-id="biddingId"
+                           :items="economicalForm"
                            @close="toggleEconomicalFormModal"/>
   </div>
 </template>
@@ -68,7 +69,19 @@
        */
       biddingId: {
         type: String,
-        required: true
+        default: '5b16e5d99142d57f6de4e767' // TODO: Change to required
+      },
+      /**
+       * Array with the items to populate the economical form.
+       */
+      economicalForm: {
+        type: Array,
+        default: () => [
+          {itemName: 'Pernos', wantedAmount: 500, measureUnit: 'Unidad', costPerUnit: 100, specifications: 'hola'},
+          {itemName: 'Tuercas', wantedAmount: 100, measureUnit: 'Unidad'},
+          {itemName: 'Lápices', wantedAmount: 150, measureUnit: 'Unidad'},
+          {itemName: 'Cuadernos', wantedAmount: 100, measureUnit: 'Unidad'}
+        ] // TODO: Change to required
       },
       /**
        * Boolean that indicates if the economical offer must be shown.

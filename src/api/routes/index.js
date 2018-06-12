@@ -10,7 +10,8 @@ const routes = {
   industries: '/industries',
   signPutObject: '/auth/sign/put',
   biddings: '/biddings',
-  biddingDocuments: (biddingId, type) => `${routes.biddings}/${biddingId}/documents${type ? `/${type}` : ''}`
+  biddingDocuments: (biddingId, type) => `${routes.biddings}/${biddingId}/documents${type ? `/${type}` : ''}`,
+  forms: (biddingId, type) => `${routes.biddings}/${biddingId}/forms/${type}`
 }
 
 /**
