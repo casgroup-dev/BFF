@@ -93,6 +93,7 @@
       api.getCurrentBidding(self.id).then(data => {
         self.bidding = data
         var users = Object.assign([], data.users)
+        // TODO: no se hace este delete
         delete users['documents']
         delete users['economicalFormAnswers']
         self.participantsComponentUsers = Object.assign([], data.users)
