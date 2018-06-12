@@ -31,8 +31,8 @@
         <small><label class="error" style="color: red;"
                       v-if="bidding.users.error">{{bidding.users.errorMessage}}</label></small>
         <div class="row"> <!-- PENDIENTE corregir alineación -->
-          <div class="col-7">Número de Usuarios Asociados</div>
-          <fg-input class="col-2" v-model="bidding.users.amount"></fg-input>
+          <div class="col-3">Número de Usuarios Asociados</div>
+          <fg-input class="col-1" v-model="bidding.users.amount"></fg-input>
         </div>
         <div class="form-group">
           <div class="form-row" v-for="user in usersAndRoles">
@@ -57,40 +57,57 @@
             </div>
           </div>
         </div>
-        <div class="row"> <!-- PENDIENTE corregir alineación -->
-          <div class="col-5">Número de Períodos</div>
-          <fg-input class="col-2" v-model="etapas.amount"></fg-input>
-        </div>
         <div class="form-group">
           <small><label class="error" style="color: red;"
                         v-if="etapas.error">{{etapas.errorMessage}}</label></small>
-          <table>
-            <tr v-for="(tuple, index0) in availableStages">
-              <td v-for="(stage, index1) in tuple">
-                <label :for="stage.label">
-                  <fg-input v-model="stage.title"></fg-input>
-                </label>
-                <div>
-                  <div class="datepicker-trigger">
-                    <fg-input
-                      type="text"
-                      :id="stage.id + index0 + index1"
-                      :placeholder="stage.placeholder"
-                      :value="formatDates(stage.dateOne, stage.dateTwo)"></fg-input>
-                    <AirbnbStyleDatepicker
-                      :trigger-element-id="stage.id + index0 + index1"
-                      :mode="'range'"
-                      :fullscreen-mobile="true"
-                      :months-to-show="1"
-                      :date-one="stage.dateOne"
-                      :date-two="stage.dateTwo"
-                      @date-one-selected="val => { stage.dateOne = val }"
-                      @date-two-selected="val => { stage.dateTwo = val }">
-                    </AirbnbStyleDatepicker>
-                  </div>
-                </div>
-              </td>
-            </tr>
+          <table class="table-bordered">
+            <td v-for="stage in availableStages">
+              <label :for="stage.label">
+                <fg-input v-model="stage.title"></fg-input>
+              </label>
+              <!--<div class="col-1 nc-icon nc-stre-right"></div>-->
+              <div class="datepicker-trigger">
+                <fg-input
+                  type="text"
+                  :id="stage.id"
+                  :placeholder="stage.placeholder"
+                  :value="formatDates(stage.dateOne, stage.dateTwo)"></fg-input>
+                <AirbnbStyleDatepicker
+                  :trigger-element-id="stage.id"
+                  :mode="'range'"
+                  :fullscreen-mobile="true"
+                  :months-to-show="1"
+                  :date-one="stage.dateOne"
+                  :date-two="stage.dateTwo"
+                  @date-one-selected="val => { stage.dateOne = val }"
+                  @date-two-selected="val => { stage.dateTwo = val }">
+                </AirbnbStyleDatepicker>
+              </div>
+              <table>
+                <td>
+                  <tr>Hora Inicio</tr>
+                  <select class="custom-select custom-select-sm" v-model="stage.timeOne.hour">
+                    <!--<option selected :value="stage.timeOne.hour">Hora</option>-->
+                    <option v-for="hour in time.hours" :value="hour.value">{{hour.show}}</option>
+                  </select>
+                  <select class="custom-select custom-select-sm" v-model="stage.timeOne.minute">
+                    <!--<option selected :value="stage.timeOne.minute">Minutos</option>-->
+                    <option v-for="minute in time.minutes" :value="minute.value">{{minute.show}}</option>
+                  </select>
+                </td>
+                <td>
+                  <tr>Hora Término</tr>
+                  <select class="custom-select custom-select-sm" v-model="stage.timeTwo.hour">
+                    <!--<option selected :value="stage.timeOne.hour">Hora</option>-->
+                    <option v-for="hour in time.hours" :value="hour.value">{{hour.show}}</option>
+                  </select>
+                  <select class="custom-select custom-select-sm" v-model="stage.timeTwo.minute">
+                    <!--<option selected :value="stage.timeTwo.minute">Minutos</option>-->
+                    <option v-for="minute in time.minutes" :value="minute.value">{{minute.show}}</option>
+                  </select>
+                </td>
+              </table>
+            </td>
           </table>
         </div>
         <div class="custom-file">
@@ -119,8 +136,30 @@
     data () {
       return {
         dateFormat: 'D MMM',
+        time: {
+          hours: [
+            {show: '00', value: 0}, {show: '01', value: 1}, {show: '02', value: 2}, {show: '03', value: 3},
+            {show: '04', value: 4}, {show: '05', value: 5}, {show: '06', value: 6}, {show: '07', value: 7},
+            {show: '08', value: 8}, {show: '09', value: 9}, {show: '10', value: 10}, {show: '11', value: 11},
+            {show: '12', value: 12}, {show: '13', value: 13}, {show: '14', value: 14}, {show: '15', value: 15},
+            {show: '16', value: 16}, {show: '17', value: 17}, {show: '18', value: 18}, {show: '19', value: 19},
+            {show: '20', value: 20}, {show: '21', value: 21}, {show: '22', value: 22}, {show: '23', value: 23}
+          ],
+          minutes: [
+            {show: '00', value: 0}, {show: '10', value: 10}, {show: '20', value: 20},
+            {show: '30', value: 30}, {show: '40', value: 40}, {show: '50', value: 50}
+          ]
+        },
         etapas: {
-          amount: 2,
+          amount: 6,
+          names: [
+            'Recepción de Ofertas',
+            'Preguntas',
+            'Respuestas',
+            'Evaluación Técnica',
+            'Evaluación Comercial',
+            'Resultados'
+          ],
           payload: [],
           error: false,
           errorMessage: ''
@@ -182,7 +221,7 @@
         }
       },
       checkBiddingInput () {
-        if (!this.etapas.payload || !this.etapas.payload[0][0].dateOne || !this.etapas.payload[0][0].dateTwo) {
+        if (!this.etapas.payload || !this.etapas.payload[0].dateOne || !this.etapas.payload[0].dateTwo) {
           this.etapas.error = true
           this.etapas.errorMessage = 'Debe definir las fechas de la Licitación'
         } else this.etapas.error = false
@@ -217,8 +256,15 @@
               const dateTable = self.etapas.payload[i]
               let stage = {
                 title: dateTable.title,
-                dateOne: dateTable.dateOne,
-                dateTwo: dateTable.dateTwo
+                start: {
+                  date: dateTable.dateOne,
+                  hour: dateTable.timeOne.hour,
+                  minute: dateTable.timeOne.minute
+                },
+                end: {
+                  date: dateTable.dateTwo,
+                  hour: dateTable.timeTwo.hour,
+                  minute: dateTable.timeTwo.minute}
               }
               stages.push(stage)
             }
@@ -268,25 +314,27 @@
         return this.bidding.users.payload
       },
       availableStages: function () {
-        let stagesTuples = []
-        for (let i = 1; i <= this.etapas.amount;) {
-          let stages = []
-          let j = 0
-          for (; j < 2 && i + j <= this.etapas.amount; ++j) {
-            let stage = {
-              title: 'Etapa ' + (i + j),
-              label: 'etapa' + (i + j),
-              placeholder: 'Selecciona duración de la Período',
-              dateOne: '',
-              dateTwo: '',
-              id: 'datepicker-trigger' + 1
-            }
-            stages.push(stage)
+        let stages = []
+        for (let i = 1; i <= this.etapas.amount; ++i) {
+          let stage = {
+            title: this.etapas.names[i - 1],
+            label: 'etapa' + i,
+            placeholder: 'Selecciona duración del Período',
+            dateOne: '',
+            dateTwo: '',
+            timeOne: {
+              hour: 0,
+              minute: 0
+            },
+            timeTwo: {
+              hour: 0,
+              minute: 0
+            },
+            id: 'datepicker-trigger' + i
           }
-          i += j
-          stagesTuples.push(stages)
+          stages.push(stage)
         }
-        this.etapas.payload = stagesTuples
+        this.etapas.payload = stages
         return this.etapas.payload
       }
     }
