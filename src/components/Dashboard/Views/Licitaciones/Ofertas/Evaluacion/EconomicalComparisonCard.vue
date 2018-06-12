@@ -9,7 +9,7 @@
                            :offers="itemAndOffers.offers"
                            @adjudicate="emitAdjudicate"/>
     <!-- Message if there are no items -->
-    <div class="text-center" v-if="!items.length"><h4>No hay items que mostrar.</h4></div>
+    <div class="text-center" v-if="!economicalForm.length"><h4>No hay items que mostrar.</h4></div>
   </card>
 </template>
 
@@ -23,11 +23,11 @@
       ItemComparisonTable
     },
     props: {
-      items: {
+      economicalForm: {
         type: Array,
         default: () => []
       },
-      offers: {
+      economicalFormAnswers: {
         type: Array,
         default: () => []
       }
@@ -37,7 +37,10 @@
        * Join the the items and its correspondent offers.
        */
       itemsAndOffers () {
-        return this.items.map(item => ({item, offers: this.offers.filter(offer => offer.itemName === item.itemName)}))
+        return this.economicalForm.map(item => ({
+          item,
+          offers: this.economicalFormAnswers.filter(offer => offer.itemName === item.itemName)
+        }))
       }
     },
     methods: {

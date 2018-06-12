@@ -5,9 +5,9 @@
     <table class="table" v-if="providers.length">
       <thead>
       <tr>
-        <th class="text-center">Proveedor</th>
-        <th class="text-center">Archivos</th>
-        <th class="text-center">Aprobados</th>
+        <th>Proveedor</th>
+        <th>Archivos</th>
+        <th v-if="showApprovement">Aprobados</th>
       </tr>
       </thead>
       <tbody>
@@ -23,18 +23,18 @@
           <!-- Show message if there is no document -->
           <h5 class="title" v-else>No presentó documentos.</h5>
         </td>
-        <td>
+        <td v-if="showApprovement">
           <p-checkbox v-model="provider.selected"/>
         </td>
       </tr>
       </tbody>
     </table>
     <!-- Message if there is no provider -->
-    <h5 class="title" v-else style="margin: 50px;">No hay ofertas aún que mostrar.</h5>
+    <h4 class="text-center" v-else style="margin: 50px;">No hay ofertas aún que mostrar.</h4>
     <!-- APPROVE BUTTON -->
-    <div class="row text-center" v-if="showApproveButton">
+    <div class="row text-center" v-if="showApprovement">
       <div class="col">
-        <button class="btn btn-fill btn-primary"
+        <button class="btn btn-primary"
                 @click="emitApproveSelected">
           <i class="fa fa-check"></i> Aprobar ofertas técnicas de los seleccionados
         </button>
@@ -67,7 +67,7 @@
         type: Array,
         required: true
       },
-      showApproveButton: {
+      showApprovement: {
         type: Boolean,
         default: false
       }

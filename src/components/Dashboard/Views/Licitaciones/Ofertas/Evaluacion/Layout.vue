@@ -3,12 +3,12 @@
     <!-- TECHNICAL OFFERS -->
     <list-files-per-provider-card title="Ofertas técnicas"
                                   :providers="providersTechnicalDocuments"
-                                  show-approve-button
+                                  show-approvement
                                   @approve="approveProviders"/>
     <template v-if="showEconomicalSection">
       <!-- ECONOMICAL COMPARISON -->
-      <economical-comparison-card :items="items"
-                                  :offers="offers"
+      <economical-comparison-card :economicalForm="bidding.economicalForm"
+                                  :economicalFormAnswers="economicalFormAnswers"
                                   @adjudicate="adjudicate"/>
       <!-- ECONOMICAL OFFERS -->
       <list-files-per-provider-card title="Anexos ofertas económicas"
@@ -45,19 +45,16 @@
       }
     },
     props: {
-      /**
-       * Id of the current bidding.
-       */
-      biddingId: {
-        type: String,
-        default: '5b16e5d99142d57f6de4e767' // TODO: REMOVE AND SET REQUIRED TRUE
+      bidding: {
+        type: Object,
+        required: true
       },
       /**
        * Boolean to show or hide the economical section.
        */
       showEconomicalSection: {
         type: Boolean,
-        default: true // TODO: SET DEFAULT TO FALSE
+        default: false
       },
       /**
        * Enable or disable the button to sign and publish the results.
@@ -68,8 +65,7 @@
       }
     },
     created () {
-      api.getAllDocuments(this.biddingId).then(res => { this.documentsObjects = res })
-      // TODO: Call api and get items and offers
+      api.getAllDocuments(this.bidding.id).then(res => { this.documentsObjects = res })
     },
     computed: {
       providersTechnicalDocuments () {
@@ -83,6 +79,13 @@
           provider: documentsObject.provider,
           documents: documentsObject.documents.economical
         }))
+      },
+      economicalFormAnswers () {
+        return this.bidding.users.map(user => user.economicalFormAnswers.map(answers => ({
+          ...answers,
+          provider: user.company
+        })))
+          .reduce((acc, cur) => acc.concat(cur), [])
       }
     },
     methods: {

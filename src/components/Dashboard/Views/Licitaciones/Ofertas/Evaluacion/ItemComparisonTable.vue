@@ -34,7 +34,7 @@
     <!-- Adjudicate button -->
     <div class="row text-center">
       <div class="col">
-        <button class="btn btn-fill btn-primary" @click="emitAdjudicateEvent">
+        <button class="btn btn-primary" @click="emitAdjudicateEvent">
           <i class="fa fa-check"></i> Validar y adjudicar a seleccionados
         </button>
       </div>
