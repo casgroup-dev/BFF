@@ -53,10 +53,11 @@
       Evaluacion,
       Recepcion
     },
+    props: ['id'],
     data () {
       return {
         bidding: undefined,
-        participantsComponentUsers: undefined
+        participantsComponentUsers: []
       }
     },
     methods: {
@@ -89,11 +90,12 @@
     },
     created: function () {
       const self = this
-      api.getCurrentBidding().then(data => {
+      api.getCurrentBidding(self.id).then(data => {
         self.bidding = data
+        var users = Object.assign([], data.users)
+        delete users['documents']
+        delete users['economicalFormAnswers']
         self.participantsComponentUsers = Object.assign([], data.users)
-        delete self.participantsComponentUsers.documents
-        delete self.participantsComponentUsers.economicalFormAnswers
       }).catch(err => {
         console.error(err)
         self.$router.push('/')

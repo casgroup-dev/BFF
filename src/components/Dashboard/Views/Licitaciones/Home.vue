@@ -32,7 +32,7 @@
                     <a style="font-weight:normal; color:#262626;">{{attr}}</a>
                   </td>
                   <td class="align-center">
-                    <router-link :to="{ name: 'licitacion'}">
+                    <router-link :to="{ name: 'licitacion', params: {id: licit.id}}">
                       <button class="btn btn-default btn-sm">
                         Entrar
                       </button>
@@ -103,7 +103,8 @@
               client: bidding.attributes['client'],
               currentStage: bidding.attributes['currentStage']
             },
-            show: bidding['show']
+            show: bidding['show'],
+            id: bidding.attributes['id']
           }
         })
       }

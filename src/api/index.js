@@ -90,7 +90,8 @@ function getBiddings () {
       attributes: {
         name: 'Snacks Copec de Rancagua',
         client: 'Copec',
-        currentStage: '2'
+        currentStage: '2',
+        id: '5b11b51dadd286307eccbecb'
       },
       show: false
     },
@@ -98,7 +99,8 @@ function getBiddings () {
         attributes: {
           name: 'Snacks Copec de Curico',
           client: 'Copec',
-          currentStage: '3'
+          currentStage: '3',
+          id: '5b11b51dadd286307eccbecb'
         },
         show: false
       }
@@ -111,8 +113,7 @@ function getBiddings () {
 * @returns {Promise<any>}
 * @returns {Promise<any>}
 */
-async function getCurrentBidding (bidding) {
-  const id = '5b11b51dadd286307eccbecb'
+async function getCurrentBidding (id) {
   return new Promise((resolve, reject) => {
     const generalError = new Error('Error de conexion.')
     axios.get(getRouteWithToken(routes.biddings + '/' + id))
