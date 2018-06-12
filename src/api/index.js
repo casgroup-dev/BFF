@@ -84,28 +84,19 @@ function getCompanies () {
  * @returns {Promise<any>}
  */
 function getBiddings () {
-  const generalError = new Error('Error de conexion.')
   return new Promise((resolve, reject) => {
-    var res = [{
-      attributes: {
-        name: 'Snacks Copec de Rancagua',
-        client: 'Copec',
-        currentStage: '2',
-        id: '5b11b51dadd286307eccbecb'
-      },
-      show: false
-    },
-      {
-        attributes: {
-          name: 'Snacks Copec de Curico',
-          client: 'Copec',
-          currentStage: '3',
-          id: '5b11b51dadd286307eccbecb'
-        },
-        show: false
-      }
-    ]
-    return resolve(res)
+    const generalError = new Error('Error de conexion.')
+    axios.get(getRouteWithToken(routes.biddings))
+      .then(res => {
+        if (res.data.error && res.data.error.status === 403) {
+          return reject(new Error('No autorizado'))
+        } else if (res.data.error && res.data.error.status === 404) {
+          return reject(new Error('No encontrado'))
+        } else {
+          return resolve(res.data)
+        }
+      })
+      .catch(() => reject(generalError))
   })
 }
 

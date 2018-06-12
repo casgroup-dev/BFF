@@ -84,7 +84,6 @@
             attributes: [
               'Nombre',
               'Cliente',
-              'Etapa',
               ''
             ]
           },
@@ -99,12 +98,10 @@
         return biddings.map(bidding => {
           return {
             attributes: {
-              name: bidding.attributes['name'],
-              client: bidding.attributes['client'],
-              currentStage: bidding.attributes['currentStage']
+              title: bidding['title'],
+              client: bidding['bidderCompany']
             },
-            show: bidding['show'],
-            id: bidding.attributes['id']
+            id: bidding['_id']
           }
         })
       }
@@ -122,7 +119,7 @@
     computed: {
       filteredLicitations: function () {
         const self = this
-        return this.table.data.filter(function (licit) { return licit.attributes.name.toLowerCase().indexOf(self.search.toLowerCase()) >= 0 })
+        return this.table.data.filter(function (licit) { return licit.attributes.title.toLowerCase().indexOf(self.search.toLowerCase()) >= 0 })
       }
     }
   }
