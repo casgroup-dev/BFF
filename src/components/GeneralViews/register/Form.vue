@@ -166,7 +166,6 @@
             legalRepEmail: this.inputs.text.legalRepresentativeEmail.payload,
             legalRepPhone: this.inputs.text.legalRepresentativePhone.payload,
             industries: this.inputs.dropDowns.industries.options.filter(opt => opt.selected).map(opt => opt.label),
-            // TODO: Check that the line above works
             password: this.inputs.passwords.first.payload
           })
             .then(function () {
