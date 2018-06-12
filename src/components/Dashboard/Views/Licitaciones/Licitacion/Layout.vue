@@ -17,7 +17,7 @@
                           :files="bidding.rulesFiles"
                           title="Descargar bases"
                           v-if="downloadRules"/>
-        <TextAreaButtonCard class="flex-row-item" :title="'Publicar Aviso'"/>
+        <NoticesList class="flex-row-item"/>
       </div>
       <!-- OFFERS: Download or upload the offers of the bidding -->
       <div class="flex-row" v-if="uploadTecOffer || uploadEcoOffer || downloadTecOffers || downloadEcoOffers">
@@ -54,6 +54,7 @@
   import FileInputCard from 'src/components/UIComponents/Inputs/FileInputCard'
   import Participants from './Components/Participants'
   import TextAreaButtonCard from '../../../../UIComponents/Inputs/TextAreaButtonCard'
+  import NoticesList from 'src/components/UIComponents/Cards/NoticesList'
   /* Api */
   import api from 'src/api/index'
 
@@ -62,7 +63,8 @@
       FileDownloadCard,
       FileInputCard,
       Participants,
-      TextAreaButtonCard
+      TextAreaButtonCard,
+      NoticesList
     },
     data () {
       return {
