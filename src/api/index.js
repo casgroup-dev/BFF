@@ -84,68 +84,41 @@ function getCompanies () {
  * @returns {Promise<any>}
  */
 function getBiddings () {
-  const generalError = new Error('Error de conexion.')
   return new Promise((resolve, reject) => {
-    var res = [{
-      attributes: {
-        name: 'Snacks Copec de Rancagua',
-        client: 'Copec',
-        currentStage: '2'
-      },
-      show: false
-    },
-      {
-        attributes: {
-          name: 'Snacks Copec de Curico',
-          client: 'Copec',
-          currentStage: '3'
-        },
-        show: false
-      }
-    ]
-    return resolve(res)
+    const generalError = new Error('Error de conexion.')
+    axios.get(getRouteWithToken(routes.biddings))
+      .then(res => {
+        if (res.data.error && res.data.error.status === 403) {
+          return reject(new Error('No autorizado'))
+        } else if (res.data.error && res.data.error.status === 404) {
+          return reject(new Error('No encontrado'))
+        } else {
+          return resolve(res.data)
+        }
+      })
+      .catch(() => reject(generalError))
   })
 }
 
-/**
- * Obtains the information of the selected bidding to fill the dashboard
- * @returns {Promise<any>}
- */
-async function getCurrentBidding () {
-  return {
-    name: 'Licitacion de Groupcas',
-    bidderCompany: '',
-    users: [{
-      id: '5af0656ab27a8e2d4c3e00ea',
-      role: 'companyAdmin',
-      password: 'pass'
-    }],
-    files: [],
-    rulesSummary: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.',
-    periods: [{
-      start: '1-1-2017',
-      end: '2-2-2017'
-    }],
-    step: 2,
-    stages: 1,
-    participants: [
-      {
-        businessName: 'Microsoft',
-        usersEmail: 'email@example.com',
-        usersPhone: '+56912345678'
-      },
-      {
-        businessName: 'Microsoft',
-        usersEmail: 'email@example.com',
-        usersPhone: '+56912345678'
-      },
-      {
-        businessName: 'Microsoft',
-        usersEmail: 'email@example.com',
-        usersPhone: '+56912345678'
-      }
-    ]
-  }
+/** Obtains the information of the selected bidding to fill the dashboard
+* @returns {Promise<any>}
+* @returns {Promise<any>}
+*/
+async function getCurrentBidding (id) {
+  return new Promise((resolve, reject) => {
+    const generalError = new Error('Error de conexion.')
+    axios.get(getRouteWithToken(routes.biddings + '/' + id))
+      .then(res => {
+        if (res.data.error && res.data.error.status === 403) {
+          return reject(new Error('No autorizado'))
+        } else if (res.data.error && res.data.error.status === 404) {
+          return reject(new Error('No encontrado'))
+        } else {
+          return resolve(res.data)
+        }
+      })
+      .catch(() => reject(generalError))
+  })
 }
 
 /**

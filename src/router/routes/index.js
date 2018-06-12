@@ -39,7 +39,8 @@ const routes = [
       {
         path: '/Licitacion',
         name: 'licitacion',
-        component: LicitacionLayout
+        component: LicitacionLayout,
+        props: true
       },
       {
         path: '/Nueva',

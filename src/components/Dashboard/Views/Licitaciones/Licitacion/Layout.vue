@@ -5,18 +5,21 @@
       <div class="flex-row">
         <h1 class="title">{{ bidding.name }}</h1>
       </div>
-      <!-- SUMMARY -->
+      <!-- RULES -->
       <div class="flex-row" v-if="bidding.rulesSummary">
         <p class="rules-summary">{{ bidding.rulesSummary }}</p>
       </div>
       <!-- TIMELINE -->
       <!-- <div class="flex-row"></div> -->
       <!-- RULES -->
-      <div class="flex-row">
+      <!-- Participants -->
+      <div class="flex-row" v-if="bidding.permissions.seeParticipants">
         <Participants class="flex-row-item"
-                      :participants="bidding.participants"/>
+                      :participants="participantsComponentUsers"/>
+        <!-- <CreateNotice class="flex-row-item"/> -->
+      </div>
+      <div class="flex-row">
         <FileDownloadCard class="flex-row-item" iconColor="#f49521" buttonColor="#f49521" :files="bidding.rulesFiles" title="Descargar bases" v-if="downloadRules"/>
-        <CreateNotice class="flex-row-item"/>
       </div>
       <!-- OFFERS: Download or upload the offers of the bidding -->
       <FileInputCard v-if="uploadTecOffer"
@@ -35,6 +38,13 @@
         <div class="flex-row-item">Resultado</div>
       </div>
       -->
+      <div class="flex-row" v-if="bidding.permissions.canModify">
+        <Evaluacion class="flex-row-item"></Evaluacion>
+      </div>
+      <div class="flex-row">
+        <Recepcion class="flex-row-item" v-if="!bidding.permissions.canModify" :biddingId=bidding.id
+        :showEconomicalOffer=bidding.permissions.uploadEconomical></Recepcion>
+      </div>
     </div>
   </div>
 </template>
@@ -45,6 +55,9 @@
   import FileInputCard from 'src/components/UIComponents/Inputs/FileInputCard'
   import Participants from './Components/Participants'
   import CreateNotice from './Components/CreateNotice'
+  import Evaluacion from 'src/components/Dashboard/Views/Licitaciones/Ofertas/Evaluacion/Layout'
+  import Recepcion from 'src/components/Dashboard/Views/Licitaciones/Ofertas/Recepcion/Layout'
+
   /* Api */
   import api from 'src/api/index'
 
@@ -53,58 +66,18 @@
       FileDownloadCard,
       FileInputCard,
       Participants,
-      CreateNotice
+      CreateNotice,
+      Evaluacion,
+      Recepcion
     },
+    props: ['id'],
     data () {
       return {
         bidding: undefined,
-        uploadTecOffer: false,
-        uploadEcoOffer: false,
-        downloadTecOffers: false,
-        downloadEcoOffers: false,
-        seeResult: false,
-        giveResult: false,
-        uploadRules: false,
-        downloadRules: false
+        participantsComponentUsers: []
       }
     },
     methods: {
-      showProviderComponents: function (self) {
-        self.downloadRules = true
-        if (self.bidding.stages === 1) {
-          if (self.bidding.step === 2) {
-            self.uploadTecOffer = true
-            self.uploadEcoOffer = true
-          }
-          if (self.bidding.step >= 3) {
-            self.downloadTecOffers = true
-            self.downloadEcoOffers = true
-          }
-          if (self.bidding.step === 4) {
-            self.seeResult = true
-          }
-        } else {
-          if (self.bidding.step === 2) {
-            self.uploadTecOffer = true
-          }
-          if (self.bidding.step >= 3) {
-            self.downloadTecOffers = true
-          }
-          if (self.bidding.step === 4) {
-            self.uploadEcoOffer = true
-          }
-          if (self.bidding.step === 5) {
-            self.seeResult = true
-            self.downloadEcoOffers = true
-          }
-        }
-      },
-      showAdminComponents: function (self) {
-        self.downloadEcoOffers = true
-        self.downloadTecOffers = true
-        self.giveResult = true
-        self.uploadRules = true
-      },
       handleUploadedTecOffer: function (url, fileName) {
         // TODO: que pasa si el proveedor quiere sobreescribir un archivo anterior?
         const newTecOffer = {
@@ -134,17 +107,15 @@
     },
     created: function () {
       const self = this
-      api.getCurrentBidding().then(data => {
+      api.getCurrentBidding(self.id).then(data => {
         self.bidding = data
-        /* Check permissions to see components */
-        if (self.bidding.bidderCompany.length === 0) {
-          self.showProviderComponents(self)
-        } else {
-          self.showAdminComponents(self)
-        }
+        var users = Object.assign([], data.users)
+        // TODO: no se hace este delete
+        delete users['documents']
+        delete users['economicalFormAnswers']
+        self.participantsComponentUsers = Object.assign([], data.users)
       }).catch(err => {
         console.error(err)
-        /* The user is not authorized to access here */
         self.$router.push('/')
       })
     }
