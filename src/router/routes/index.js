@@ -30,13 +30,11 @@ const routes = [
     path: '/Licitaciones',
     component: DashboardLayout,
     meta: {requiresAuth: true},
-    props: true,
     children: [
       {
         path: '/',
         name: 'home',
-        component: LicitacionesHome,
-        props: true
+        component: LicitacionesHome
       },
       {
         path: '/Licitacion',
