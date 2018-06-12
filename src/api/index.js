@@ -293,17 +293,42 @@ async function checkEmail (email) {
  * @returns {Promise<any>}
  */
 async function registerBidding (bidding) {
-  if (!bidding.name.payload) throw new Error('No name assigned.')
-  if (!bidding.company.payload) throw new Error('No company assigned.')
-  if (!bidding.users.payload) throw new Error('No users assigned.')
-  // if (!bidding.stages.payload) throw new Error('No stages defined.')
+  if (!bidding.name) throw new Error('No name assigned.')
+  if (!bidding.company) throw new Error('No company assigned.')
+  if (!bidding.users) throw new Error('No users assigned.')
+  if (!bidding.stages) throw new Error('No stages defined.')
+  if (!bidding.items) throw new Error('No stages defined.')
   const data = {
-    name: bidding.name.payload,
-    bidderCompany: bidding.company.payload,
-    users: bidding.users.payload,
-    bases: [bidding.bases.payload, null],
+    title: bidding.name,
+    bidderCompany: bidding.company,
+    users: [(function () {
+      let result = []
+      for (let user in bidding.users) {
+        let temp = {
+          mail: user.mail,
+          role: 'client'
+        }
+        result.push(temp)
+      }
+      return result
+    })()],
+    rules: {
+      summary: bidding.bases.text,
+      files: bidding.bases.files
+    },
     periods: bidding.stages,
-    biddingType: bidding.type
+    biddingType: bidding.type,
+    economicalForm: bidding.items,
+    deadlines: (function () {
+      let dictionary = {}
+      for (let stage in bidding.stages) {
+        dictionary[stage.save_name] = {
+          start: stage.start,
+          end: stage.end
+        }
+      }
+      return dictionary
+    })()
   }
   return axios.post(getRouteWithToken(routes.biddings), data).then(res => {
     if (res.data.error) throw new Error('Lo sentimos, intente más tarde.')

@@ -24,12 +24,12 @@
             <label>Bases</label><br style="margin: 0.5%;">
             <small><label class="error" style="color: red;"
                           v-if="bidding.bases.error">{{bidding.bases.errorMessage}}</label></small>
-            <textarea class="form-control" v-model="bidding.bases.payload" style="height: 50px;"></textarea>
+            <textarea class="form-control" v-model="bidding.bases.text" style="height: 50px;"></textarea>
             <small id="basesHelpBlock" class="form-text text-muted">
               Descripción de bases PENDIENTE
             </small>
           </div>
-          <FileInputCard class="col-4" title="Subir Bases"></FileInputCard>
+          <FileInputCard class="col-4" title="Subir Bases" v-on:uploaded="save(url, fileName)"></FileInputCard>
           <br/>
           <button type="submit" class="btn btn-default" @click="formPage = formPage + 1">Siguiente</button>
         </div>
@@ -193,14 +193,9 @@
         },
         etapas: {
           amount: 6,
-          names: [
-            'Recepción de Ofertas',
-            'Preguntas',
-            'Respuestas',
-            'Evaluación Técnica',
-            'Evaluación Comercial',
-            'Resultados'
-          ],
+          names: ['Recepción de Ofertas', 'Preguntas', 'Respuestas',
+            'Evaluación Técnica', 'Evaluación Comercial', 'Resultados'],
+          save_names: ['reception', 'questions', 'answers', 'technicalEvaluation', 'economicalEvaluation', 'results'],
           payload: [],
           error: false,
           errorMessage: 'Debe definir las fechas de la Licitación'
@@ -220,7 +215,8 @@
           },
           type: 2,
           bases: {
-            payload: '',
+            text: '',
+            files: [],
             error: false,
             errorMessage: ''
           },
@@ -243,6 +239,13 @@
       }
     },
     methods: {
+      save (url, fileName) {
+        let file = {
+          name: fileName,
+          url: url
+        }
+        this.biddings.bases.files.push(file)
+      },
       formatDates (dateOne, dateTwo) {
         let formattedDates = ''
         if (dateOne) {
@@ -286,6 +289,13 @@
         this.bidding.generalError = this.bidding.company.error || this.bidding.name.error ||
           this.bidding.requests.error || this.bidding.users.error || this.etapas.error
       },
+      parseDate (date, time) {
+        let split = date.split('-')
+        let year = parseInt(split[0])
+        let month = parseInt(split[1]) - 1
+        let day = parseInt(split[2])
+        return new Date(year, month, day, [time.hour, time.minute])
+      },
       parseBidding () {
         const self = this
         return {
@@ -300,19 +310,25 @@
               const dateTable = self.etapas.payload[i]
               let stage = {
                 title: dateTable.title,
-                start: {
-                  date: dateTable.dateOne,
-                  hour: dateTable.timeOne.hour,
-                  minute: dateTable.timeOne.minute
-                },
-                end: {
-                  date: dateTable.dateTwo,
-                  hour: dateTable.timeTwo.hour,
-                  minute: dateTable.timeTwo.minute}
+                save_name: dateTable.save_name,
+                start: this.parseDate(dateTable.dateOne, dateTable.timeOne),
+                end: this.parseDate(dateTable.dateTwo, dateTable.timeTwo)
               }
               stages.push(stage)
             }
             return stages
+          })(),
+          items: (function () {
+            let items = []
+            for (let i = 0; i < this.bidding.requests.amount; ++i) {
+              let item = {
+                itemName: this.bidding.requests.names[i],
+                wantedAmount: this.bidding.requests.amountPerItem[i],
+                measureUnit: this.bidding.requests.measurePerItem[i]
+              }
+              items.push(item)
+            }
+            return items
           })()
         }
       },
@@ -333,8 +349,10 @@
         this.checkBiddingInput()
         const bidding = this.parseBidding()
         this.createUsers(bidding.users)
-        usersApi.registerBidding(bidding)
-        // this.$emit('endModal', null)
+        const self = this
+        usersApi.registerBidding(bidding).then(
+          self.$emit('endModal', null)
+        )
       }
     },
     computed: {
@@ -359,9 +377,10 @@
       },
       availableStages: function () {
         let stages = []
-        for (let i = 1; i <= this.etapas.amount; ++i) {
+        for (let i = 0; i < this.etapas.amount; ++i) {
           let stage = {
-            title: this.etapas.names[i - 1],
+            title: this.etapas.names[i],
+            save_name: this.etapas.save_names[i],
             label: 'etapa' + i,
             placeholder: 'Selecciona duración del Período',
             dateOne: '',
@@ -374,7 +393,7 @@
               hour: 0,
               minute: 0
             },
-            id: 'datepicker-trigger' + i
+            id: 'datepicker-trigger' + (i + 1)
           }
           stages.push(stage)
         }
