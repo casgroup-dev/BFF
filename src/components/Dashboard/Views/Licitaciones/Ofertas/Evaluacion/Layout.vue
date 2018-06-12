@@ -28,7 +28,8 @@
 </template>
 
 <script>
-  import api from '../../../../../../api/biddings/documents'
+  import apiDocuments from '../../../../../../api/biddings/documents'
+  import apiApprovement from '../../../../../../api/biddings/approvement'
   import EconomicalComparisonCard from './EconomicalComparisonCard'
   import ListFilesPerProviderCard from './ListFilesPerProviderCard'
 
@@ -41,7 +42,12 @@
       return {
         documentsObjects: [],
         items: [],
-        offers: []
+        offers: [],
+        baseNotification: {
+          horizontalAlign: 'right',
+          verticalAlign: 'bottom',
+          timeout: 20000
+        }
       }
     },
     props: {
@@ -65,10 +71,11 @@
       }
     },
     created () {
-      api.getAllDocuments(this.bidding.id).then(res => { this.documentsObjects = res })
+      apiDocuments.getAllDocuments(this.bidding.id).then(res => { this.documentsObjects = res })
     },
     computed: {
       providersTechnicalDocuments () {
+        // TODO: Send if it is approved or not
         return this.documentsObjects.map(documentsObject => ({
           provider: documentsObject.provider,
           documents: documentsObject.documents.technical
@@ -90,14 +97,39 @@
     },
     methods: {
       approveProviders (providers) {
-        console.log(providers)
-        // TODO: Api call to approve technically the given providers
+        providers = providers.map(p => p.provider)
+        apiApprovement.approve(this.bidding.id, 'technically', providers.map(p => p.provider))
+          .then(() => this.notifySuccess(`Proveedores aprobados: ${providers.join(', ')}.`))
+          .catch(this.notifyError)
       },
       adjudicate (itemName, providers) {
         console.log(itemName, providers)
         // TODO: Api call to adjudicate the correspondent providers to the given item
+      },
+      /**
+       * Show a notification success message.
+       * @param {String} message
+       */
+      notifySuccess (message) {
+        this.$notify({
+          ...this.baseNotification,
+          component: {template: `<span>${message}</span>`},
+          icon: 'fa fa-check',
+          type: 'success'
+        })
+      },
+      /**
+       * Show a notification as a warning indicating the the form does not uploaded correctly.
+       */
+      notifyError (err) {
+        console.error(err)
+        this.$notify({
+          ...this.baseNotification,
+          component: {template: `<span>Ocurrió un problema aprobando a los proveedores, por favor verifica que tangas conexión a internet.<br>Inténtalo nuevamente.</span>`},
+          icon: 'fa fa-exclamation',
+          type: 'warning'
+        })
       }
-
     }
   }
 </script>

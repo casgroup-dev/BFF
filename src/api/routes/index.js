@@ -12,7 +12,8 @@ const routes = {
   biddings: '/biddings',
   bidding: id => `${routes.biddings}/${id}`,
   biddingDocuments: (biddingId, type) => `${routes.biddings}/${biddingId}/documents${type ? `/${type}` : ''}`,
-  forms: (biddingId, type) => `${routes.biddings}/${biddingId}/forms/${type}`
+  forms: (biddingId, type) => `${routes.biddings}/${biddingId}/forms/${type}`,
+  approve: (biddingId, type) => `${routes.biddings}/${biddingId}/approve/${type}`
 }
 
 /**
