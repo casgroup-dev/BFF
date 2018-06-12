@@ -54,7 +54,7 @@
         </button>
       </template>
       <template slot="body">
-        <create-form v-on:endModal="modalOn = false"></create-form>
+        <create-form v-on:endModal="modalOn = false" :buttonCaption="'Crear'"></create-form>
       </template>
     </modal>
   </div>
