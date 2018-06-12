@@ -13,7 +13,7 @@
     <!-- DROP DOWNS -->
     <div>
       <label class="typo__label">Rubros</label>
-      <multiselect v-model="inputs.dropDowns.industries.values" :options="inputs.dropDowns.industries.options"
+      <multiselect v-model="inputs.dropDowns.industries.selected" :options="inputs.dropDowns.industries.options"
                    :multiple="true" :close-on-select="false" :clear-on-select="true" :hide-selected="true"
                    :preserve-search="false" placeholder="Seleccione sus rubros" label="name" track-by="name"
                    :preselect-first="true">
@@ -21,7 +21,6 @@
           title="Eliminar" class="custom__remove" @click="props.remove(props.option)">&nbsp;❌<br></span></span></template>
       </multiselect>
     </div>
-    <!-- TODO: With modal of Seba Puja and checkboxes filtered by a search field, it is its own component -->
     <!-- PASSWORDS -->
     <fg-input v-for="(input, index) in inputs.passwords" :key="index"
               type="password" v-model="input.payload" @enter="register">
@@ -92,7 +91,7 @@
           dropDowns: {
             industries: {
               options: [],
-              values: [],
+              selected: [],
               error: false
             }
           },
@@ -133,8 +132,7 @@
         /* Drop downs: At least one must be selected */
         for (let key of Object.keys(this.inputs.dropDowns)) {
           const dropDown = this.inputs.dropDowns[key]
-          // TODO: Uncomment this when the dropdowns are ready
-          if (dropDown.options.selected.length === 0) this.thereAreFormErrors = dropDown.error = true
+          if (dropDown.selected.length === 0) this.thereAreFormErrors = dropDown.error = true
           else dropDown.error = false
         }
         /* Passwords: Must contain same text */
@@ -167,8 +165,8 @@
             legalRepresentative: this.inputs.text.legalRepresentative.payload,
             legalRepEmail: this.inputs.text.legalRepresentativeEmail.payload,
             legalRepPhone: this.inputs.text.legalRepresentativePhone.payload,
-            // industries: this.inputs.dropDowns.industries.options.filter(opt => opt.selected).map(opt => opt.label),
-            // TODO: Uncomment industries when the drop down is working
+            industries: this.inputs.dropDowns.industries.options.filter(opt => opt.selected).map(opt => opt.label),
+            // TODO: Check that the line above works
             password: this.inputs.passwords.first.payload
           })
             .then(function () {
