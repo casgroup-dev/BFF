@@ -11,39 +11,26 @@
       </div>
       <!-- TIMELINE -->
       <!-- <div class="flex-row"></div> -->
-      <!-- RULES -->
       <!-- Participants -->
-      <div class="flex-row" v-if="bidding.permissions.seeParticipants">
-        <Participants class="flex-row-item"
-                      :participants="participantsComponentUsers"/>
-        <!-- <CreateNotice class="flex-row-item"/> -->
-      </div>
       <div class="flex-row">
-        <FileDownloadCard class="flex-row-item" iconColor="#f49521" buttonColor="#f49521" :files="bidding.rulesFiles" title="Descargar bases" v-if="downloadRules"/>
+        <Participants class="flex-row-item" v-if="bidding.permissions.seeParticipants"
+                      :participants="participantsComponentUsers"/>
+      </div>
+      <CreateNotice class="flex-row-item" v-if="bidding.permissions.sendNotice"/>
+      <div class="flex-row">
+        <FileDownloadCard class="flex-row-item" v-if="downloadRules"
+                          iconColor="#f49521" buttonColor="#f49521"
+                          :files="bidding.rulesFiles" title="Descargar bases"/>
       </div>
       <!-- OFFERS: Download or upload the offers of the bidding -->
-      <FileInputCard v-if="uploadTecOffer"
-                     class="flex-row-item" title="Subir Oferta Técnica" @uploaded="handleUploadedTecOffer"/>
-      <FileDownloadCard v-if="downloadTecOffers"
-                        class="flex-row-item" title="Descargar Oferta Técnica" :files="bidding.tecOffers"/>
-      <FileInputCard v-if="uploadEcoOffer"
-                     class="flex-row-item" title="Subir Oferta Económica" @uploaded="handleUploadedEcoOffer"
-                     :iconColor="'#d319a7'" :buttonColor="'#d319a7'"/>
-      <FileDownloadCard v-if="downloadEcoOffers"
-                        class="flex-row-item" title="Descargar Oferta Económica" :files="bidding.ecoOffers"
-                        :iconColor="'#d319a7'" :buttonColor="'#d319a7'"/>
-      <!-- FINAL RESULT OF THE BIDDING -->
-      <!--
-      <div class="flex-row" v-if="seeResult">
-        <div class="flex-row-item">Resultado</div>
-      </div>
-      -->
-      <div class="flex-row" v-if="bidding.permissions.canModify">
-        <Evaluacion class="flex-row-item"></Evaluacion>
+      <div class="flex-row">
+        <Evaluacion class="flex-row-item" v-if="bidding.deadlines.onResults
+                          && bidding.permissions.reviewTechnical && bidding.permissions.reviewEconomical"/>
       </div>
       <div class="flex-row">
-        <Recepcion class="flex-row-item" v-if="!bidding.permissions.canModify" :biddingId=bidding.id
-        :showEconomicalOffer=bidding.permissions.uploadEconomical></Recepcion>
+        <Recepcion class="flex-row-item" :biddingId='bidding.id'
+                   v-if="(bidding.deadlines.onTechnicalReception || bidding.deadlines.onEconomicalReception)
+                          && bidding.permissions.uploadTechnical && bidding.permissions.uploadEconomical"/>
       </div>
     </div>
   </div>
