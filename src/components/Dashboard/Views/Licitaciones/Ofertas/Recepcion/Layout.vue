@@ -5,38 +5,37 @@
       <div class="col">
         <!-- INPUT FILES -->
         <file-input-card class="flex-1"
-                         :title="`Subir oferta ${showEconomicalOffer ? 'técnica': ''}`"
+                         :title="`Subir oferta técnica`"
                          iconColor="#5C6BC0"
                          buttonColor="#5C6BC0"
                          multiple
                          @uploaded="putTechnicalOffer"/>
         <!-- UPLOADED FILES -->
-        <list-files-card :files="files.technical"
+        <list-files-card :files="documents.technicals"
                          @delete="file => deleteDocument(file, 'technical')"/>
       </div>
       <!-- ECONOMICAL -->
-      <div v-if="showEconomicalOffer" class="col">
+      <div class="col">
         <!-- FORM BUTTON -->
         <button-card text="Tabla oferta económica"
                      icon="fa-book"
                      @click="toggleEconomicalFormModal"/>
         <!-- INPUT FILES -->
-        <file-input-card v-if="showEconomicalOffer"
-                         class="flex-1"
+        <file-input-card class="flex-1"
                          title="Subir anexos oferta económica"
                          iconColor="#42A5F5"
                          buttonColor="#42A5F5"
                          multiple
                          @uploaded="putEconomicalOffer"/>
         <!-- UPLOADED FILES -->
-        <list-files-card :files="files.economical"
+        <list-files-card :files="documents.economicals"
                          @delete="file => deleteDocument(file, 'economical')"/>
       </div>
     </div>
     <!-- ECONOMICAL FORM MODAL -->
     <economical-form-modal v-show="showEconomicalOfferModal"
-                           :bidding-id="biddingId"
-                           :items="economicalForm"
+                           :bidding-id="bidding.id"
+                           :items="economicalFormWithAnswers"
                            @close="toggleEconomicalFormModal"/>
   </div>
 </template>
@@ -59,36 +58,29 @@
     },
     data () {
       return {
-        files: {economical: [], technical: []},
-        showEconomicalOfferModal: false
+        showEconomicalOfferModal: false,
+        updatedDocuments: null
       }
     },
     props: {
-      /**
-       * Id of the actual bidding.
-       */
-      biddingId: {
-        type: String,
-        default: '5b16e5d99142d57f6de4e767' // TODO: Change to required
+      bidding: {
+        type: Object,
+        required: true
+      }
+    },
+    computed: {
+      documents () {
+        return this.updatedDocuments || this.user.documents
       },
-      /**
-       * Array with the items to populate the economical form.
-       */
-      economicalForm: {
-        type: Array,
-        default: () => [
-          {itemName: 'Pernos', wantedAmount: 500, measureUnit: 'Unidad', costPerUnit: 100, specifications: 'hola'},
-          {itemName: 'Tuercas', wantedAmount: 100, measureUnit: 'Unidad'},
-          {itemName: 'Lápices', wantedAmount: 150, measureUnit: 'Unidad'},
-          {itemName: 'Cuadernos', wantedAmount: 100, measureUnit: 'Unidad'}
-        ] // TODO: Change to required
+      user () {
+        return this.bidding.users[0]
       },
-      /**
-       * Boolean that indicates if the economical offer must be shown.
-       */
-      showEconomicalOffer: {
-        type: Boolean,
-        default: true
+      economicalFormWithAnswers () {
+        if (!this.bidding) return []
+        return this.bidding.economicalForm.map(item => {
+          let answers = this.user.economicalFormAnswers.find(answer => answer.itemName === item.itemName)
+          return {...item, ...answers}
+        })
       }
     },
     methods: {
@@ -98,7 +90,7 @@
        * @param {String} filename
        */
       putTechnicalOffer (url, filename) {
-        api.putDocument(this.biddingId, 'technical', filename, url)
+        api.putDocument(this.bidding.id, 'technical', filename, url)
           .then(() => this.getMyDocuments())
           .catch(err => console.error(err))
       },
@@ -108,7 +100,7 @@
        * @param {String} filename
        */
       putEconomicalOffer (url, filename) {
-        api.putDocument(this.biddingId, 'economical', filename, url)
+        api.putDocument(this.bidding.id, 'economical', filename, url)
           .then(() => this.getMyDocuments())
           .catch(err => console.error(err))
       },
@@ -116,7 +108,10 @@
        * Get the files' names and urls of the user from the backend.
        */
       getMyDocuments () {
-        api.getMyDocuments(this.biddingId).then(response => { this.files = response })
+        api.getMyDocuments(this.bidding.id).then(response => {
+          console.log(response)
+          this.updatedDocuments = {economicals: response.economical, technicals: response.technical}
+        })
       },
       /**
        * Deletes a file from the backend.
@@ -125,7 +120,7 @@
        * @params {String} type - Type of the document to delete (economical or technical).
        */
       deleteDocument (file, type) {
-        api.deleteDocument(this.biddingId, file.name, type).then(() => this.getMyDocuments())
+        api.deleteDocument(this.bidding.id, file.name, type).then(() => this.getMyDocuments())
       },
       /**
        * Shows or hide the modal that contains the form to upload the economical offers table.
@@ -133,12 +128,6 @@
       toggleEconomicalFormModal () {
         this.showEconomicalOfferModal = !this.showEconomicalOfferModal
       }
-    },
-    /**
-     * After creation get the files of the user to show them in the correspondent component.
-     */
-    created: function () {
-      this.getMyDocuments()
     }
   }
 </script>
