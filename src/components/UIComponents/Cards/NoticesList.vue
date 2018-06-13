@@ -1,46 +1,14 @@
 <template>
   <div class="content" style="overflow: auto; height:200px; width:200px;">
-    <h2>List Group With Custom Content</h2>
+    <h3 class="title">Avisos Publicados</h3>
     <div class="list-group">
-      <a href="#" class="list-group-item">
-        <h4 class="list-group-item-heading">Third List Group Item Heading</h4>
-        <p class="list-group-item-text">List Group Item Text</p>
+      <a class="list-group-item list-group-item-action flex-column align-items-start">
+        <p class="mb-1">Donec id elit non mi porta gravida at eget metus. Maecenas sed diam eget risus varius blandit.</p>
+        <small>Donec id elit non mi porta.</small>
       </a>
-      <a href="#" class="list-group-item">
-        <h4 class="list-group-item-heading">Third List Group Item Heading</h4>
-        <p class="list-group-item-text">List Group Item Text</p>
-      </a>
-      <a href="#" class="list-group-item">
-        <h4 class="list-group-item-heading">Third List Group Item Heading</h4>
-        <p class="list-group-item-text">List Group Item Text</p>
-      </a>
-      <a href="#" class="list-group-item">
-        <h4 class="list-group-item-heading">Third List Group Item Heading</h4>
-        <p class="list-group-item-text">List Group Item Text</p>
-      </a>
-      <a href="#" class="list-group-item">
-        <h4 class="list-group-item-heading">Third List Group Item Heading</h4>
-        <p class="list-group-item-text">List Group Item Text</p>
-      </a>
-      <a href="#" class="list-group-item">
-        <h4 class="list-group-item-heading">Third List Group Item Heading</h4>
-        <p class="list-group-item-text">List Group Item Text</p>
-      </a>
-      <a href="#" class="list-group-item">
-        <h4 class="list-group-item-heading">Third List Group Item Heading</h4>
-        <p class="list-group-item-text">List Group Item Text</p>
-      </a>
-      <a href="#" class="list-group-item">
-        <h4 class="list-group-item-heading">Third List Group Item Heading</h4>
-        <p class="list-group-item-text">List Group Item Text</p>
-      </a>
-      <a href="#" class="list-group-item">
-        <h4 class="list-group-item-heading">Third List Group Item Heading</h4>
-        <p class="list-group-item-text">List Group Item Text</p>
-      </a>
-      <a href="#" class="list-group-item">
-        <h4 class="list-group-item-heading">Third List Group Item Heading</h4>
-        <p class="list-group-item-text">List Group Item Text</p>
+      <a class="list-group-item list-group-item-action flex-column align-items-start">
+        <p class="mb-1">Donec id elit non mi porta gravida at eget metus. Maecenas sed diam eget risus varius blandit.</p>
+        <small>Donec id elit non mi porta.</small>
       </a>
     </div>
   </div>
@@ -53,13 +21,16 @@
 </script>
 
 <style scoped>
+  .title {
+    margin: 0 15px 10px;
+    font-weight: 400;
+    color: #616161;
+  }
   .content {
     margin: 5px;
     padding: 10px;
     background-color: #FFFFFF;
     /* Display */
-    display: flex;
-    flex-direction: row;
     justify-content: space-evenly;
     flex-wrap: wrap;
     /* Border */
