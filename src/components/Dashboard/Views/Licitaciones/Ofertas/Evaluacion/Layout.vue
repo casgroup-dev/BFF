@@ -114,17 +114,19 @@
         api.approve(this.bidding.id, api.types.technically, providers)
           .then(() => {
             let message = providers.length
-              ? `Proveedores aprobados: ${providers.join(', ')}.`
+              ? `Proveedores aprobados técnicamente:<br>${providers.map(p => `- ${p}`).join('<br>')}.`
               : `Se guardó que ningún proveedor está aprobado aún.`
             this.notifySuccess(message)
           })
           .catch(this.notifyError)
       },
       adjudicate (itemName, adjudications) {
-        // Get only the adjudicated providers
-        adjudications = adjudications.filter(a => a.adjudicated)
         api.approve(this.bidding.id, api.types.economically, {itemName, adjudications})
-          .then(() => this.notifySuccess(`Se adjudicó el item <strong>${itemName}</strong> a los siguientes proveedores:<br>${adjudications.map(a => `- ${a.provider}`).join('<br>')}`))
+          .then(() => {
+            let message = adjudications.some(adj => adj.adjudicated) ? `Se adjudicó y se ` : 'Se '
+            message += `guardaron los comentarios para los proveedores del item <strong>${itemName}</strong>.`
+            this.notifySuccess(message)
+          })
           .catch(this.notifyError)
       },
       /**

@@ -54,14 +54,8 @@
           offers: this.economicalFormAnswers
             .filter(offer => offer.itemName === item.itemName)
             .map(offer => {
-              // Set to selected if there is any user that has the same company and the item in its approved.economically array
-              let itemWithComment = this.users
-                .find(participant => participant.user.company.businessName === offer.provider) // We have a user of the company
-                .approved.economically.find(itemWithComment => itemWithComment.itemName === item.itemName) // Find the item with comment
-              if (itemWithComment) {
-                offer.selected = true
-                offer.comment = itemWithComment.comment
-              }
+              if (offer.adjudicated) offer.selected = true
+              if (offer.adminComment) offer.comment = offer.adminComment
               return offer
             })
         }))

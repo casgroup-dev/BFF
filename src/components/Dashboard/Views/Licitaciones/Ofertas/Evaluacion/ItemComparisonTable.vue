@@ -35,7 +35,7 @@
     <div class="row text-center">
       <div class="col">
         <button class="btn btn-primary" @click="emitAdjudicateEvent">
-          <i class="fa fa-check"></i> Validar y adjudicar a seleccionados
+          <i class="fa fa-check"></i> Guardar
         </button>
       </div>
     </div>
@@ -82,8 +82,6 @@
        * correspondent comment and a boolean indicating if the provider has adjudicated the item or not.
        */
       emitAdjudicateEvent () {
-        const selectedProviders = this.orderedOffers.filter(o => o.selected)
-        if (!selectedProviders.length) return alert('No has seleccionado a ningún proveedor.')
         const offers = this.orderedOffers.map(o => ({
           adjudicated: o.selected,
           comment: o.comment,
