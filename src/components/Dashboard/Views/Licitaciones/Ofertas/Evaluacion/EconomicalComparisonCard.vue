@@ -30,16 +30,40 @@
       economicalFormAnswers: {
         type: Array,
         default: () => []
+      },
+      users: {
+        type: Array,
+        default: () => []
       }
     },
     computed: {
       /**
        * Join the the items and its correspondent offers.
+       * The component needs to have the item following the schema from 'economicalForm' as
+       * {itemName: String, wantedAmount: Number, measureUnit: String}
+       * and the offers for that item from each provider following the schema from 'economicalFormAnswers' as
+       * {itemName: String, specifications: String, costPerUnit: Number}.
+       * Also, the offer is 'selected' and has a 'comment' that we can find in any user of the company in the
+       * 'approved.economically' array that has objects as {itemName: String, comment: String}.
+       * So, to make the offer selected and get the comment we extracted the information from any user of the same
+       * company as the economicalFormAnswer.
        */
       itemsAndOffers () {
         return this.economicalForm.map(item => ({
           item,
-          offers: this.economicalFormAnswers.filter(offer => offer.itemName === item.itemName)
+          offers: this.economicalFormAnswers
+            .filter(offer => offer.itemName === item.itemName)
+            .map(offer => {
+              // Set to selected if there is any user that has the same company and the item in its approved.economically array
+              let itemWithComment = this.users
+                .find(participant => participant.user.company.businessName === offer.provider) // We have a user of the company
+                .approved.economically.find(itemWithComment => itemWithComment.itemName === item.itemName) // Find the item with comment
+              if (itemWithComment) {
+                offer.selected = true
+                offer.comment = itemWithComment.comment
+              }
+              return offer
+            })
         }))
       }
     },

@@ -9,6 +9,7 @@
       <!-- ECONOMICAL COMPARISON -->
       <economical-comparison-card :economicalForm="bidding.economicalForm"
                                   :economicalFormAnswers="economicalFormAnswers"
+                                  :users="bidding.users"
                                   @adjudicate="adjudicate"/>
       <!-- ECONOMICAL OFFERS -->
       <list-files-per-provider-card title="Anexos ofertas económicas"
@@ -28,8 +29,7 @@
 </template>
 
 <script>
-  import apiDocuments from '../../../../../../api/biddings/documents'
-  import apiApprovement from '../../../../../../api/biddings/approvement'
+  import api from '../../../../../../api/biddings/approvement'
   import EconomicalComparisonCard from './EconomicalComparisonCard'
   import ListFilesPerProviderCard from './ListFilesPerProviderCard'
 
@@ -80,16 +80,16 @@
         return this.reduceDocumentsToType(this.bidding.users, 'economicals')
       },
       economicalFormAnswers () {
-        return this.bidding.users.map(user => user.economicalFormAnswers.map(answers => ({
+        return this.bidding.users.map(participant => participant.economicalFormAnswers.map(answers => ({
           ...answers,
-          provider: user.company
+          provider: participant.user.company.businessName
         }))).reduce((acc, cur) => acc.concat(cur), [])
       }
     },
     methods: {
       /**
        * Reduce all the documents from each user to a single object of the company.
-       * Type must be 'ecnomicals' or 'technicals'.
+       * Type must be 'economicals' or 'technicals'.
        */
       reduceDocumentsToType (users, type) {
         if (type !== 'technicals' && type !== 'economicals') throw new Error(`Type must be 'economicals' or 'technicals'`)
@@ -109,14 +109,23 @@
         }, [])
       },
       approveProviders (providers) {
+        // Get only the businessNames
         providers = providers.map(p => p.provider)
-        apiApprovement.approve(this.bidding.id, 'technically', providers)
-          .then(() => this.notifySuccess(`Proveedores aprobados: ${providers.join(', ')}.`))
+        api.approve(this.bidding.id, api.types.technically, providers)
+          .then(() => {
+            let message = providers.length
+              ? `Proveedores aprobados: ${providers.join(', ')}.`
+              : `Se guardó que ningún proveedor está aprobado aún.`
+            this.notifySuccess(message)
+          })
           .catch(this.notifyError)
       },
-      adjudicate (itemName, providers) {
-        console.log(itemName, providers)
-        // TODO: Api call to adjudicate the correspondent providers to the given item
+      adjudicate (itemName, adjudications) {
+        // Get only the adjudicated providers
+        adjudications = adjudications.filter(a => a.adjudicated)
+        api.approve(this.bidding.id, api.types.economically, {itemName, adjudications})
+          .then(() => this.notifySuccess(`Se adjudicó el item <strong>${itemName}</strong> a los siguientes proveedores:<br>${adjudications.map(a => `- ${a.provider}`).join('<br>')}`))
+          .catch(this.notifyError)
       },
       /**
        * Show a notification success message.
@@ -125,7 +134,10 @@
       notifySuccess (message) {
         this.$notify({
           ...this.baseNotification,
-          component: {template: `<span>${message}</span>`},
+          component: {
+            template:
+              `<span>${message}</span>`
+          },
           icon: 'fa fa-check',
           type: 'success'
         })
