@@ -79,7 +79,6 @@
        */
       emitApproveSelected () {
         const selected = this.providers.filter(p => p.approved)
-        if (!selected.length) return alert('No has seleccionado a nadie.')
         this.$emit('approve', selected)
       }
     }
