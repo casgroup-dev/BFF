@@ -1,28 +1,38 @@
 <template>
   <div class="container-fluid">
-    <!-- TECHNICAL OFFERS -->
-    <list-files-per-provider-card title="Ofertas técnicas"
-                                  :providers="providersTechnicalDocuments"
-                                  show-approvement
-                                  @approve="approveProviders"/>
-    <template v-if="showEconomicalSection">
-      <!-- ECONOMICAL COMPARISON -->
-      <economical-comparison-card :economicalForm="bidding.economicalForm"
-                                  :economicalFormAnswers="economicalFormAnswers"
-                                  :users="bidding.users"
-                                  @adjudicate="adjudicate"/>
-      <!-- ECONOMICAL OFFERS -->
-      <list-files-per-provider-card title="Anexos ofertas económicas"
-                                    :providers="providersEconomicalDocuments"/>
-      <!-- SIGN AND PUBLISH -->
-      <div class="row" style="margin: 20px;">
-        <button :disabled="!canSignAndPublish"
-                :title="`${canSignAndPublish
+    <template v-if="!bidding.publishedResults">
+      <!-- TECHNICAL OFFERS -->
+      <list-files-per-provider-card title="Ofertas técnicas"
+                                    :providers="providersTechnicalDocuments"
+                                    show-approvement
+                                    @approve="approveProviders"/>
+      <template v-if="showEconomicalSection">
+        <!-- ECONOMICAL COMPARISON -->
+        <economical-comparison-card :economicalForm="bidding.economicalForm"
+                                    :economicalFormAnswers="economicalFormAnswers"
+                                    :users="bidding.users"
+                                    @adjudicate="adjudicate"/>
+        <!-- ECONOMICAL OFFERS -->
+        <list-files-per-provider-card title="Anexos ofertas económicas"
+                                      :providers="providersEconomicalDocuments"/>
+        <!-- SIGN AND PUBLISH -->
+        <div class="row" style="margin: 20px;">
+          <button :disabled="!canSignAndPublish"
+                  :title="`${canSignAndPublish
                 ? 'Publicar los resultados'
                 : 'Aún no puedes publicar los resultados. Una vez se hayan adjudicado todos los items podrán firmar y publicar.'}`"
-                class="col text-center btn btn-fill btn-success btn-lg">
-          <i class="fa fa-check"></i> FIRMAR Y ADJUDICAR
-        </button>
+                  @click="publishResults"
+                  class="col text-center btn btn-fill btn-success btn-lg">
+            <i class="fa fa-check"></i> FIRMAR Y ADJUDICAR
+          </button>
+        </div>
+      </template>
+    </template>
+    <template v-else>
+      <div class="row text-center">
+        <div class="col">
+          <h3>Los resultados para esta licitación ya fueron publicados exitosamente.</h3>
+        </div>
       </div>
     </template>
   </div>
@@ -69,7 +79,7 @@
        */
       canSignAndPublish: {
         type: Boolean,
-        default: false
+        default: true
       }
     },
     computed: {
@@ -130,6 +140,14 @@
           .catch(this.notifyError)
       },
       /**
+       * Does the api call to publish the results of this bidding.
+       */
+      publishResults () {
+        api.publish(this.bidding.id)
+          .then(() => this.notifySuccess(`Resultados publicados exitosamente.`))
+          .catch(err => this.notifyError(err, `Lo siento, no pudimos publicar los resultados, inténtalo nuevamente más tarde.`))
+      },
+      /**
        * Show a notification success message.
        * @param {String} message
        */
@@ -147,11 +165,12 @@
       /**
        * Show a notification as a warning indicating the the form does not uploaded correctly.
        */
-      notifyError (err) {
+      notifyError (err, msg) {
         console.error(err)
+        msg = msg || `<span>Ocurrió un problema aprobando a los proveedores, por favor verifica que tangas conexión a internet.<br>Inténtalo nuevamente.</span>`
         this.$notify({
           ...this.baseNotification,
-          component: {template: `<span>Ocurrió un problema aprobando a los proveedores, por favor verifica que tangas conexión a internet.<br>Inténtalo nuevamente.</span>`},
+          component: {template: msg},
           icon: 'fa fa-exclamation',
           type: 'warning'
         })
