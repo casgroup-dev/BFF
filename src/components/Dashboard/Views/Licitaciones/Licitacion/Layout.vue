@@ -15,12 +15,6 @@
                       :participants="bidding.users"/>
         <!-- <CreateNotice class="flex-row-item"/> -->
       </div>
-      <!-- FINAL RESULT OF THE BIDDING -->
-      <!--
-      <div class="flex-row" v-if="seeResult">
-        <div class="flex-row-item">Resultado</div>
-      </div>
-      -->
       <div class="flex-row" v-if="bidding.permissions.canModify">
         <Evaluacion class="flex-row-item"></Evaluacion>
       </div>
@@ -61,34 +55,6 @@
       return {
         bidding: undefined,
         participantsComponentUsers: []
-      }
-    },
-    methods: {
-      handleUploadedTecOffer: function (url, fileName) {
-        // TODO: que pasa si el proveedor quiere sobreescribir un archivo anterior?
-        const newTecOffer = {
-          fileName: fileName,
-          url: url,
-          user: {
-            /* I assume that I receive only my user if I'm a provider */
-            id: this.bidding.users[0].id
-          }
-        }
-        this.bidding.tecOffers.append(newTecOffer)
-        // TODO: PUT to API adding a new downloadable file
-      },
-      handleUploadedEcoOffer: function (url, fileName) {
-        // TODO: que pasa si el proveedor quiere sobreescribir un archivo anterior?
-        const newEcoOffer = {
-          fileName: fileName,
-          url: url,
-          user: {
-            /* I assume that I receive only my user if I'm a provider */
-            id: this.bidding.users[0].id
-          }
-        }
-        this.bidding.ecoOffers.append(newEcoOffer)
-        // TODO: PUT to API adding a new downloadable file
       }
     },
     created: function () {
