@@ -40,7 +40,6 @@
     },
     data () {
       return {
-        documentsObjects: [],
         items: [],
         offers: [],
         baseNotification: {
@@ -73,15 +72,28 @@
         default: false
       }
     },
-    created () {
-      apiDocuments.getAllDocuments(this.bidding.id).then(res => { this.documentsObjects = res })
-    },
     computed: {
-      /**
-       * Reduce to get all the participants from the same company merged in one object per provider.
-       */
       providersTechnicalDocuments () {
-        return this.bidding.users.reduce((accumulatedResult, currentParticipant) => {
+        return this.reduceDocumentsToType(this.bidding.users, 'technicals')
+      },
+      providersEconomicalDocuments () {
+        return this.reduceDocumentsToType(this.bidding.users, 'economicals')
+      },
+      economicalFormAnswers () {
+        return this.bidding.users.map(user => user.economicalFormAnswers.map(answers => ({
+          ...answers,
+          provider: user.company
+        }))).reduce((acc, cur) => acc.concat(cur), [])
+      }
+    },
+    methods: {
+      /**
+       * Reduce all the documents from each user to a single object of the company.
+       * Type must be 'ecnomicals' or 'technicals'.
+       */
+      reduceDocumentsToType (users, type) {
+        if (type !== 'technicals' && type !== 'economicals') throw new Error(`Type must be 'economicals' or 'technicals'`)
+        return users.reduce((accumulatedResult, currentParticipant) => {
           // If the current users' company is not in the accumulated result, add it
           const currentBusinessName = currentParticipant.user.company.businessName
           let providerDocuments = accumulatedResult.find(a => a.provider === currentBusinessName)
@@ -90,27 +102,12 @@
             accumulatedResult.push(providerDocuments)
           }
           // Concat to the accumulated documents of the provider company
-          providerDocuments.documents = providerDocuments.documents.concat(currentParticipant.documents.technicals)
+          providerDocuments.documents = providerDocuments.documents.concat(currentParticipant.documents[type])
           // Set approved if any user is approved
           if (currentParticipant.approved.technically) providerDocuments.approved = true
           return accumulatedResult
         }, [])
       },
-      providersEconomicalDocuments () {
-        return this.documentsObjects.map(documentsObject => ({
-          provider: documentsObject.provider,
-          documents: documentsObject.documents.economical
-        }))
-      },
-      economicalFormAnswers () {
-        return this.bidding.users.map(user => user.economicalFormAnswers.map(answers => ({
-          ...answers,
-          provider: user.company
-        })))
-          .reduce((acc, cur) => acc.concat(cur), [])
-      }
-    },
-    methods: {
       approveProviders (providers) {
         providers = providers.map(p => p.provider)
         apiApprovement.approve(this.bidding.id, 'technically', providers)
