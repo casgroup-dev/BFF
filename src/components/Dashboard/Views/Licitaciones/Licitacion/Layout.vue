@@ -5,14 +5,14 @@
       <div class="flex-row"><h1 class="title">{{ bidding.title }}</h1></div>
       <!-- RULES -->
       <div class="flex-row">
-        <p class="rules-summary">{{ bidding.rules.summary }}</p>
+        <p class="rules-summary" v-if="bidding.rules">{{ bidding.rules.summary }}</p>
       </div>
       <!-- TIMELINE -->
       <!-- <div class="flex-row"></div> -->
       <!-- Participants -->
       <div class="flex-row" v-if="bidding.permissions.seeParticipants">
         <Participants class="flex-row-item"
-                      :participants="participantsComponentUsers"/>
+                      :participants="bidding.users"/>
         <!-- <CreateNotice class="flex-row-item"/> -->
       </div>
       <!-- FINAL RESULT OF THE BIDDING -->
@@ -25,9 +25,10 @@
         <Evaluacion class="flex-row-item"></Evaluacion>
       </div>
       <div class="flex-row">
-        <Recepcion class="flex-row-item" v-if="!bidding.permissions.canModify" :biddingId=bidding.id
+        <Recepcion class="flex-row-item" v-if="!bidding.permissions.canModify && !bidding.invite" :biddingId=bidding.id
         :showEconomicalOffer=bidding.permissions.uploadEconomical></Recepcion>
       </div>
+      <Enter v-if="bidding.invite"></Enter>
     </div>
   </div>
 </template>
@@ -37,6 +38,7 @@
   import FileDownloadCard from '../../../../UIComponents/Inputs/FileDownloadCard'
   import FileInputCard from 'src/components/UIComponents/Inputs/FileInputCard'
   import Participants from './Components/Participants'
+  import Enter from './Components/Enter'
   import CreateNotice from './Components/CreateNotice'
   import Evaluacion from 'src/components/Dashboard/Views/Licitaciones/Ofertas/Evaluacion/Layout'
   import Recepcion from 'src/components/Dashboard/Views/Licitaciones/Ofertas/Recepcion/Layout'
@@ -51,7 +53,8 @@
       Participants,
       CreateNotice,
       Evaluacion,
-      Recepcion
+      Recepcion,
+      Enter
     },
     props: ['id'],
     data () {
@@ -92,11 +95,6 @@
       const self = this
       api.getCurrentBidding(self.id).then(data => {
         self.bidding = data
-        var users = Object.assign([], data.users)
-        // TODO: no se hace este delete
-        delete users['documents']
-        delete users['economicalFormAnswers']
-        self.participantsComponentUsers = Object.assign([], data.users)
       }).catch(err => {
         console.error(err)
         self.$router.push('/')
