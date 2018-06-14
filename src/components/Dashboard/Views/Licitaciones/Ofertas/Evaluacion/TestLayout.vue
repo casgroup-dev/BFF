@@ -17,7 +17,7 @@
       }
     },
     created () {
-      const id = '5b201077de4dac244685f871'
+      const id = '5b2292d9340a7441448fbba4'
       axios.get(routes.getRouteWithToken(routes.routes.bidding(id)))
         .then(res => {
           if (res.data.error) return console.error(res.data.error.message)

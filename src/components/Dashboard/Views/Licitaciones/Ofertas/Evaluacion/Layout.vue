@@ -51,6 +51,9 @@
       }
     },
     props: {
+      /**
+       * The bidding object coming from the backend.
+       */
       bidding: {
         type: Object,
         required: true
@@ -74,12 +77,24 @@
       apiDocuments.getAllDocuments(this.bidding.id).then(res => { this.documentsObjects = res })
     },
     computed: {
+      /**
+       * Reduce to get all the participants from the same company merged in one object per provider.
+       */
       providersTechnicalDocuments () {
-        // TODO: Send if it is approved or not
-        return this.documentsObjects.map(documentsObject => ({
-          provider: documentsObject.provider,
-          documents: documentsObject.documents.technical
-        }))
+        return this.bidding.users.reduce((accumulatedResult, currentParticipant) => {
+          // If the current users' company is not in the accumulated result, add it
+          const currentBusinessName = currentParticipant.user.company.businessName
+          let providerDocuments = accumulatedResult.find(a => a.provider === currentBusinessName)
+          if (!providerDocuments) {
+            providerDocuments = {provider: currentBusinessName, documents: []}
+            accumulatedResult.push(providerDocuments)
+          }
+          // Concat to the accumulated documents of the provider company
+          providerDocuments.documents = providerDocuments.documents.concat(currentParticipant.documents.technicals)
+          // Set approved if any user is approved
+          if (currentParticipant.approved.technically) providerDocuments.approved = true
+          return accumulatedResult
+        }, [])
       },
       providersEconomicalDocuments () {
         return this.documentsObjects.map(documentsObject => ({
@@ -98,7 +113,7 @@
     methods: {
       approveProviders (providers) {
         providers = providers.map(p => p.provider)
-        apiApprovement.approve(this.bidding.id, 'technically', providers.map(p => p.provider))
+        apiApprovement.approve(this.bidding.id, 'technically', providers)
           .then(() => this.notifySuccess(`Proveedores aprobados: ${providers.join(', ')}.`))
           .catch(this.notifyError)
       },

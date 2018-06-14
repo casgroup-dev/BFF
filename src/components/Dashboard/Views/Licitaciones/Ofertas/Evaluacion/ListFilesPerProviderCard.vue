@@ -24,7 +24,7 @@
           <h5 class="title" v-else>No presentó documentos.</h5>
         </td>
         <td v-if="showApprovement">
-          <p-checkbox v-model="provider.selected"/>
+          <p-checkbox v-model="provider.approved"/>
         </td>
       </tr>
       </tbody>
@@ -78,7 +78,7 @@
        * with the event.
        */
       emitApproveSelected () {
-        const selected = this.providers.filter(p => p.selected)
+        const selected = this.providers.filter(p => p.approved)
         if (!selected.length) return alert('No has seleccionado a nadie.')
         this.$emit('approve', selected)
       }
