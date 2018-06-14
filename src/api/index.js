@@ -281,8 +281,8 @@ async function checkEmail (email) {
   if (!email) {
     throw new Error('Mail is mandatory.')
   }
-  return axios.get(endpoint + routes.shadowUsers + '/' + email).then(res => {
-    // return axios.get(getRouteWithToken(routes.users), email).then(res => {
+  // return axios.get(endpoint + routes.shadowUsers + '/' + email).then(res => {
+  return axios.get(getRouteWithToken(routes.users), email).then(res => {
     return !res.data.error
   })
 }
@@ -297,34 +297,37 @@ async function registerBidding (bidding) {
   if (!bidding.company) throw new Error('No company assigned.')
   if (!bidding.users) throw new Error('No users assigned.')
   if (!bidding.stages) throw new Error('No stages defined.')
-  if (!bidding.items) throw new Error('No stages defined.')
+  if (!bidding.items) throw new Error('No items defined.')
   const data = {
     title: bidding.name,
     bidderCompany: bidding.company,
-    users: [(function () {
+    users: (function () {
       let result = []
-      for (let user in bidding.users) {
+      for (let i = 0; i < bidding.users.length; ++i) {
+        let user = bidding.users[i]
         let temp = {
-          mail: user.mail,
+          email: user.mail,
           role: 'client'
         }
         result.push(temp)
       }
       return result
-    })()],
-    rules: {
-      summary: bidding.bases.text,
-      files: bidding.bases.files
-    },
-    periods: bidding.stages,
+    })(),
+    rules: bidding.rules,
     biddingType: bidding.type,
     economicalForm: bidding.items,
     deadlines: (function () {
       let dictionary = {}
-      for (let stage in bidding.stages) {
-        dictionary[stage.save_name] = {
-          start: stage.start,
-          end: stage.end
+      let stage
+      for (let i = 0; i < bidding.stages.length; ++i) {
+        stage = bidding.stages[i]
+        if (stage.save_name === 'results') {
+          dictionary[stage.save_name] = stage.start
+        } else {
+          dictionary[stage.save_name] = {
+            start: stage.start,
+            end: stage.end
+          }
         }
       }
       return dictionary
@@ -344,13 +347,12 @@ async function registerBidding (bidding) {
  */
 async function registerClient (data) {
   const generalError = new Error('Tuvimos un error procesando el registro de cliente, por favor intenta nuevamente más tarde.')
-  console.log(data)
   const user = {
     email: data.email,
     password: data.password
   }
   return axios.post(getRouteWithToken(routes.users), user).then(res => {
-    if (res.data.error) throw new Error(generalError)
+    if (res.data.error) throw generalError
   })
 }
 

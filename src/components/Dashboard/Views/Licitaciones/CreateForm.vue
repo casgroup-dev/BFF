@@ -79,10 +79,10 @@
             <label class="col-4" >Cantidad</label>
             <label class="col-4" >Unidad de medida</label>
           </div>
-          <div class="row" v-for="i in bidding.requests.amount">
-            <fg-input class="col-4" placeholder="Producto" v-model="bidding.requests.names[i]"/>
-            <fg-input class="col-4" placeholder="Cantidad" v-model="bidding.requests.amountPerItem[i]"/>
-            <fg-input class="col-4" placeholder="Unidad de Medida" v-model="bidding.requests.measurePerItem[i]"/>
+          <div class="row" v-for="request in buildRequest">
+            <fg-input class="col-4" placeholder="Producto" v-model="request.itemName"/>
+            <fg-input class="col-4" placeholder="Cantidad" v-model="request.wantedAmount"/>
+            <fg-input class="col-4" placeholder="Unidad de Medida" v-model="request.measureUnit"/>
           </div>
           <button type="submit" class="btn btn-default" @click="formPage = formPage - 1">Anterior</button>
           <button type="submit" class="btn btn-default" @click="formPage = formPage + 1">Siguiente</button>
@@ -213,7 +213,7 @@
             error: false,
             errorMessage: 'Debe asignar la Licitacion a una empresa'
           },
-          type: 2,
+          type: '2',
           bases: {
             text: '',
             files: [],
@@ -222,9 +222,7 @@
           },
           requests: {
             amount: 5,
-            names: [],
-            amountPerItem: [],
-            measurePerItem:[],
+            payload: [],
             error: false,
             errorMessage: 'Debe asignar los nombres, medidas y/o cantidades a los productos pedidos'
           },
@@ -245,6 +243,18 @@
           url: url
         }
         this.biddings.bases.files.push(file)
+      },
+      addBidding () {
+        this.checkBiddingInput()
+        const bidding = this.parseBidding()
+        this.createUsers(bidding.users)
+        const self = this
+        usersApi.registerBidding(bidding).then(res => {
+          if (res) {
+            self.$emit('endModal', null)
+          }
+        }
+        )
       },
       formatDates (dateOne, dateTwo) {
         let formattedDates = ''
@@ -278,12 +288,7 @@
         this.etapas.error = !this.etapas.payload || !this.etapas.payload[0].dateOne || !this.etapas.payload[0].dateTwo
         this.bidding.company.error = !this.bidding.company.payload
         this.bidding.name.error = !this.bidding.name.payload
-        this.bidding.requests.error =
-          this.bidding.requests.amount > 0 && (
-            !this.bidding.requests.amountPerItem[0] ||
-            !this.bidding.requests.names[0] ||
-            !this.bidding.requests.measurePerItem[0]
-          )
+        this.bidding.requests.error = this.bidding.requests.amount > 0 && !this.bidding.requests.payload[0]
         this.bidding.users.error =
           !this.bidding.users.payload[0].mail || (this.bidding.users.payload[0].role === 'Seleccione el Rol')
         this.bidding.generalError = this.bidding.company.error || this.bidding.name.error ||
@@ -294,16 +299,19 @@
         let year = parseInt(split[0])
         let month = parseInt(split[1]) - 1
         let day = parseInt(split[2])
-        return new Date(year, month, day, [time.hour, time.minute])
+        return new Date(year, month, day, time.hour, time.minute)
       },
       parseBidding () {
         const self = this
         return {
-          name: this.bidding.name,
-          company: this.bidding.company,
-          users: this.bidding.users,
-          bases: this.bidding.bases,
-          type: this.bidding.type + ' etapa',
+          name: this.bidding.name.payload,
+          company: this.bidding.company.payload,
+          users: this.bidding.users.payload,
+          rules: {
+            summary: this.bidding.bases.text,
+            files: this.bidding.bases.files
+          },
+          type: this.bidding.type,
           stages: (function () {
             let stages = []
             for (let i = 0; i < self.etapas.amount; ++i) {
@@ -311,31 +319,20 @@
               let stage = {
                 title: dateTable.title,
                 save_name: dateTable.save_name,
-                start: this.parseDate(dateTable.dateOne, dateTable.timeOne),
-                end: this.parseDate(dateTable.dateTwo, dateTable.timeTwo)
+                start: self.parseDate(dateTable.dateOne, dateTable.timeOne),
+                end: self.parseDate(dateTable.dateTwo, dateTable.timeTwo)
               }
               stages.push(stage)
             }
             return stages
           })(),
-          items: (function () {
-            let items = []
-            for (let i = 0; i < this.bidding.requests.amount; ++i) {
-              let item = {
-                itemName: this.bidding.requests.names[i],
-                wantedAmount: this.bidding.requests.amountPerItem[i],
-                measureUnit: this.bidding.requests.measurePerItem[i]
-              }
-              items.push(item)
-            }
-            return items
-          })()
+          items: this.bidding.requests.payload
         }
       },
       createUsers (users) {
         let user
-        for (let i = 0; i < users.amount; ++i) {
-          user = users.payload[i]
+        for (let i = 0; i < users.length; ++i) {
+          user = users[i]
           if (user.isNew) {
             const data = {
               password: user.password,
@@ -344,15 +341,6 @@
             usersApi.registerClient(data)
           }
         }
-      },
-      addBidding () {
-        this.checkBiddingInput()
-        const bidding = this.parseBidding()
-        this.createUsers(bidding.users)
-        const self = this
-        usersApi.registerBidding(bidding).then(
-          self.$emit('endModal', null)
-        )
       }
     },
     computed: {
@@ -374,6 +362,19 @@
         }
         this.bidding.users.payload = users
         return this.bidding.users.payload
+      },
+      buildRequest: function () {
+        let requests = []
+        for (let i = 1; i <= this.bidding.requests.amount; ++i) {
+          let request = {
+            itemName: '',
+            wantedAmount: '',
+            measureUnit: ''
+          }
+          requests.push(request)
+        }
+        this.bidding.requests.payload = requests
+        return this.bidding.requests.payload
       },
       availableStages: function () {
         let stages = []
