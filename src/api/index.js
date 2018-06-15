@@ -94,14 +94,14 @@ function getBiddings () {
       },
       show: false
     },
-      {
-        attributes: {
-          name: 'Snacks Copec de Curico',
-          client: 'Copec',
-          currentStage: '3'
-        },
-        show: false
-      }
+    {
+      attributes: {
+        name: 'Snacks Copec de Curico',
+        client: 'Copec',
+        currentStage: '3'
+      },
+      show: false
+    }
     ]
     return resolve(res)
   })
@@ -143,6 +143,20 @@ async function getCurrentBidding () {
         businessName: 'Microsoft',
         usersEmail: 'email@example.com',
         usersPhone: '+56912345678'
+      }
+    ],
+    notices: [
+      {
+        user: '5af05e939f67b71dccf6f9fc',
+        notice: 'Solo existe una instancia para realizar preguntas. ' +
+        'Esta es una prueba y no sé qué más poner pero voy a escribir sin parar ' +
+        'para ver como se comporta el componente.',
+        date: new Date().toISOString().split('T')[0]
+      },
+      {
+        user: '5af05e939f67b71dccf6f9fc',
+        notice: 'Ola k ase.',
+        date: new Date().toISOString().split('T')[0]
       }
     ]
   }

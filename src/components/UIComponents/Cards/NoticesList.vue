@@ -1,14 +1,12 @@
 <template>
   <div class="content" style="overflow: auto; height:200px; width:200px;">
+    <!-- HEADERS -->
     <h3 class="title">Avisos Publicados</h3>
-    <div class="list-group">
+    <!-- BODY -->
+    <div class="list-group" v-for="(notice, index) in notices" :key="index">
       <a class="list-group-item list-group-item-action flex-column align-items-start">
-        <p class="mb-1">Donec id elit non mi porta gravida at eget metus. Maecenas sed diam eget risus varius blandit.</p>
-        <small>Donec id elit non mi porta.</small>
-      </a>
-      <a class="list-group-item list-group-item-action flex-column align-items-start">
-        <p class="mb-1">Donec id elit non mi porta gravida at eget metus. Maecenas sed diam eget risus varius blandit.</p>
-        <small>Donec id elit non mi porta.</small>
+        <p class="mb-1">{{notice.notice}}</p>
+        <small>{{notice.date}}</small>
       </a>
     </div>
   </div>
@@ -16,7 +14,18 @@
 
 <script>
     export default {
-      name: 'NoticesList'
+      name: 'NoticesList',
+      data () {
+        return {
+          text: ''
+        }
+      },
+      props: {
+        notices: {
+          type: Array,
+          required: true
+        }
+      }
     }
 </script>
 

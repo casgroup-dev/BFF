@@ -17,7 +17,7 @@
                           :files="bidding.rulesFiles"
                           title="Descargar bases"
                           v-if="downloadRules"/>
-        <NoticesList class="flex-row-item"/>
+        <NoticesList class="flex-row-item" :notices="bidding.notices"/>
       </div>
       <!-- OFFERS: Download or upload the offers of the bidding -->
       <div class="flex-row" v-if="uploadTecOffer || uploadEcoOffer || downloadTecOffers || downloadEcoOffers">
