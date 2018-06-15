@@ -5,6 +5,11 @@
       <div class="flex-row">
         <h1 class="title">{{ bidding.name }}</h1>
       </div>
+      <!-- BUTTONS -->
+      <div class="col-10" style="text-align: right; font-size: xx-large">
+        <!-- NEW BIDDING -->
+        <button class="btn btn-primary" @click="modalOn = true">Modificar Licitación</button>
+      </div>
       <!-- RULES -->
       <div class="flex-row" v-if="bidding.rulesSummary">
         <p class="rules-summary">{{ bidding.rulesSummary }}</p>
@@ -33,6 +38,17 @@
                           && bidding.permissions.uploadTechnical && bidding.permissions.uploadEconomical"/>
       </div>
     </div>
+    <modal v-if="modalOn">
+      <template slot="header">
+        <h4 style="margin: 0">Modificar Licitación</h4>
+        <button type="button" class="btn btn-round btn-default btn-sm" @click="modalOn = false">
+          <span class="btn-label"><i class="fa fa-times"></i></span> Cerrar
+        </button>
+      </template>
+      <template slot="body">
+        <create-form v-on:endModal="modalOn = false" :buttonCaption="'Modificar'"></create-form>
+      </template>
+    </modal>
   </div>
 </template>
 
@@ -47,6 +63,8 @@
 
   /* Api */
   import api from 'src/api/index'
+  import Modal from 'src/components/UIComponents/Modal/Modal.vue'
+  import CreateForm from 'src/components/Dashboard/Views/Licitaciones/CreateForm.vue'
 
   export default {
     components: {
@@ -55,11 +73,14 @@
       Participants,
       CreateNotice,
       Evaluacion,
-      Recepcion
+      Recepcion,
+      Modal,
+      CreateForm
     },
     props: ['id'],
     data () {
       return {
+        modalOn: false,
         bidding: undefined,
         participantsComponentUsers: []
       }
