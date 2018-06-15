@@ -19,11 +19,26 @@ function putDocument (biddingId, type, name, url) {
 }
 
 /**
+ * Delete a document from the backend.
+ * @param {String } biddingId
+ * @param {String} name
+ * @param {String} type
+ * @returns {Promise<void>}
+ */
+function deleteDocument (biddingId, name, type) {
+  const endpoint = getRouteWithToken(routes.biddingDocuments(biddingId, type))
+  return axios.delete(endpoint, {params: {name}}).then(res => {
+    if (res.data.error) throw new Error(res.data.error.message)
+    return res.data
+  })
+}
+
+/**
  * Get the files uploaded by the user to the given bidding.
  * @param {String} biddingId - Identifier of the bidding.
  * @returns {Promise<Object>}
  */
-function getMyFiles (biddingId) {
+function getMyDocuments (biddingId) {
   const endpoint = getRouteWithToken(routes.biddingDocuments(biddingId))
   return axios.get(endpoint).then(res => {
     if (res.data.error) throw new Error(res.data.error.message)
@@ -31,7 +46,22 @@ function getMyFiles (biddingId) {
   })
 }
 
+/**
+ * Get all the documents of a bidding.
+ * @param {String} biddingId
+ * @returns {Promise<Object>}
+ */
+function getAllDocuments (biddingId) {
+  const endpoint = getRouteWithToken(routes.biddingDocuments(biddingId, 'all'))
+  return axios.get(endpoint).then(res => {
+    if (res.data.error) throw new Error(res.data.error.message)
+    return res.data
+  })
+}
+
 export default {
-  getMyFiles,
+  deleteDocument,
+  getAllDocuments,
+  getMyDocuments,
   putDocument
 }
