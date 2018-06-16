@@ -2,7 +2,7 @@
   <card class="text-area-card">
     <h4 slot="header" class="title" :style="{fontSize: titleSize}">{{ title }}</h4>
     <div class="form-group">
-      <textarea class="form-control" title="text" v-model="text" placeholder="Ingrese texto..."></textarea>
+      <textarea class="form-text" title="text" v-model="text" placeholder="Ingrese texto..."></textarea>
     </div>
     <div class="stats col-xs-9" slot="footer">
       <clip-loader :loading="loading" color="#1DC7EA" class="clip-loader"/>
@@ -25,7 +25,7 @@
         baseNotification: {
           horizontalAlign: 'right',
           verticalAlign: 'bottom',
-          timeout: 20000
+          timeout: 2000
         },
         myDate: null
       }
@@ -127,6 +127,11 @@
   .form-group {
     align-self: center;
     justify-content: space-evenly;
+  }
+
+  .form-text {
+    width: 100%;
+    height: 50%;
   }
 
 </style>

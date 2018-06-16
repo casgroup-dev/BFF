@@ -1,5 +1,5 @@
 <template>
-  <div class="content" style="overflow: auto; height:200px; width:200px;">
+  <div class="content" style="overflow: auto; width:200px;">
     <!-- HEADERS -->
     <h3 class="title">Avisos Publicados</h3>
     <!-- BODY -->

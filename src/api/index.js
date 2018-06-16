@@ -158,6 +158,19 @@ async function getCurrentBidding () {
         notice: 'Ola k ase.',
         date: new Date().toISOString().split('T')[0]
       }
+    ],
+    questions: [
+      {
+        user: '5af05e939f67b71dccf6f9fc',
+        question: 'Puedo comprar todos los camiones que yo quiera? o existe algún tipo de límite?',
+        answer: ''
+      },
+      {
+        user: '5af05e939f67b71dccf6f9fc',
+        question: 'Me faltan 10 lucas para cumplir con el mínimo de lo requerido económicamente, pero' +
+        'tengo 3 perros y 2 lavadoras, puedo ofrecerlas para balancear lo que falta?',
+        answer: ''
+      }
     ]
   }
 }

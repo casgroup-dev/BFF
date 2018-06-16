@@ -9,8 +9,8 @@
       <!-- <div class="flex-row"></div> -->
       <!-- RULES -->
       <div class="flex-row" v-if="uploadRules || downloadRules">
-        <Participants class="flex-row-item"
-                      :participants="bidding.participants"/>
+        <TextAreaButtonCard class="flex-row-item"
+                            :title="'Escribir Aviso'"/>
         <FileDownloadCard class="flex-row-item"
                           :iconColor="'#f49521'"
                           :buttonColor="'#f49521'"
@@ -18,6 +18,10 @@
                           title="Descargar bases"
                           v-if="downloadRules"/>
         <NoticesList class="flex-row-item" :notices="bidding.notices"/>
+      </div>
+      <div class="flex-row">
+        <QuestionsToAnswersList class="flex-row-item"
+                                :questions="bidding.questions"/>
       </div>
       <!-- OFFERS: Download or upload the offers of the bidding -->
       <div class="flex-row" v-if="uploadTecOffer || uploadEcoOffer || downloadTecOffers || downloadEcoOffers">
@@ -55,6 +59,7 @@
   import Participants from './Components/Participants'
   import TextAreaButtonCard from '../../../../UIComponents/Inputs/TextAreaButtonCard'
   import NoticesList from 'src/components/UIComponents/Cards/NoticesList'
+  import QuestionsToAnswersList from 'src/components/UIComponents/Cards/QuestionsToAnswersList'
   /* Api */
   import api from 'src/api/index'
 
@@ -64,7 +69,8 @@
       FileInputCard,
       Participants,
       TextAreaButtonCard,
-      NoticesList
+      NoticesList,
+      QuestionsToAnswersList
     },
     data () {
       return {
