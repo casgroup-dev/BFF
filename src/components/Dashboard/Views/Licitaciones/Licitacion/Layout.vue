@@ -46,7 +46,7 @@
         </button>
       </template>
       <template slot="body">
-        <create-form v-on:endModal="modalOn = false" :buttonCaption="'Modificar'"></create-form>
+        <create-form v-on:endModal="modalOn = false" :modify="true" :loadedBidding="bidding"></create-form>
       </template>
     </modal>
   </div>

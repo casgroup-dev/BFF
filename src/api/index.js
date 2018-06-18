@@ -260,12 +260,7 @@ async function checkEmail (email) {
   })
 }
 
-/**
- * Creates a bidding
- * @param bidding
- * @returns {Promise<any>}
- */
-async function registerBidding (bidding) {
+function buildBidding(bidding) {
   if (!bidding.name) throw new Error('No name assigned.')
   if (!bidding.company) throw new Error('No company assigned.')
   if (!bidding.users) throw new Error('No users assigned.')
@@ -306,7 +301,29 @@ async function registerBidding (bidding) {
       return dictionary
     })()
   }
+  return data
+}
+
+/**
+ * Creates a bidding
+ * @param bidding
+ * @returns {Promise<any>}
+ */
+async function registerBidding (bidding) {
+  const data = buildBidding(bidding)
   return axios.post(getRouteWithToken(routes.biddings), data).then(res => {
+    if (res.data.error) throw new Error('Lo sentimos, intente más tarde.')
+  })
+}
+
+/**
+ * Updates a bidding
+ * @param bidding
+ * @returns {Promise<any>}
+ */
+async function updateBidding (bidding) {
+  const data = buildBidding(bidding)
+  return axios.put(getRouteWithToken(routes.biddings), data).then(res => {
     if (res.data.error) throw new Error('Lo sentimos, intente más tarde.')
   })
 }
@@ -358,5 +375,6 @@ export default {
   getSignedUrlToPutObject,
   checkEmail,
   registerClient,
-  registerBidding
+  registerBidding,
+  updateBidding
 }
