@@ -316,6 +316,13 @@ function getSignedUrlToPutObject (fileName, contentType) {
     })
 }
 
+function participateInBidding () {
+  return axios.post(getRouteWithToken(routes.biddings + '/participate'))
+    .then(res => {
+      console.log(res)
+    })
+}
+
 export default {
   isLoggedIn,
   isShadowUser,
@@ -331,5 +338,6 @@ export default {
   getSignedUrlToPutObject,
   checkEmail,
   registerClient,
-  registerBidding
+  registerBidding,
+  participateInBidding
 }
