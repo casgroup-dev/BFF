@@ -9,12 +9,13 @@
     <table slot="body" class="table mb-auto" v-if="items.length">
       <thead>
       <tr>
-        <th class="text-center">#</th>
-        <th class="text-center">Item</th>
-        <th class="text-center">Unidad medida</th>
-        <th class="text-center">Cantidad</th>
-        <th class="text-center">Precio unitario (CLP)</th>
-        <th class="text-center">Total</th>
+        <th>#</th>
+        <th>Item</th>
+        <th>Unidad medida</th>
+        <th>Cantidad</th>
+        <th>Precio unitario (CLP)</th>
+        <th>Especificaciones (Opcional)</th>
+        <th>Total</th>
       </tr>
       </thead>
       <tbody>
@@ -22,13 +23,14 @@
         <td>{{ index + 1 }}</td>
         <td>{{ item.itemName }}</td>
         <td>{{ item.measureUnit }}</td>
+        <td>{{ item.wantedAmount }}</td>
         <td>
-          <fg-input v-model="item.quantity" class="amount-input"/>
+          <fg-input v-model="item.costPerUnit" class="amount-input no-margin"/>
         </td>
         <td>
-          <fg-input v-model="item.costPerUnit" class="amount-input"/>
+          <fg-input v-model="item.specifications" class="no-margin"/>
         </td>
-        <td>${{ item.quantity * item.costPerUnit || 0}}</td>
+        <td>${{ item.wantedAmount * item.costPerUnit || 0}}</td>
       </tr>
       </tbody>
     </table>
@@ -44,6 +46,7 @@
 </template>
 
 <script>
+  import api from '../../../../../../api/biddings/economical-form'
   import Modal from '../../../../../UIComponents/Modal/Modal'
 
   export default {
@@ -52,7 +55,6 @@
     },
     data () {
       return {
-        items: [],
         baseNotification: {
           horizontalAlign: 'right',
           verticalAlign: 'bottom',
@@ -67,19 +69,17 @@
       biddingId: {
         type: String,
         required: true
+      },
+      /**
+       * Items of the bidding to populate economical form. Array with objects as:
+       * {itemName: String, measureUnit: String, wantedAmount: Number}
+       * And optional properties (if the user already has send an economical form):
+       * - costPerUnit: Number
+       * - specifications: String
+       */
+      items: {
+        type: Array
       }
-    },
-    /**
-     * When the component is created, try to get the items from the backend to fill the table.
-     */
-    created () {
-      // TODO: Api call
-      this.items = [
-        {itemName: 'perno', measureUnit: 'unidad'},
-        {itemName: 'tuerca', measureUnit: 'unidad'},
-        {itemName: 'lápiz', measureUnit: 'unidad'},
-        {itemName: 'condones', measureUnit: 'unidad'}
-      ]
     },
     methods: {
       emitClose () {
@@ -89,8 +89,12 @@
        * Upload the filled form to the backend.
        */
       uploadForm () {
-        // TODO: Api call
-        this.notifySuccess()
+        for (let item of this.items) {
+          if (!item.costPerUnit || !Number(item.costPerUnit)) {
+            return alert('Debes ingresar el precio unitario en todos los items.')
+          }
+        }
+        api.uploadEconomicalForm(this.biddingId, this.items).then(this.notifySuccess).catch(this.notifyError)
       },
       /**
        * Show a notification indicating that the form was uploaded successfully.
@@ -107,7 +111,8 @@
       /**
        * Show a notification as a warning indicating the the form does not uploaded correctly.
        */
-      notifyError () {
+      notifyError (err) {
+        console.error(err)
         this.$notify({
           ...this.baseNotification,
           component: {template: `<span>Ocurrió un problema subiendo la tabla, por favor verifica que tangas conexión a internet.<br>Inténtalo nuevamente.</span>`},
@@ -125,6 +130,10 @@
     flex-direction: row;
     justify-content: space-between;
     width: 100%;
+  }
+
+  .no-margin {
+    margin: 0;
   }
 
   .amount-input {

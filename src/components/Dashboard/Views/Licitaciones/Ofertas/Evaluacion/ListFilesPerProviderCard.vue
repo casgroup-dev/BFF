@@ -1,33 +1,45 @@
 <template>
   <card class="container-fluid">
     <div class="row text-center"><h3 class="title col">{{ title }}</h3></div>
-    <hr class="no-margin">
     <!-- TABLE -->
-    <table class="table" v-if="Object.keys(files).length">
+    <table class="table" v-if="providers.length">
       <thead>
       <tr>
-        <th class="text-center">Proveedor</th>
-        <th class="text-center">Archivo</th>
-        <th class="text-center">Aprobados</th>
+        <th>Proveedor</th>
+        <th>Archivos</th>
+        <th v-if="showApprovement">Aprobados</th>
       </tr>
       </thead>
       <tbody>
-      <tr v-for="(providerFiles, provider) in files" :key="provider">
-        <td>{{ provider }}</td>
+      <tr v-for="(provider, index) in providers" :key="index">
+        <td>{{ provider.provider }}</td>
         <td>
-          <ul class="no-margin">
-            <li v-for="(file, index) in providerFiles" :key="index">
+          <!-- List documents -->
+          <ul class="no-margin" v-if="provider.documents.length">
+            <li v-for="(file, index) in provider.documents" :key="index">
               <a :href="file.url" download>{{ file.name }}</a>
             </li>
           </ul>
+          <!-- Show message if there is no document -->
+          <h5 class="title" v-else>No presentó documentos.</h5>
         </td>
-        <td>
-          <p-checkbox/>
+        <td v-if="showApprovement">
+          <p-checkbox v-model="provider.approved"/>
         </td>
       </tr>
       </tbody>
     </table>
-    <h5 class="title" v-else style="margin: 50px;">No hay ofertas aún que mostrar.</h5>
+    <!-- Message if there is no provider -->
+    <h4 class="text-center" v-else style="margin: 50px;">No hay ofertas aún que mostrar.</h4>
+    <!-- APPROVE BUTTON -->
+    <div class="row text-center" v-if="showApprovement">
+      <div class="col">
+        <button class="btn btn-primary"
+                @click="emitApproveSelected">
+          <i class="fa fa-check"></i> Aprobar ofertas técnicas de los seleccionados
+        </button>
+      </div>
+    </div>
   </card>
 </template>
 
@@ -49,15 +61,25 @@
         required: true
       },
       /**
-       * Files per provider. Example:
-       * {
-       *   'Microsoft': [{name: 'file', url: 'https://www.copec.cl/file.pdf'}, ...]
-       *   ...
-       * }
+       * Array with objects as {provider: String, documents: [{name: String, url: String, date: Date}]}
        */
-      files: {
-        type: Object,
+      providers: {
+        type: Array,
         required: true
+      },
+      showApprovement: {
+        type: Boolean,
+        default: false
+      }
+    },
+    methods: {
+      /**
+       * Emit an event to indicate that the user is approving the selected providers. Pass the selected providers
+       * with the event.
+       */
+      emitApproveSelected () {
+        const selected = this.providers.filter(p => p.approved)
+        this.$emit('approve', selected)
       }
     }
   }
