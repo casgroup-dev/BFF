@@ -33,23 +33,9 @@
           <tr v-for="(detail, index) in details" :key="index">
             <td>{{detail.itemName}}</td>
             <td>{{detail.adminComment}}</td>
-            <td><p-checkbox v-model="detail.adjudicated" :disabled="disabled"></p-checkbox></td>
+            <td><p-checkbox v-model="detail.adjudicated" disabled="disabled"></p-checkbox></td>
           </tr>
         </table>
-        <!--<table class="table table-bordered">
-          <thead>
-            <th>Ítem o servicio</th>
-            <th>Comentario del evaluador</th>
-          </thead>
-          <tr>
-            <td>Pernos</td>
-            <td>Me gustan tus pernos :)</td>
-          </tr>
-          <tr>
-            <td>Lápices</td>
-            <td>Solo te compro 200 unidades :/</td>
-          </tr>
-        </table>-->
       </template>
       <template slot="footer">
         <div class="btn btn-finish" @click="showDetails = !showDetails">Cerrar</div>
@@ -103,7 +89,7 @@
           return 'fa-trophy'
         }
         else {
-          return 'fa-frown-o'
+          return 'fa-legal'
         }
       }
     }
@@ -123,7 +109,7 @@
     text-shadow: 5px 0px #848484;
   }
 
-  .fa-frown-o {
+  .fa-legal {
     color: brown;
   }
 
