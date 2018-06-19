@@ -22,7 +22,7 @@
         <Recepcion class="flex-row-item" v-if="!bidding.permissions.canModify && !bidding.invite" :biddingId=bidding.id
         :showEconomicalOffer=bidding.permissions.uploadEconomical></Recepcion>
       </div>
-      <Enter v-if="bidding.invite"></Enter>
+      <Enter v-if="bidding.invite" :biddingId="bidding.id"></Enter>
     </div>
   </div>
 </template>
@@ -60,6 +60,7 @@
     created: function () {
       const self = this
       api.getCurrentBidding(self.id).then(data => {
+        console.log(data)
         self.bidding = data
       }).catch(err => {
         console.error(err)

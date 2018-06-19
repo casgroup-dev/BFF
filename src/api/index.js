@@ -316,10 +316,15 @@ function getSignedUrlToPutObject (fileName, contentType) {
     })
 }
 
-function participateInBidding () {
-  return axios.post(getRouteWithToken(routes.biddings + '/participate'))
+function participateInBidding (id) {
+  console.log(routes.biddings + '/' + id + '/participate')
+  return axios.post(getRouteWithToken(routes.biddings + '/' + id + '/participate'))
     .then(res => {
-      console.log(res)
+      if (res.data.error) throw new Error(res.data.error)
+      return {}
+    })
+    .catch(err => {
+      throw new Error('Could not make participate api call.')
     })
 }
 
