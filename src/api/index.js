@@ -357,6 +357,42 @@ async function registerClient (data) {
 }
 
 /**
+ * Registers the answer given by the admin to a certain question in a certain bidding
+ * @param biddingID
+ * @param questionID
+ * @param answerText
+ * @returns {Promise<AxiosResponse<any>>}
+ */
+async function registerAnswer (biddingID, questionID, answerText) {
+  if (!answerText) throw new Error('answer is mandatory.')
+  const data = {
+    answer: answerText
+  }
+  return axios.post(getRouteWithToken(routes.biddings + '/' + biddingID + '/questions/' + questionID), data).then(res => {
+    if (res.data.error) throw new Error('Lo sentimos, intente más tarde.')
+  })
+}
+
+/**
+ * Creates a question with an empty answer in the given bidding
+ * @param biddingID
+ * @param questionText
+ * @returns {Promise<AxiosResponse<any>>}
+ */
+async function registerQuestion (biddingID, questionText) {
+  if (!questionText) throw new Error('question is mandatory')
+  const data = {
+    question: questionText,
+    answer: ''
+  }
+  return axios.put(getRouteWithToken(routes.biddings + '/' + biddingID + '/questions'), data).then(res => {
+    if (res.data.error) {
+      throw new Error('Lo sentimos, intente más tarde.')
+    }
+  })
+}
+
+/**
  * Returns a promise that resolves with the signed url to put the object in S3 and the url where the object will reside.
  * @param {String} fileName
  * @param {String} contentType
@@ -385,5 +421,7 @@ export default {
   getSignedUrlToPutObject,
   checkEmail,
   registerClient,
-  registerBidding
+  registerBidding,
+  registerAnswer,
+  registerQuestion
 }

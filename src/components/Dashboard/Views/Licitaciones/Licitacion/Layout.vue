@@ -10,7 +10,7 @@
       <!-- RULES -->
       <div class="flex-row" v-if="uploadRules || downloadRules">
         <TextAreaButtonCard class="flex-row-item"
-                            :title="'Escribir Aviso'"/>
+                            :title="'Escribir Pregunta'"/>
         <FileDownloadCard class="flex-row-item"
                           :iconColor="'#f49521'"
                           :buttonColor="'#f49521'"

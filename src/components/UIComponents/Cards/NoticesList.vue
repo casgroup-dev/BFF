@@ -15,11 +15,6 @@
 <script>
     export default {
       name: 'NoticesList',
-      data () {
-        return {
-          text: ''
-        }
-      },
       props: {
         notices: {
           type: Array,

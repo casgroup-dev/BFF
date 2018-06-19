@@ -6,30 +6,68 @@
     <div class="list-group" v-for="(question, index) in questions" :key="index">
       <a class="list-group-item list-group-item-action flex-column align-items-start">
         <p class="mb-1">{{question.question}}</p>
-        <textarea class="form-text" title="text" v-model="text" placeholder="Ingrese respuesta..."></textarea>
-        <button class="btn btn-fill btn-finish">
+        <textarea class="form-text" title="text" v-model="question.answer" placeholder="Ingrese respuesta..."></textarea>
+        <button class="btn btn-fill btn-finish" @click="postAnswer('5b182e54ab51ac1c24d49b53','5b182e54ab51ac1c24d49b58', question.answer)">
           Publicar Respuesta
         </button>
+        <label class="error" v-if="answer.error">{{answer.errorMessage}}</label>
       </a>
     </div>
   </div>
 </template>
 
 <script>
-    export default {
-      name: 'QuestionsToAnswersList',
-      data () {
-        return {
-          text: ''
+  import usersApi from 'src/api/index'
+
+  export default {
+    name: 'QuestionsToAnswersList',
+    data () {
+      return {
+        answer: {
+          payload: '',
+          error: false,
+          errorMessage: ''
+        },
+        success: false
+      }
+    },
+    props: {
+      questions: {
+        type: Array,
+        required: true
+      }
+    },
+    methods: {
+      /**
+       * Post the answer to an specific question
+       * @param {String} biddingID
+       * @param {String} questionID
+       * @param {String} answerText
+       * @returns {Promise<any>}
+       */
+      postAnswer: function (biddingID, questionID, answerText) {
+        if (!answerText) {
+          this.answer.error = true
+          this.answer.errorMessage = 'Debe ingresar una respuesta!'
+        } else {
+          const self = this
+          usersApi.registerAnswer(biddingID, questionID, answerText)
+            .then(function () {
+              self.cancelAnswer()
+              self.success = true
+            })
+            .catch(function () {
+              self.answer.error = true
+              self.answer.errorMessage = 'Hubo un error al tratar de publicar la respuesta'
+            })
         }
       },
-      props: {
-        questions: {
-          type: Array,
-          required: true
-        }
+      cancelAnswer: function () {
+        this.answer.payload = ''
+        this.answer.error = this.answer.errorMessage = false
       }
     }
+  }
 </script>
 
 <style scoped>
@@ -59,13 +97,15 @@
   }
 
   button {
-    margin: 10px;
-    margin-left: auto;
-    margin-right: auto;
+    margin: 10px auto;
   }
 
   .form-text {
     width: 70%;
     height: 50%;
+  }
+
+  label.error {
+    color: #ff0000
   }
 </style>

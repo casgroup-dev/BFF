@@ -6,7 +6,7 @@
     </div>
     <div class="stats col-xs-9" slot="footer">
       <clip-loader :loading="loading" color="#1DC7EA" class="clip-loader"/>
-      <button v-if="!loading" class="btn btn-fill btn-round btn-success" @click="postText">
+      <button v-if="!loading" class="btn btn-fill btn-round btn-success" @click="postText('5b182e54ab51ac1c24d49b53', text)">
         {{buttonLabel}}
       </button>
     </div>
@@ -16,6 +16,7 @@
 <script>
   import Card from 'src/components/UIComponents/Cards/Card.vue'
   import ClipLoader from 'vue-spinner/src/ClipLoader'
+  import usersApi from 'src/api/index'
 
   export default {
     data () {
@@ -27,7 +28,11 @@
           verticalAlign: 'bottom',
           timeout: 2000
         },
-        myDate: null
+        myDate: null,
+        question: {
+          error: false,
+          errorMessage: ''
+        }
       }
     },
     components: {
@@ -59,14 +64,24 @@
     },
     methods: {
       // TODO: se clickeo el boton y se debe hacer POST del notice al endpoint
-      postText: function () {
+      postText: function (biddingID, questionText) {
+        console.log(questionText)
         this.loading = true
-        if (this.text.length) {
-          this.setTextActualDate()
-          this.notifySuccess()
-          console.log(this.myDate)
-        } else {
+        if (!this.text.length) {
           return this.notifyError()
+        } else {
+          const self = this
+          usersApi.registerQuestion(biddingID, questionText)
+            .then(function () {
+              this.setTextActualDate()
+              this.notifySuccess()
+              console.log(this.myDate)
+            })
+            .catch(function () {
+              self.notifyError()
+              self.question.error = true
+              self.question.errorMessage = 'Hubo un error al tratar de publicar la pregunta'
+            })
         }
       },
       setTextActualDate () {
