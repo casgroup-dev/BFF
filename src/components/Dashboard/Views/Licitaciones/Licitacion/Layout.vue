@@ -39,11 +39,15 @@
         </FileDownloadCard>
       </div>
       <!-- FINAL RESULT OF THE BIDDING -->
-      <!--
+
       <div class="flex-row" v-if="seeResult">
-        <div class="flex-row-item">Resultado</div>
+        <!-- When a provider is requesting info, only his data is in users array -->
+        <Results class="flex-row-item" :awarded="bidding.users[0].awarded"
+                 :award-comment="bidding.users[0].awardComment"
+                 :details="bidding.users[0].economicalFormAnswers">
+        </Results>
       </div>
-      -->
+
     </div>
   </div>
 </template>
@@ -54,6 +58,7 @@
   import FileInputCard from 'src/components/UIComponents/Inputs/FileInputCard'
   import Participants from './Components/Participants'
   import CreateNotice from './Components/CreateNotice'
+  import Results from './Components/Results'
   /* Api */
   import api from 'src/api/index'
 
@@ -62,9 +67,10 @@
       FileDownloadCard,
       FileInputCard,
       Participants,
-      CreateNotice
+      CreateNotice,
+      Results
     },
-    data () {
+    data() {
       return {
         bidding: undefined,
         uploadTecOffer: false,
