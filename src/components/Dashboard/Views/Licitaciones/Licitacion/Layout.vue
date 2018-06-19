@@ -23,7 +23,7 @@
       </div>
       <CreateNotice class="flex-row-item" v-if="bidding.permissions.sendNotice"/>
       <div class="flex-row">
-        <FileDownloadCard class="flex-row-item" v-if="downloadRules"
+        <FileDownloadCard class="flex-row-item"
                           iconColor="#f49521" buttonColor="#f49521"
                           :files="bidding.rulesFiles" title="Descargar bases"/>
       </div>

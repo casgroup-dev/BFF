@@ -255,7 +255,7 @@
         this.createUsers(bidding.users)
         const self = this
         if (this.modify) {
-          usersApi.updateBidding(bidding).then(res => {
+          usersApi.updateBidding(bidding, this.loadedBidding).then(res => {
             if (res) {
               self.$emit('endModal', null)
             }
@@ -341,7 +341,6 @@
           })(),
           items: this.bidding.requests.payload
         }
-        if (this.modify && this.loadedBidding.id) bidding.id = this.loadedBidding.id
         return bidding
       },
       createUsers (users) {

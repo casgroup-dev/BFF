@@ -321,8 +321,17 @@ async function registerBidding (bidding) {
  * @param bidding
  * @returns {Promise<any>}
  */
-async function updateBidding (bidding) {
-  const data = buildBidding(bidding)
+async function updateBidding (bidding, loadedBidding) {
+  let data = buildBidding(bidding)
+  data.id = loadedBidding.id
+  for (let i = 0; i < loadedBidding.users.length; ++i) {
+    let user = loadedBidding.users[i]
+    data.users.push({
+      email: user.user.email,
+      role: user.role
+    })
+  }
+  console.log(data)
   return axios.put(getRouteWithToken(routes.biddings), data).then(res => {
     if (res.data.error) throw new Error('Lo sentimos, intente más tarde.')
   })
