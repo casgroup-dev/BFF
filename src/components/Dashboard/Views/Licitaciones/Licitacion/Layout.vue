@@ -3,7 +3,7 @@
     <div class="flex-container" v-if="bidding">
       <!-- TITLE -->
       <div class="flex-row">
-        <h1 class="title">{{ bidding.name }}</h1>
+        <h1 class="title">{{ bidding.title }}</h1>
       </div>
       <!-- BUTTONS -->
       <div class="col-10" style="text-align: right; font-size: xx-large">
@@ -11,21 +11,20 @@
         <button class="btn btn-primary" @click="modalOn = true">Modificar Licitación</button>
       </div>
       <!-- RULES -->
-      <div class="flex-row" v-if="bidding.rulesSummary">
-        <p class="rules-summary">{{ bidding.rulesSummary }}</p>
+      <div class="flex-row" v-if="bidding.rules.summary">
+        <p class="rules-summary">{{ bidding.rules.summary }}</p>
       </div>
       <!-- TIMELINE -->
       <!-- <div class="flex-row"></div> -->
       <!-- Participants -->
       <div class="flex-row">
         <Participants class="flex-row-item" v-if="bidding.permissions.seeParticipants"
-                      :participants="participantsComponentUsers"/>
-      </div>
-      <CreateNotice class="flex-row-item" v-if="bidding.permissions.sendNotice"/>
+                      :participants="bidding.users"/>
+        <CreateNotice class="flex-row-item" v-if="bidding.permissions.sendNotice"/>
       <div class="flex-row">
         <FileDownloadCard class="flex-row-item"
                           iconColor="#f49521" buttonColor="#f49521"
-                          :files="bidding.rulesFiles" title="Descargar bases"/>
+                          :files="bidding.rules.files" title="Descargar bases"/>
       </div>
       <!-- OFFERS: Download or upload the offers of the bidding -->
       <div class="flex-row">
@@ -37,6 +36,7 @@
                    v-if="(bidding.deadlines.onTechnicalReception || bidding.deadlines.onEconomicalReception)
                           && bidding.permissions.uploadTechnical && bidding.permissions.uploadEconomical"/>
       </div>
+      <Enter v-if="bidding.invite" :biddingId="bidding.id"></Enter>
     </div>
     <modal v-if="modalOn">
       <template slot="header">
@@ -57,6 +57,7 @@
   import FileDownloadCard from '../../../../UIComponents/Inputs/FileDownloadCard'
   import FileInputCard from 'src/components/UIComponents/Inputs/FileInputCard'
   import Participants from './Components/Participants'
+  import Enter from './Components/Enter'
   import CreateNotice from './Components/CreateNotice'
   import Evaluacion from 'src/components/Dashboard/Views/Licitaciones/Ofertas/Evaluacion/Layout'
   import Recepcion from 'src/components/Dashboard/Views/Licitaciones/Ofertas/Recepcion/Layout'
@@ -75,7 +76,8 @@
       Evaluacion,
       Recepcion,
       Modal,
-      CreateForm
+      CreateForm,
+      Enter
     },
     props: ['id'],
     data () {
@@ -85,43 +87,11 @@
         participantsComponentUsers: []
       }
     },
-    methods: {
-      handleUploadedTecOffer: function (url, fileName) {
-        // TODO: que pasa si el proveedor quiere sobreescribir un archivo anterior?
-        const newTecOffer = {
-          fileName: fileName,
-          url: url,
-          user: {
-            /* I assume that I receive only my user if I'm a provider */
-            id: this.bidding.users[0].id
-          }
-        }
-        this.bidding.tecOffers.append(newTecOffer)
-        // TODO: PUT to API adding a new downloadable file
-      },
-      handleUploadedEcoOffer: function (url, fileName) {
-        // TODO: que pasa si el proveedor quiere sobreescribir un archivo anterior?
-        const newEcoOffer = {
-          fileName: fileName,
-          url: url,
-          user: {
-            /* I assume that I receive only my user if I'm a provider */
-            id: this.bidding.users[0].id
-          }
-        }
-        this.bidding.ecoOffers.append(newEcoOffer)
-        // TODO: PUT to API adding a new downloadable file
-      }
-    },
     created: function () {
       const self = this
       api.getCurrentBidding(self.id).then(data => {
+        console.log(data)
         self.bidding = data
-        var users = Object.assign([], data.users)
-        // TODO: no se hace este delete
-        delete users['documents']
-        delete users['economicalFormAnswers']
-        self.participantsComponentUsers = Object.assign([], data.users)
       }).catch(err => {
         console.error(err)
         self.$router.push('/')
