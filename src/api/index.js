@@ -254,8 +254,7 @@ async function checkEmail (email) {
   if (!email) {
     throw new Error('Mail is mandatory.')
   }
-  // return axios.get(endpoint + routes.shadowUsers + '/' + email).then(res => {
-  return axios.get(getRouteWithToken(routes.users), email).then(res => {
+  return axios.get(getRouteWithToken(routes.usersMail(email))).then(res => {
     return !res.data.error
   })
 }
@@ -333,6 +332,7 @@ async function updateBidding (bidding, loadedBidding) {
   }
   console.log(data)
   return axios.put(getRouteWithToken(routes.biddings), data).then(res => {
+    console.log(res.data.error)
     if (res.data.error) throw new Error('Lo sentimos, intente más tarde.')
   })
 }

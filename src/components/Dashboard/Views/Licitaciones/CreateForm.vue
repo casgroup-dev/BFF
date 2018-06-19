@@ -29,7 +29,7 @@
               Descripción de bases PENDIENTE
             </small>
           </div>
-          <FileInputCard class="col-4" title="Subir Bases" v-on:uploaded="save(url, fileName)"></FileInputCard>
+          <FileInputCard class="col-4" title="Subir Bases" v-if="bidding.bases.show" v-on:uploaded="save(url, fileName)"></FileInputCard>
           <br/>
           <button type="submit" class="btn btn-default" @click="formPage = formPage + 1">Siguiente</button>
         </div>
@@ -69,7 +69,7 @@
         <div v-else-if="formPage === 3">
           <div class="row"> <!-- PENDIENTE corregir alineación -->
             <div class="col-3">Número de Productos Deseados</div>
-            <fg-input class="col-1"@input="bidding.requests.amount = parseInt(bidding.requests.amount)"
+            <fg-input class="col-1"@input="bidding.requests.amount = parseInt(bidding.requests.amount) || 0"
                       v-model="bidding.requests.amount"/>
           </div>
           <small><label class="error" style="color: red;"
@@ -222,17 +222,20 @@
           bases: {
             text: '',
             files: [],
+            show: true,
             error: false,
             errorMessage: ''
           },
           requests: {
             amount: 5,
+            modify: false,
             payload: [],
             error: false,
             errorMessage: 'Debe asignar los nombres, medidas y/o cantidades a los productos pedidos'
           },
           users: {
             amount: 2,
+            modify: false,
             payload: [],
             error: false,
             errorMessage: 'Debe asociar al menos un usuario a la Licitación',
@@ -248,6 +251,7 @@
           url: url
         }
         this.biddings.bases.files.push(file)
+        this.biddings.bases.show = false
       },
       addBidding () {
         this.checkBiddingInput()
@@ -359,56 +363,70 @@
     },
     computed: {
       usersAndRoles: function () {
-        let users = []
-        for (let i = 0; i < this.bidding.users.amount; ++i) {
-          let user
-          if (this.modify && i < this.loadedBidding.users.length) {
-            user = {
-              mail: this.loadedBidding.users[i].user.email,
-              role: {
-                revisor: false,
-                aprobador: true
-              },
-              error: false,
-              errorMessage: '',
-              isNew: false,
+        let start = 0
+        if (this.bidding.users.payload.length < this.bidding.users.amount) {
+          start = this.bidding.users.payload.length
+          for (let i = start; i < this.bidding.users.amount; ++i) {
+            let user
+            if (this.modify && !this.bidding.users.modify && i < this.loadedBidding.users.length) {
+              this.bidding.users.modify = true
+              user = {
+                mail: this.loadedBidding.users[i].user.email,
+                role: {
+                  revisor: false,
+                  aprobador: true
+                },
+                error: false,
+                errorMessage: '',
+                isNew: false,
+              }
             }
-          }
-          else {
-            user = {
-              mail: '',
-              role: {
-                revisor: false,
-                aprobador: false
-              },
-              error: false,
-              errorMessage: '',
-              isNew: false,
-              password: ''
+            else {
+              user = {
+                mail: '',
+                role: {
+                  revisor: false,
+                  aprobador: false
+                },
+                error: false,
+                errorMessage: '',
+                isNew: false,
+                password: ''
+              }
             }
+            this.bidding.users.payload.push(user)
           }
-          users.push(user)
         }
-        this.bidding.users.payload = users
+        else {
+          this.bidding.users.payload.splice(this.bidding.users.amount,
+            this.bidding.users.payload.length - this.bidding.users.amount)
+        }
         return this.bidding.users.payload
       },
       buildRequest: function () {
-        let requests = []
-        for (let i = 0; i < this.bidding.requests.amount; ++i) {
-          let request
-          if (this.modify && i < this.loadedBidding.economicalForm.length) {
-            request = this.loadedBidding.economicalForm[i]
-          }
-          else {
-            request = {
-              itemName: '',
-              wantedAmount: '',
-              measureUnit: ''
+        let start = 0
+        if (this.bidding.requests.payload.length < this.bidding.requests.amount) {
+          start = this.bidding.requests.payload.length
+          for (let i = start; i < this.bidding.requests.amount; ++i) {
+            let request
+            if (this.modify && !this.bidding.requests.modify && i < this.loadedBidding.economicalForm.length) {
+              this.bidding.requests.modify = true
+              request = this.loadedBidding.economicalForm[i]
             }
+            else {
+              request = {
+                itemName: '',
+                wantedAmount: '',
+                measureUnit: ''
+              }
+            }
+            this.bidding.requests.payload.push(request)
           }
-          requests.push(request)
         }
-        this.bidding.requests.payload = requests
+        else {
+          this.bidding.requests.payload.splice(this.bidding.requests.amount,
+            this.bidding.requests.payload.length - this.bidding.requests.amount)
+        }
         return this.bidding.requests.payload
       },
       availableStages: function () {
