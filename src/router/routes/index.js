@@ -6,10 +6,8 @@ import NuevaLicitacion from 'src/components/Dashboard/Views/Licitaciones/Nueva/H
 import LicitacionLayout from 'src/components/Dashboard/Views/Licitaciones/Licitacion/Layout'
 import LicitacionesHome from 'src/components/Dashboard/Views/Licitaciones/Home'
 import ProvidersHome from 'src/components/Dashboard/Views/providers/Home.vue'
-import DeadLines from 'src/components/Dashboard/Views/Licitaciones/Licitacion/Components/PeriodsInfo'
 
 const routes = [
-  {path: '/deadlines', name: 'deadlines', component: DeadLines},
   {
     path: '/',
     component: DashboardLayout,
