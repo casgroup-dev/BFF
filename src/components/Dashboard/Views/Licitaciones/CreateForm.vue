@@ -316,7 +316,7 @@
       },
       parseBidding () {
         const self = this
-        return {
+        let bidding = {
           name: this.bidding.name.payload,
           company: this.bidding.company.payload,
           users: this.bidding.users.payload,
@@ -341,6 +341,8 @@
           })(),
           items: this.bidding.requests.payload
         }
+        if (this.modify && this.loadedBidding.id) bidding.id = this.loadedBidding.id
+        return bidding
       },
       createUsers (users) {
         let user
@@ -361,7 +363,7 @@
         let users = []
         for (let i = 0; i < this.bidding.users.amount; ++i) {
           let user
-          if (i < this.loadedBidding.users.length) {
+          if (this.modify && i < this.loadedBidding.users.length) {
             user = {
               mail: this.loadedBidding.users[i].user.email,
               role: {
@@ -395,7 +397,7 @@
         let requests = []
         for (let i = 0; i < this.bidding.requests.amount; ++i) {
           let request
-          if (i < this.loadedBidding.economicalForm.length) {
+          if (this.modify && i < this.loadedBidding.economicalForm.length) {
             request = this.loadedBidding.economicalForm[i]
           }
           else {
@@ -442,69 +444,69 @@
     beforeMount () {
       if (this.modify) {
         this.caption = 'Modificar'
-      }
-      if (this.loadedBidding.biddingType) {
-        this.bidding.type = String(this.loadedBidding.biddingType)
-      }
-      if (this.loadedBidding.title) {
-        this.bidding.name.payload = this.loadedBidding.title
-      }
-      if (this.loadedBidding.bidderCompany) {
-        this.bidding.company.payload = this.loadedBidding.bidderCompany
-      }
-      if (this.loadedBidding.rules) {
-        this.bidding.bases.text = this.loadedBidding.rules.summary
-      }
-      if (this.loadedBidding.economicalForm) {
-        this.bidding.requests.amount = this.loadedBidding.economicalForm.length
-      }
-      if (this.loadedBidding.users) {
-        this.bidding.users.amount = this.loadedBidding.users.length
-      }
-      let parseDate = function (date) {
-        let year = date.getFullYear()
-        let month = date.getMonth()
-        let day = date.getDate()
-        return year + '-' + month + '-' + day
-      }
-      if (this.loadedBidding.deadlines) {
-        this.etapas.loaded = true
-        for (let i = 0; i < this.etapas.amount; ++i) {
-          let startDate = null
-          if (this.etapas.save_names[i] !== 'results') {
-            startDate = new Date(this.loadedBidding.deadlines[this.etapas.save_names[i]].start)
-          }
-          else {
-            startDate = new Date(this.loadedBidding.deadlines[this.etapas.save_names[i]])
-          }
-          let stage = {
-            title: this.etapas.names[i],
-            save_name: this.etapas.save_names[i],
-            label: 'etapa' + i,
-            placeholder: 'Selecciona duración del Período',
-            dateOne: parseDate(startDate),
-            timeOne: {
-              hour: startDate.getHours(),
-              minute: startDate.getMinutes()
-            },
-            id: 'datepicker-trigger' + (i + 1)
-          }
-          if (this.etapas.save_names[i] !== 'results') {
-            let endDate = new Date(this.loadedBidding.deadlines[this.etapas.save_names[i]].end)
-            stage['dateTwo'] = parseDate(endDate)
-            stage['timeTwo'] = {
-              hour: endDate.getHours(),
-              minute: endDate.getMinutes()
+        if (this.loadedBidding.biddingType) {
+          this.bidding.type = String(this.loadedBidding.biddingType)
+        }
+        if (this.loadedBidding.title) {
+          this.bidding.name.payload = this.loadedBidding.title
+        }
+        if (this.loadedBidding.bidderCompany) {
+          this.bidding.company.payload = this.loadedBidding.bidderCompany
+        }
+        if (this.loadedBidding.rules) {
+          this.bidding.bases.text = this.loadedBidding.rules.summary
+        }
+        if (this.loadedBidding.economicalForm) {
+          this.bidding.requests.amount = this.loadedBidding.economicalForm.length
+        }
+        if (this.loadedBidding.users) {
+          this.bidding.users.amount = this.loadedBidding.users.length
+        }
+        let parseDate = function (date) {
+          let year = date.getFullYear()
+          let month = date.getMonth()
+          let day = date.getDate()
+          return year + '-' + month + '-' + day
+        }
+        if (this.loadedBidding.deadlines) {
+          this.etapas.loaded = true
+          for (let i = 0; i < this.etapas.amount; ++i) {
+            let startDate = null
+            if (this.etapas.save_names[i] !== 'results') {
+              startDate = new Date(this.loadedBidding.deadlines[this.etapas.save_names[i]].start)
             }
-          }
-          else {
-            stage['dateTwo'] = ''
-            stage['timeTwo'] = {
-              hour: 0,
-              minute: 0
+            else {
+              startDate = new Date(this.loadedBidding.deadlines[this.etapas.save_names[i]])
             }
+            let stage = {
+              title: this.etapas.names[i],
+              save_name: this.etapas.save_names[i],
+              label: 'etapa' + i,
+              placeholder: 'Selecciona duración del Período',
+              dateOne: parseDate(startDate),
+              timeOne: {
+                hour: startDate.getHours(),
+                minute: startDate.getMinutes()
+              },
+              id: 'datepicker-trigger' + (i + 1)
+            }
+            if (this.etapas.save_names[i] !== 'results') {
+              let endDate = new Date(this.loadedBidding.deadlines[this.etapas.save_names[i]].end)
+              stage['dateTwo'] = parseDate(endDate)
+              stage['timeTwo'] = {
+                hour: endDate.getHours(),
+                minute: endDate.getMinutes()
+              }
+            }
+            else {
+              stage['dateTwo'] = ''
+              stage['timeTwo'] = {
+                hour: 0,
+                minute: 0
+              }
+            }
+            this.etapas.payload.push(stage)
           }
-          this.etapas.payload.push(stage)
         }
       }
     }
