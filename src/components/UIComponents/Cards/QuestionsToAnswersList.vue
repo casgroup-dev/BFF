@@ -1,8 +1,22 @@
 <template>
   <card>
     <!-- HEADERS -->
+    <div class="row">
+      <div class="col-3"></div>
+      <div class="col-6">
     <h3 class="title">Preguntas Realizadas por los Proveedores</h3>
+      </div>
     <!-- BODY -->
+      <div class="col-3">
+    <json-excel class   = "btn btn-fill btn-finish"
+                :data   = "questions"
+                :fields = "json_fields"
+                type    = "csv"
+                name    = "preguntas.xls">
+      Descargar preguntas
+    </json-excel>
+      </div>
+    </div>
     <div class="list-group" v-for="(question, index) in questions" :key="index">
       <div class="list-group-item list-group-item-action flex-column align-items-start">
         <p class="mb-1">{{question.question}}</p>
@@ -19,11 +33,17 @@
 <script>
   import usersApi from 'src/api/index'
   import Card from 'src/components/UIComponents/Cards/Card.vue'
+  import JsonExcel from 'vue-json-excel'
 
   export default {
     name: 'QuestionsToAnswersList',
     data () {
       return {
+        json_fields: {
+          'Usuario': 'user',
+          'Pregunta': 'question',
+          'Respuesta': 'answer'
+        },
         answer: {
           payload: '',
           error: false,
@@ -33,7 +53,8 @@
       }
     },
     components: {
-      Card
+      Card,
+      JsonExcel
     },
     props: {
       questions: {
