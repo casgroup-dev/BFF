@@ -19,7 +19,7 @@
     </div>
     <div class="list-group" v-for="(question, index) in questions" :key="index">
       <div class="list-group-item list-group-item-action flex-column align-items-start">
-        <p class="mb-1">{{question.question}}</p>
+        <p class="mb-1"><b>{{(index+1)}}.</b> {{question.question}}</p>
         <label class="error" v-if="answer.error">{{answer.errorMessage}}</label>
         <textarea class="form-text" title="text" v-model="question.answer" placeholder="Ingrese respuesta..."></textarea>
         <button class="btn btn-fill btn-finish" @click="postAnswer('5b182e54ab51ac1c24d49b53','5b182e54ab51ac1c24d49b58', question.answer)">
@@ -40,7 +40,6 @@
     data () {
       return {
         json_fields: {
-          'Usuario': 'user',
           'Pregunta': 'question',
           'Respuesta': 'answer'
         },
