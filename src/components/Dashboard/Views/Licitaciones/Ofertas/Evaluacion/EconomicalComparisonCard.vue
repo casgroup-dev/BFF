@@ -14,7 +14,7 @@
 </template>
 
 <script>
-  import Card from '../CardV2'
+  import Card from '../../../../../UIComponents/Cards/CardV2'
   import ItemComparisonTable from './ItemComparisonTable'
 
   export default {

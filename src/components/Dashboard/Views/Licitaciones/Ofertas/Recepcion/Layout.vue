@@ -42,8 +42,8 @@
 
 <script>
   import api from '../../../../../../api/biddings/documents'
-  import ButtonCard from './ButtonCard'
-  import Card from '../CardV2'
+  import ButtonCard from '../../../../../UIComponents/Cards/ButtonCard'
+  import Card from '../../../../../UIComponents/Cards/CardV2'
   import FileInputCard from '../../../../../UIComponents/Inputs/FileInputCard'
   import ListFilesCard from './ListFilesCard'
   import EconomicalFormModal from './EconomicalFormModal'
