@@ -1,23 +1,24 @@
 <template>
-  <div class="content" style="overflow: auto; height:300px; width:200px;">
+  <card>
     <!-- HEADERS -->
     <h3 class="title">Preguntas Realizadas por los Proveedores</h3>
     <!-- BODY -->
     <div class="list-group" v-for="(question, index) in questions" :key="index">
-      <a class="list-group-item list-group-item-action flex-column align-items-start">
+      <div class="list-group-item list-group-item-action flex-column align-items-start">
         <p class="mb-1">{{question.question}}</p>
+        <label class="error" v-if="answer.error">{{answer.errorMessage}}</label>
         <textarea class="form-text" title="text" v-model="question.answer" placeholder="Ingrese respuesta..."></textarea>
         <button class="btn btn-fill btn-finish" @click="postAnswer('5b182e54ab51ac1c24d49b53','5b182e54ab51ac1c24d49b58', question.answer)">
           Publicar Respuesta
         </button>
-        <label class="error" v-if="answer.error">{{answer.errorMessage}}</label>
-      </a>
+      </div>
     </div>
-  </div>
+  </card>
 </template>
 
 <script>
   import usersApi from 'src/api/index'
+  import Card from 'src/components/UIComponents/Cards/Card.vue'
 
   export default {
     name: 'QuestionsToAnswersList',
@@ -30,6 +31,9 @@
         },
         success: false
       }
+    },
+    components: {
+      Card
     },
     props: {
       questions: {
@@ -71,6 +75,20 @@
 </script>
 
 <style scoped>
+  .card {
+    width: -moz-fit-content;
+    text-align: center;
+  }
+
+  .fa-trophy {
+    color: gold;
+    text-shadow: 5px 0px #848484;
+  }
+
+  .fa-legal {
+    color: brown;
+  }
+
   .title {
     margin: 0 15px 10px;
     font-weight: 400;
@@ -97,7 +115,8 @@
   }
 
   button {
-    margin: 10px auto;
+    margin: 20px auto;
+    padding: 10px;
   }
 
   .form-text {
