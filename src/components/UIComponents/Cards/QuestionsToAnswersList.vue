@@ -9,7 +9,7 @@
     <!-- BODY -->
       <div class="col-3">
     <json-excel class   = "btn btn-fill btn-finish"
-                :data   = "questions"
+                :data   = addNumbers(questions)
                 :fields = "json_fields"
                 type    = "csv"
                 name    = "preguntas.xls">
@@ -37,9 +37,10 @@
 
   export default {
     name: 'QuestionsToAnswersList',
-    data () {
+    data() {
       return {
         json_fields: {
+          'Número': 'number',
           'Pregunta': 'question',
           'Respuesta': 'answer'
         },
@@ -89,6 +90,14 @@
       cancelAnswer: function () {
         this.answer.payload = ''
         this.answer.error = this.answer.errorMessage = false
+      },
+      addNumbers: function () {
+        var i
+        var json = this.questions
+        for (i = 0; i < this.questions.length; i++) {
+          this.questions.number[i] = i + 1
+        }
+        return json
       }
     }
   }
