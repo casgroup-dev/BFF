@@ -11,6 +11,8 @@
       <div class="flex-row" v-if="uploadRules || downloadRules">
         <TextAreaButtonCard class="flex-row-item"
                             :title="'Escribir Pregunta'"/>
+        <Participants class="flex-row-item"
+                      :participants="bidding.participants"/>
         <FileDownloadCard class="flex-row-item"
                           :iconColor="'#f49521'"
                           :buttonColor="'#f49521'"
@@ -22,6 +24,7 @@
       <div class="flex-row">
         <QuestionsToAnswersList class="flex-row-item"
                                 :questions="bidding.questions"/>
+        <CreateNotice class="flex-row-item"/>
       </div>
       <!-- OFFERS: Download or upload the offers of the bidding -->
       <div class="flex-row" v-if="uploadTecOffer || uploadEcoOffer || downloadTecOffers || downloadEcoOffers">
@@ -48,6 +51,13 @@
         <div class="flex-row-item">Resultado</div>
       </div>
       -->
+      <div class="flex-row" v-if="seeResult">
+        <!-- When a provider is requesting info, only his data is in users array -->
+        <Results class="flex-row-item" :awarded="bidding.users[0].awarded"
+                 :award-comment="bidding.users[0].awardComment"
+                 :details="bidding.users[0].economicalFormAnswers">
+        </Results>
+      </div>
     </div>
   </div>
 </template>
@@ -57,6 +67,8 @@
   import FileDownloadCard from '../../../../UIComponents/Inputs/FileDownloadCard'
   import FileInputCard from 'src/components/UIComponents/Inputs/FileInputCard'
   import Participants from './Components/Participants'
+  import CreateNotice from './Components/CreateNotice'
+  import Results from './Components/Results'
   import TextAreaButtonCard from '../../../../UIComponents/Inputs/TextAreaButtonCard'
   import NoticesList from 'src/components/UIComponents/Cards/NoticesList'
   import QuestionsToAnswersList from 'src/components/UIComponents/Cards/QuestionsToAnswersList'
@@ -68,6 +80,8 @@
       FileDownloadCard,
       FileInputCard,
       Participants,
+      CreateNotice,
+      Results,
       TextAreaButtonCard,
       NoticesList,
       QuestionsToAnswersList
