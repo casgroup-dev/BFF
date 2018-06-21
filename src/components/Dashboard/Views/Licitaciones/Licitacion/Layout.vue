@@ -1,6 +1,8 @@
 <template>
   <div class="full-height">
     <div class="flex-container" v-if="bidding">
+      <Enter v-if="bidding.invite" :biddingId="bidding.id"></Enter>
+
       <!-- TITLE -->
       <div class="flex-row"><h1 class="title">{{ bidding.title }}</h1></div>
       <!-- BUTTONS -->
@@ -35,7 +37,16 @@
         <Recepcion class="flex-row-item" v-if="!bidding.permissions.canModify && !bidding.invite" :biddingId=bidding.id
                    :showEconomicalOffer=bidding.permissions.uploadEconomical></Recepcion>
       </div>
-      <Enter v-if="bidding.invite" :biddingId="bidding.id"></Enter>
+
+      <!-- FINAL RESULT OF THE BIDDING -->
+      <div class="flex-row" v-if="bidding.publishedResults">
+        <!-- When a provider is requesting info, only his data is in users array -->
+        <Results class="flex-row-item" :awarded="bidding.users[0].awarded"
+                 :award-comment="bidding.users[0].awardComment"
+                 :details="bidding.users[0].economicalFormAnswers">
+        </Results>
+      </div>
+
       <modal v-if="modalOn">
         <template slot="header">
           <h4 style="margin: 0">Modificar Licitación</h4>
@@ -47,15 +58,7 @@
           <create-form v-on:endModal="modalOn = false" :modify="true" :loadedBidding="bidding"></create-form>
         </template>
       </modal>
-      <!-- FINAL RESULT OF THE BIDDING -->
 
-      <div class="flex-row" v-if="seeResult">
-        <!-- When a provider is requesting info, only his data is in users array -->
-        <Results class="flex-row-item" :awarded="bidding.users[0].awarded"
-                 :award-comment="bidding.users[0].awardComment"
-                 :details="bidding.users[0].economicalFormAnswers">
-        </Results>
-      </div>
     </div>
   </div>
 </template>
