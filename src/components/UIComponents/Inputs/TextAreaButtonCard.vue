@@ -6,7 +6,7 @@
     </div>
     <div class="stats col-xs-9" slot="footer">
       <clip-loader :loading="loading" color="#1DC7EA" class="clip-loader"/>
-      <button v-if="!loading" class="btn btn-fill btn-round btn-success" @click="postText('5b182e54ab51ac1c24d49b53', text)">
+      <button v-if="!loading" class="btn btn-fill btn-round btn-success" @click="$emit('upload', text)">
         {{buttonLabel}}
       </button>
     </div>
@@ -16,23 +16,11 @@
 <script>
   import Card from 'src/components/UIComponents/Cards/Card.vue'
   import ClipLoader from 'vue-spinner/src/ClipLoader'
-  import usersApi from 'src/api/index'
 
   export default {
     data () {
       return {
-        loading: false,
-        text: '',
-        baseNotification: {
-          horizontalAlign: 'right',
-          verticalAlign: 'bottom',
-          timeout: 2000
-        },
-        myDate: null,
-        question: {
-          error: false,
-          errorMessage: ''
-        }
+        text: ''
       }
     },
     components: {
@@ -40,6 +28,10 @@
       ClipLoader
     },
     props: {
+      loading: {
+        type: Boolean,
+        default: false
+      },
       /**
        * Title of the input card.
        */
@@ -60,65 +52,6 @@
       buttonLabel: {
         type: String,
         default: 'Publicar'
-      }
-    },
-    methods: {
-      // TODO: se clickeo el boton y se debe hacer POST del notice al endpoint
-      postText: function (biddingID, questionText) {
-        console.log(questionText)
-        this.loading = true
-        if (!this.text.length) {
-          return this.notifyError()
-        } else {
-          const self = this
-          usersApi.registerQuestion(biddingID, questionText)
-            .then(function () {
-              this.setTextActualDate()
-              this.notifySuccess()
-              console.log(this.myDate)
-            })
-            .catch(function () {
-              self.notifyError()
-              self.question.error = true
-              self.question.errorMessage = 'Hubo un error al tratar de publicar la pregunta'
-            })
-        }
-      },
-      setTextActualDate () {
-        this.myDate = new Date().toISOString().split('T')[0]
-      },
-      /**
-       * Show a notification indicating that the text was submitted correctly.
-       */
-      notifySuccess () {
-        this.$notify({
-          ...this.baseNotification,
-          component: {template: `<span>Publicado correctamente</span>`},
-          icon: 'fa fa-check',
-          type: 'success'
-        })
-        this.loading = false
-      },
-      /**
-       * Show a notification as a warning indicating that there was an error.
-       */
-      notifyError () {
-        if (this.text.length) {
-          this.$notify({
-            ...this.baseNotification,
-            component: {template: `<span>Ocurrió un problema<br>Inténtalo nuevamente.</span>`},
-            icon: 'fa fa-exclamation',
-            type: 'warning'
-          })
-        } else {
-          this.$notify({
-            ...this.baseNotification,
-            component: {template: `<span>Debes ingresar un texto<br>Inténtalo nuevamente.</span>`},
-            icon: 'fa fa-exclamation',
-            type: 'warning'
-          })
-        }
-        this.loading = false
       }
     }
   }

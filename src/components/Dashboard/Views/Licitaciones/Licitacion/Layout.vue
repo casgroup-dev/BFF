@@ -17,7 +17,7 @@
                           :files="bidding.rulesFiles"
                           title="Descargar bases"
                           v-if="downloadRules"/>
-        <CreateNotice class="flex-row-item"/>
+        <PostQuestionParent class="flex-row-item"/>
       </div>
       <!-- OFFERS: Download or upload the offers of the bidding -->
       <div class="flex-row" v-if="uploadTecOffer || uploadEcoOffer || downloadTecOffers || downloadEcoOffers">
@@ -57,7 +57,7 @@
   import FileDownloadCard from '../../../../UIComponents/Inputs/FileDownloadCard'
   import FileInputCard from 'src/components/UIComponents/Inputs/FileInputCard'
   import Participants from './Components/Participants'
-  import CreateNotice from './Components/CreateNotice'
+  import PostQuestionParent from '../Questions/PostQuestionParent'
   import Results from './Components/Results'
   /* Api */
   import api from 'src/api/index'
@@ -66,7 +66,7 @@
       FileDownloadCard,
       FileInputCard,
       Participants,
-      CreateNotice,
+      PostQuestionParent,
       Results
     },
     data () {

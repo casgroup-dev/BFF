@@ -392,6 +392,19 @@ async function registerQuestion (biddingID, questionText) {
   })
 }
 
+async function registerNotice (biddingID, noticeText, noticeDate) {
+  if (!noticeText) throw new Error('notice is mandatory')
+  const data = {
+    notice: noticeText,
+    date: noticeDate
+  }
+  return axios.put(getRouteWithToken(routes.biddings + '/' + biddingID + '/notices'), data).then(res => {
+    if (res.data.error) {
+      throw new Error('Lo sentimos, intente más tarde.')
+    }
+  })
+}
+
 /**
  * Returns a promise that resolves with the signed url to put the object in S3 and the url where the object will reside.
  * @param {String} fileName
@@ -423,5 +436,6 @@ export default {
   registerClient,
   registerBidding,
   registerAnswer,
-  registerQuestion
+  registerQuestion,
+  registerNotice
 }
