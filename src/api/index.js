@@ -325,7 +325,17 @@ async function updateBidding (bidding, loadedBidding) {
   data.questions = loadedBidding.questions
   data.publishedResults = loadedBidding.publishedResults
   return axios.put(getRouteWithToken(routes.bidding(loadedBidding.id)), data).then(res => {
-    console.log(res.data.error)
+    if (res.data.error) throw new Error('Lo sentimos, intente más tarde.')
+  })
+}
+
+/**
+ * deletes a bidding
+ * @param bidding
+ * @returns {Promise<any>}
+ */
+async function deleteBidding (bidding) {
+  return axios.post(getRouteWithToken(routes.bidding(bidding.id)), bidding).then(res => {
     if (res.data.error) throw new Error('Lo sentimos, intente más tarde.')
   })
 }
@@ -392,5 +402,6 @@ export default {
   registerClient,
   registerBidding,
   updateBidding,
-  participateInBidding
+  participateInBidding,
+  deleteBidding
 }

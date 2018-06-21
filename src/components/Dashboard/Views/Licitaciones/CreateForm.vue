@@ -31,7 +31,15 @@
           </div>
           <FileInputCard class="col-4" title="Subir Bases" v-if="bidding.bases.show" v-on:uploaded="save(url, fileName)"></FileInputCard>
           <br/>
-          <button type="submit" class="btn btn-default" @click="formPage = formPage + 1">Siguiente</button>
+          <div class="row">
+            <div class="col-6">
+              <button type="submit" class="btn btn-default" @click="formPage = formPage + 1">Siguiente</button>
+            </div>
+            <!--<div class="col-6">-->
+              <!--<button type="submit" v-if="this.modify"-->
+                      <!--class="float-right btn btn-danger btn-fill" @click="deleteBidding">Eliminar</button>-->
+            <!--</div>-->
+          </div>
         </div>
         <div v-else-if="formPage === 2">
           <small><label class="error" style="color: red;"
@@ -58,13 +66,21 @@
                 <fg-input placeholder="Contraseña" v-model="user.password" type="password"></fg-input>
               </div>
               <div class="row-md-4">
-                <p-checkbox v-model="user.role.revisor">Revisor</p-checkbox>
-                <p-checkbox v-model="user.role.aprobador">Aprobador</p-checkbox>
+                <p-checkbox v-model="user.role.cliente">Cliente</p-checkbox>
+                <p-checkbox :disabled="true" v-model="user.role.ingeniero">Ingeniero</p-checkbox>
               </div>
             </div>
           </div>
-          <button type="submit" class="btn btn-default" @click="formPage = formPage - 1">Anterior</button>
-          <button type="submit" class="btn btn-default" @click="formPage = formPage + 1">Siguiente</button>
+          <div class="row">
+            <div class="col-6">
+              <button type="submit" class="btn btn-default" @click="formPage = formPage - 1">Anterior</button>
+              <button type="submit" class="btn btn-default" @click="formPage = formPage + 1">Siguiente</button>
+            </div>
+            <!--<div class="col-6">-->
+              <!--<button type="submit" v-if="this.modify"-->
+                      <!--class="float-right btn btn-danger btn-fill" @click="deleteBidding">Eliminar</button>-->
+            <!--</div>-->
+          </div>
         </div>
         <div v-else-if="formPage === 3">
           <div class="row"> <!-- PENDIENTE corregir alineación -->
@@ -84,8 +100,16 @@
             <fg-input class="col-4" placeholder="Cantidad" v-model="request.wantedAmount"/>
             <fg-input class="col-4" placeholder="Unidad de Medida" v-model="request.measureUnit"/>
           </div>
-          <button type="submit" class="btn btn-default" @click="formPage = formPage - 1">Anterior</button>
-          <button type="submit" class="btn btn-default" @click="formPage = formPage + 1">Siguiente</button>
+          <div class="row">
+            <div class="col-6">
+              <button type="submit" class="btn btn-default" @click="formPage = formPage - 1">Anterior</button>
+              <button type="submit" class="btn btn-default" @click="formPage = formPage + 1">Siguiente</button>
+            </div>
+            <!--<div class="col-6">-->
+              <!--<button type="submit" v-if="this.modify"-->
+                      <!--class="float-right btn btn-danger btn-fill" @click="deleteBidding">Eliminar</button>-->
+            <!--</div>-->
+          </div>
         </div>
         <div v-else-if="formPage === 4">
           <div class="form-group">
@@ -146,9 +170,15 @@
           </div>
           <small><label class="error" style="color: red;"
                         v-if="bidding.generalError">{{bidding.generalErrorMessage}}</label></small>
-          <div>
-            <button type="submit" class="btn btn-default" @click="formPage = formPage - 1">Anterior</button>
-            <button type="submit" class="btn btn-primary" @click="addBidding">{{caption}}</button>
+          <div class="row">
+            <div class="col-6">
+              <button type="submit" class="btn btn-default" @click="formPage = formPage - 1">Anterior</button>
+              <button type="submit" class="btn btn-primary" @click="addBidding">{{caption}}</button>
+            </div>
+            <!--<div class="col-6">-->
+              <!--<button type="submit" v-if="this.modify"-->
+                      <!--class="float-right btn btn-danger btn-fill" @click="deleteBidding">Eliminar</button>-->
+            <!--</div>-->
           </div>
         </div>
       </form>
@@ -254,11 +284,14 @@
         this.biddings.bases.files.push(file)
         this.biddings.bases.show = false
       },
-      addBidding () {
+      async deleteBidding () {
+        usersApi.deleteBidding(this.loadedBidding)
+      },
+      async addBidding () {
         this.checkBiddingInput()
         if (!this.bidding.generalError) {
           const bidding = this.parseBidding()
-          this.createUsers(bidding.users)
+          await this.createUsers(bidding.users)
           const self = this
           if (this.modify) {
             usersApi.updateBidding(bidding, this.loadedBidding).then(res => {
@@ -364,7 +397,6 @@
         for (let i = 0; i < users.length; ++i) {
           user = users[i]
           if (user.isNew) {
-            console.log(user)
             const data = {
               password: user.password,
               email: user.mail
@@ -385,8 +417,8 @@
               user = {
                 mail: this.loadedBidding.users[i].user.email,
                 role: {
-                  revisor: false,
-                  aprobador: true
+                  cliente: this.loadedBidding.users[i].role === 'client',
+                  ingeniero: this.loadedBidding.users[i].role === 'engineer'
                 },
                 error: false,
                 errorMessage: '',
@@ -398,8 +430,8 @@
               user = {
                 mail: '',
                 role: {
-                  revisor: false,
-                  aprobador: false
+                  cliente: false,
+                  ingeniero: false
                 },
                 error: false,
                 errorMessage: '',
