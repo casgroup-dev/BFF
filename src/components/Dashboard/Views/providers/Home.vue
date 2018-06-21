@@ -38,7 +38,7 @@
                 <tr v-for="(provider, index) in filteredProviders" :key="index">
                   <!-- PROVIDER ATTRIBUTES -->
                   <td v-for="(attr, index) in provider.attributes" :key="index">
-                    <a style="font-weight:normal; color:#262626;">{{attr}}</a>
+                    <a style="font-weight:normal; color:#262626;" v-html="attr"></a>
                   </td>
                   <!-- SELECT -->
                   <td class="align-center">
@@ -266,7 +266,7 @@
               businessName: company['businessName'],
               usersEmail: company['users']//.filter(user => user.role === 'companyAdmin')
                 .map(user => user.email).join(', '),
-              industries: company.industries.join(', ')
+              industries: company.industries.map(i => `- ${i}`).join('<br>').substring(0, 100) + '...'
             },
             details: {
               industries: company['industries'].join(', '),
