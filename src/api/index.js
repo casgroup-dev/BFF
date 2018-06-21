@@ -322,16 +322,9 @@ async function registerBidding (bidding) {
  */
 async function updateBidding (bidding, loadedBidding) {
   let data = buildBidding(bidding)
-  data.id = loadedBidding.id
-  for (let i = 0; i < loadedBidding.users.length; ++i) {
-    let user = loadedBidding.users[i]
-    data.users.push({
-      email: user.user.email,
-      role: user.role
-    })
-  }
-  console.log(data)
-  return axios.put(getRouteWithToken(routes.biddings), data).then(res => {
+  data.questions = loadedBidding.questions
+  data.publishedResults = loadedBidding.publishedResults
+  return axios.put(getRouteWithToken(routes.bidding(loadedBidding.id)), data).then(res => {
     console.log(res.data.error)
     if (res.data.error) throw new Error('Lo sentimos, intente más tarde.')
   })
@@ -345,13 +338,14 @@ async function updateBidding (bidding, loadedBidding) {
  * @returns {Promise<void>}
  */
 async function registerClient (data) {
-  const generalError = new Error('Tuvimos un error procesando el registro de cliente, por favor intenta nuevamente más tarde.')
   const user = {
     email: data.email,
     password: data.password
   }
   return axios.post(getRouteWithToken(routes.users), user).then(res => {
-    if (res.data.error) throw generalError
+    if (res.data.error) {
+      throw new Error('Tuvimos un error procesando el registro de cliente, por favor intenta nuevamente más tarde.')
+    }
   })
 }
 

@@ -96,7 +96,7 @@
                 <label :for="stage.label">
                   <fg-input v-model="stage.title"></fg-input>
                 </label>
-                <!--<div class="col-1 nc-icon nc-stre-right"></div>-->
+                <div class="col-1 nc-icon nc-stre-right"></div>
                 <div class="datepicker-trigger">
                   <fg-input
                     type="text"
@@ -108,6 +108,8 @@
                     :mode="'range'"
                     :fullscreen-mobile="true"
                     :months-to-show="1"
+                    :offset-x="-10"
+                    :offset-y="-70"
                     :date-one="stage.dateOne"
                     :date-two="stage.dateTwo"
                     @date-one-selected="val => { stage.dateOne = val }"
@@ -140,6 +142,7 @@
                 </table>
               </td>
             </table>
+            <br><br><br><br><br><br>
           </div>
           <small><label class="error" style="color: red;"
                         v-if="bidding.generalError">{{bidding.generalErrorMessage}}</label></small>
@@ -228,14 +231,12 @@
           },
           requests: {
             amount: 5,
-            modify: false,
             payload: [],
             error: false,
             errorMessage: 'Debe asignar los nombres, medidas y/o cantidades a los productos pedidos'
           },
           users: {
             amount: 2,
-            modify: false,
             payload: [],
             error: false,
             errorMessage: 'Debe asociar al menos un usuario a la Licitación',
@@ -255,22 +256,24 @@
       },
       addBidding () {
         this.checkBiddingInput()
-        const bidding = this.parseBidding()
-        this.createUsers(bidding.users)
-        const self = this
-        if (this.modify) {
-          usersApi.updateBidding(bidding, this.loadedBidding).then(res => {
-            if (res) {
-              self.$emit('endModal', null)
-            }
-          })
-        }
-        else {
-          usersApi.registerBidding(bidding).then(res => {
-            if (res) {
-              self.$emit('endModal', null)
-            }
-          })
+        if (!this.bidding.generalError) {
+          const bidding = this.parseBidding()
+          this.createUsers(bidding.users)
+          const self = this
+          if (this.modify) {
+            usersApi.updateBidding(bidding, this.loadedBidding).then(res => {
+              if (!res) {
+                self.$emit('endModal', null)
+              }
+            })
+          }
+          else {
+            usersApi.registerBidding(bidding).then(res => {
+              if (!res) {
+                self.$emit('endModal', null)
+              }
+            })
+          }
         }
       },
       formatDates (dateOne, dateTwo) {
@@ -301,13 +304,22 @@
           user.errorMessage = 'Usuario no creado. Se generará junto con una contraseña'
         }
       },
+      isEmpty (list) {
+        let value
+        for (let i = 0; i < list.length; ++i) {
+          value = list[i]
+          if (!value.mail) {
+            return true
+          }
+        }
+        return false
+      },
       checkBiddingInput () {
         this.etapas.error = !this.etapas.payload || !this.etapas.payload[0].dateOne || !this.etapas.payload[0].dateTwo
         this.bidding.company.error = !this.bidding.company.payload
         this.bidding.name.error = !this.bidding.name.payload
         this.bidding.requests.error = this.bidding.requests.amount > 0 && !this.bidding.requests.payload[0]
-        this.bidding.users.error =
-          !this.bidding.users.payload[0].mail || (this.bidding.users.payload[0].role === 'Seleccione el Rol')
+        this.bidding.users.error = this.isEmpty(this.bidding.users.payload)
         this.bidding.generalError = this.bidding.company.error || this.bidding.name.error ||
           this.bidding.requests.error || this.bidding.users.error || this.etapas.error
       },
@@ -352,6 +364,7 @@
         for (let i = 0; i < users.length; ++i) {
           user = users[i]
           if (user.isNew) {
+            console.log(user)
             const data = {
               password: user.password,
               email: user.mail
@@ -368,8 +381,7 @@
           start = this.bidding.users.payload.length
           for (let i = start; i < this.bidding.users.amount; ++i) {
             let user
-            if (this.modify && !this.bidding.users.modify && i < this.loadedBidding.users.length) {
-              this.bidding.users.modify = true
+            if (this.modify && i < this.loadedBidding.users.length) {
               user = {
                 mail: this.loadedBidding.users[i].user.email,
                 role: {
@@ -379,6 +391,7 @@
                 error: false,
                 errorMessage: '',
                 isNew: false,
+                password: ''
               }
             }
             else {
@@ -409,8 +422,7 @@
           start = this.bidding.requests.payload.length
           for (let i = start; i < this.bidding.requests.amount; ++i) {
             let request
-            if (this.modify && !this.bidding.requests.modify && i < this.loadedBidding.economicalForm.length) {
-              this.bidding.requests.modify = true
+            if (this.modify && i < this.loadedBidding.economicalForm.length) {
               request = this.loadedBidding.economicalForm[i]
             }
             else {
@@ -481,8 +493,8 @@
         }
         let parseDate = function (date) {
           let year = date.getFullYear()
-          let month = date.getMonth()
-          let day = date.getDate()
+          let month = date.getMonth() + 1
+          let day = date.getDate() + 1
           return year + '-' + month + '-' + day
         }
         if (this.loadedBidding.deadlines) {

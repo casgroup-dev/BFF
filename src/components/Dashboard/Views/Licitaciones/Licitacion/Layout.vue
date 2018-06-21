@@ -27,9 +27,10 @@
                       :participants="bidding.users"/>
         <!-- <CreateNotice class="flex-row-item"/> -->
       </div>
-      <div class="flex-row" v-if="bidding.permissions.canModify">
-        <Evaluacion class="flex-row-item"></Evaluacion>
-      </div>
+      <!--TODO-->
+      <!--<div class="flex-row" v-if="bidding.permissions.canModify">-->
+        <!--<Evaluacion class="flex-row-item"></Evaluacion>-->
+      <!--</div>-->
       <div class="flex-row">
         <Recepcion class="flex-row-item" v-if="!bidding.permissions.canModify && !bidding.invite" :biddingId=bidding.id
                    :showEconomicalOffer=bidding.permissions.uploadEconomical></Recepcion>
@@ -88,7 +89,6 @@
     created: function () {
       const self = this
       api.getCurrentBidding(self.id).then(data => {
-        console.log(data)
         self.bidding = data
       }).catch(err => {
         console.error(err)
