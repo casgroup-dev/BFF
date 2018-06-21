@@ -14,7 +14,8 @@ const routes = {
   biddingDocuments: (biddingId, type) => `${routes.biddings}/${biddingId}/documents${type ? `/${type}` : ''}`,
   forms: (biddingId, type) => `${routes.biddings}/${biddingId}/forms/${type}`,
   approve: (biddingId, type) => `${routes.biddings}/${biddingId}/approve/${type}`,
-  publishResults: biddingId => `${routes.biddings}/${biddingId}/publish/results`
+  publishResults: biddingId => `${routes.biddings}/${biddingId}/publish/results`,
+  isAdmin: () => `${routes.users}/is-admin`
 }
 
 /**
