@@ -346,6 +346,7 @@
       filteredProviders: function () {
         const self = this
         return this.table.data.filter(function (prov) {
+          if (prov.attributes.businessName === 'CAS compañía de asesorías y servicios SPA') return false
           return prov.details.industries.toLowerCase().includes(self.search.toLowerCase())
         })
       },
