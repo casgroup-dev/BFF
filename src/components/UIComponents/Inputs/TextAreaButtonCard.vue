@@ -64,6 +64,8 @@
     --border-color: #e4e4e4;
     border: solid 1px var(--border-color);
     border-radius: 5px;
+    width: auto;
+    height: auto;
   }
 
   .title {

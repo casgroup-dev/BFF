@@ -16,7 +16,7 @@
         baseNotification: {
           horizontalAlign: 'right',
           verticalAlign: 'bottom',
-          timeout: 2000
+          timeout: 3000
         },
         question: {
           error: false,

@@ -38,6 +38,10 @@
                           v-if="downloadEcoOffers">Descargar Oferta Económica
         </FileDownloadCard>
       </div>
+      <div class="flex-row">
+        <AnswerQuestionsTextareas class="flex-row-item"
+                                  :questions="bidding.questions"/>
+      </div>
       <!-- FINAL RESULT OF THE BIDDING -->
 
       <div class="flex-row" v-if="seeResult">
@@ -59,6 +63,7 @@
   import Participants from './Components/Participants'
   import PostQuestionParent from '../Questions/PostQuestionParent'
   import Results from './Components/Results'
+  import AnswerQuestionsTextareas from '../Questions/AnswerQuestionsTextareas'
   /* Api */
   import api from 'src/api/index'
   export default {
@@ -67,7 +72,8 @@
       FileInputCard,
       Participants,
       PostQuestionParent,
-      Results
+      Results,
+      AnswerQuestionsTextareas
     },
     data () {
       return {

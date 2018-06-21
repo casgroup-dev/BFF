@@ -368,7 +368,7 @@ async function registerAnswer (biddingID, questionID, answerText) {
   const data = {
     answer: answerText
   }
-  return axios.post(getRouteWithToken(routes.biddings + '/' + biddingID + '/questions/' + questionID), data).then(res => {
+  return axios.put(getRouteWithToken(routes.biddings + '/' + biddingID + '/questions/' + questionID), data).then(res => {
     if (res.data.error) throw new Error('Lo sentimos, intente más tarde.')
   })
 }
