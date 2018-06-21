@@ -47,6 +47,15 @@
           <create-form v-on:endModal="modalOn = false" :modify="true" :loadedBidding="bidding"></create-form>
         </template>
       </modal>
+      <!-- FINAL RESULT OF THE BIDDING -->
+
+      <div class="flex-row" v-if="seeResult">
+        <!-- When a provider is requesting info, only his data is in users array -->
+        <Results class="flex-row-item" :awarded="bidding.users[0].awarded"
+                 :award-comment="bidding.users[0].awardComment"
+                 :details="bidding.users[0].economicalFormAnswers">
+        </Results>
+      </div>
     </div>
   </div>
 </template>
@@ -60,6 +69,7 @@
   import CreateNotice from './Components/CreateNotice'
   import Evaluacion from 'src/components/Dashboard/Views/Licitaciones/Ofertas/Evaluacion/Layout'
   import Recepcion from 'src/components/Dashboard/Views/Licitaciones/Ofertas/Recepcion/Layout'
+  import Results from './Components/Results'
 
   /* Api */
   import api from 'src/api/index'
@@ -76,7 +86,8 @@
       Recepcion,
       Modal,
       CreateForm,
-      Enter
+      Enter,
+      Results
     },
     props: ['id'],
     data () {

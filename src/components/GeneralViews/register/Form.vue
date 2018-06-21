@@ -130,13 +130,6 @@
           if (!input.payload) this.thereAreFormErrors = input.error = true
           else input.error = false
         }
-        /* Drop downs: At least one must be selected */
-        for (let key of Object.keys(this.inputs.dropDowns)) {
-          const dropDown = this.inputs.dropDowns[key]
-          // TODO: Uncomment this when the dropdowns are ready
-          if (dropDown.options.selected.length === 0) this.thereAreFormErrors = dropDown.error = true
-          else dropDown.error = false
-        }
         /* Passwords: Must contain same text */
         const passwords = this.inputs.passwords
         if (!passwords.first.payload) this.thereAreFormErrors = passwords.first.error = true
@@ -167,8 +160,7 @@
             legalRepresentative: this.inputs.text.legalRepresentative.payload,
             legalRepEmail: this.inputs.text.legalRepresentativeEmail.payload,
             legalRepPhone: this.inputs.text.legalRepresentativePhone.payload,
-            // industries: this.inputs.dropDowns.industries.options.filter(opt => opt.selected).map(opt => opt.label),
-            // TODO: Uncomment industries when the drop down is working
+            industries: this.inputs.dropDowns.industries.values.map(val => val.name),
             password: this.inputs.passwords.first.payload
           })
             .then(function () {
