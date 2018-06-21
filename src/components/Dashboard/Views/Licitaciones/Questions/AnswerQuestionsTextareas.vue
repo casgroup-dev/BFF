@@ -1,21 +1,16 @@
 <template>
   <div class="content" style="overflow: paged-y;">
     <!-- HEADERS -->
-    <div class="row">
-      <div class="col-3"></div>
-      <div class="col-6">
-        <h3 class="title">Preguntas Realizadas por los Proveedores</h3>
-      </div>
+    <div class="row justify-content-center">
+      <h3 class="title">Preguntas Realizadas por los Proveedores</h3>
       <!-- BODY -->
-      <div class="col-3">
-        <json-excel class   = "btn btn-fill btn-finish"
-                    :data   = addNumbers(questions)
-                    :fields = "json_fields"
-                    type    = "csv"
-                    name    = "preguntas.xls">
-          Descargar preguntas
-        </json-excel>
-      </div>
+      <json-excel class   = "btn btn-fill btn-finish"
+                  :data   = addNumbers(questions)
+                  :fields = "json_fields"
+                  type    = "csv"
+                  name    = "preguntas.xls">
+        Descargar preguntas
+      </json-excel>
     </div>
     <!-- BODY -->
     <div class="list-group" v-for="(question, index) in questions" :key="index">
