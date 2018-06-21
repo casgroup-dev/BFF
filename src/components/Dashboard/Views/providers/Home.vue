@@ -173,6 +173,7 @@
             attributes: [
               'Razón social',
               'Mail Admin Proveedor',
+              'Rubros',
               '',
               ''
             ],
@@ -264,7 +265,8 @@
             attributes: {
               businessName: company['businessName'],
               usersEmail: company['users']//.filter(user => user.role === 'companyAdmin')
-                .map(user => user.email).join(', ')
+                .map(user => user.email).join(', '),
+              industries: company.industries.join(', ')
             },
             details: {
               industries: company['industries'].join(', '),
