@@ -173,7 +173,6 @@
             attributes: [
               'Razón social',
               'Mail Admin Proveedor',
-              'Telefono Admin Proveedor',
               '',
               ''
             ],
@@ -264,11 +263,8 @@
           return {
             attributes: {
               businessName: company['businessName'],
-              usersEmail: company['users']// .filter(user => user.role === 'companyAdmin')
-                .map(user => user.email).join(', '),
-              usersPhone: company['users'].filter(user => {
-                return user.role === 'companyAdmin'
-              }).map(user => user.phone).join(', ')
+              usersEmail: company['users']//.filter(user => user.role === 'companyAdmin')
+                .map(user => user.email).join(', ')
             },
             details: {
               industries: company['industries'].join(', '),
