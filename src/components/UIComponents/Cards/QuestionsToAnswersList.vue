@@ -95,7 +95,7 @@
         var i
         var json = this.questions
         for (i = 0; i < this.questions.length; i++) {
-          this.questions.number[i] = i + 1
+          this.questions[i].number = i + 1
         }
         return json
       }
