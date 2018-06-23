@@ -7,20 +7,22 @@
         <tr>
           <th class="text-center">#</th>
           <th class="text-center">Archivo</th>
+          <th class="text-center">Fecha</th>
           <th class="text-center">Eliminar</th>
         </tr>
         </thead>
         <tbody>
         <tr v-for="(file, index) in files" :key="index">
-          <th>{{ index + 1 }}</th>
-          <th><a :href="file.url" download>{{ file.name }}</a></th>
-          <th>
+          <td>{{ index + 1 }}</td>
+          <td><a :href="file.url" download>{{ file.name }}</a></td>
+          <td>{{ new Date(file.date).toLocaleString() }}</td>
+          <td>
             <button class="btn btn-round btn-xs"
                     title="Eliminar archivo"
-                    @click="deleteFile(file)">
+                    @click="emitDeleteEvent(file)">
               <i class="fa fa-times"></i>
             </button>
-          </th>
+          </td>
         </tr>
         </tbody>
       </table>
@@ -48,9 +50,13 @@
       }
     },
     methods: {
-      deleteFile (file) {
-        console.log(file.name, file.url)
-        // TODO: Call api to delete a file by the url
+      /**
+       * Emits an event to show the intention of deleting a file.
+       * @param {Object} file - File object.
+       * @param {String} file.name - Name of the file to delete.
+       */
+      emitDeleteEvent (file) {
+        this.$emit('delete', file)
       }
     }
   }

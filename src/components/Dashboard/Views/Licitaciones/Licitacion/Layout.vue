@@ -21,8 +21,17 @@
       <div class="flex-row">
         <Recepcion class="flex-row-item" v-if="!bidding.permissions.canModify && !bidding.invite" :biddingId=bidding.id
         :showEconomicalOffer=bidding.permissions.uploadEconomical></Recepcion>
+      <!-- FINAL RESULT OF THE BIDDING -->
+
+      <div class="flex-row" v-if="seeResult">
+        <!-- When a provider is requesting info, only his data is in users array -->
+        <Results class="flex-row-item" :awarded="bidding.users[0].awarded"
+                 :award-comment="bidding.users[0].awardComment"
+                 :details="bidding.users[0].economicalFormAnswers">
+        </Results>
       </div>
       <Enter v-if="bidding.invite" :biddingId="bidding.id"></Enter>
+
     </div>
   </div>
 </template>
@@ -37,6 +46,7 @@
   import Evaluacion from 'src/components/Dashboard/Views/Licitaciones/Ofertas/Evaluacion/Layout'
   import Recepcion from 'src/components/Dashboard/Views/Licitaciones/Ofertas/Recepcion/Layout'
 
+  import Results from './Components/Results'
   /* Api */
   import api from 'src/api/index'
 
@@ -45,16 +55,16 @@
       FileDownloadCard,
       FileInputCard,
       Participants,
-      CreateNotice,
       Evaluacion,
       Recepcion,
-      Enter
+      Enter,
+      CreateNotice,
+      Results
     },
     props: ['id'],
     data () {
       return {
         bidding: undefined,
-        participantsComponentUsers: []
       }
     },
     created: function () {
