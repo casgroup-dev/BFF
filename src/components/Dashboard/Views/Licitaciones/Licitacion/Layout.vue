@@ -16,14 +16,15 @@
         <!-- <CreateNotice class="flex-row-item"/> -->
       </div>
       <div class="flex-row" v-if="bidding.permissions.canModify">
-        <Evaluacion class="flex-row-item"></Evaluacion>
+        <Evaluacion class="flex-row-item"
+                    :bidding="bidding"></Evaluacion>
       </div>
       <div class="flex-row">
-        <Recepcion class="flex-row-item" v-if="!bidding.permissions.canModify && !bidding.invite" :biddingId=bidding.id
-        :showEconomicalOffer=bidding.permissions.uploadEconomical></Recepcion>
+        <Recepcion class="flex-row-item" v-if="!bidding.permissions.canModify && !bidding.invite"
+                   :bidding="bidding"></Recepcion>
       <!-- FINAL RESULT OF THE BIDDING -->
-
-      <div class="flex-row" v-if="seeResult">
+      </div>
+      <div class="flex-row">
         <!-- When a provider is requesting info, only his data is in users array -->
         <Results class="flex-row-item" :awarded="bidding.users[0].awarded"
                  :award-comment="bidding.users[0].awardComment"
@@ -31,7 +32,6 @@
         </Results>
       </div>
       <Enter v-if="bidding.invite" :biddingId="bidding.id"></Enter>
-
     </div>
   </div>
 </template>
@@ -64,13 +64,12 @@
     props: ['id'],
     data () {
       return {
-        bidding: undefined,
+        bidding: undefined
       }
     },
     created: function () {
       const self = this
       api.getCurrentBidding(self.id).then(data => {
-        console.log(data)
         self.bidding = data
       }).catch(err => {
         console.error(err)
