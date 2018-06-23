@@ -6,7 +6,7 @@
         <i class="nc-icon nc-notes"></i>
         <p>Licitaciones</p>
       </sidebar-link>
-      <sidebar-link to="/providers">
+      <sidebar-link to="/providers" v-if="isAdmin">
         <i class="nc-icon nc-delivery-fast"></i>
         <p>Proveedores</p>
       </sidebar-link>
@@ -66,6 +66,11 @@
       DashboardContent,
       MobileMenu
     },
+    data () {
+      return {
+        isAdmin: false
+      }
+    },
     methods: {
       toggleSidebar () {
         if (this.$sidebar.showSidebar) {
@@ -75,6 +80,9 @@
       logout () {
         api.logout(this.$router)
       }
+    },
+    async created () {
+      this.isAdmin = await api.isAdmin()
     }
   }
 </script>
