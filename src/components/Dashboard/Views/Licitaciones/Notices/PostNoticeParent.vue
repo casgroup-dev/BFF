@@ -25,6 +25,9 @@
       }
     },
     props: {
+      /**
+       * Bidding with all of its elements. This component in particular uses the notices element of the bidding.
+       */
       bidding: {
         type: Object,
         required: true
@@ -34,12 +37,21 @@
       TextAreaButtonCard
     },
     methods: {
-      setTextActualDate () {
+      /**
+       * It gets the date at the moment of publishing the notice, to put it in the bidding.
+       */
+      setTextActualDate: function () {
         this.myDate = new Date().toISOString().split('T')[0]
       },
+      /**
+       * Event handler for the onUpload event. It calls the postNotice method and it passes the text from the child component.
+       */
       onUpload: function (text) {
         this.postNotice(this.bidding.id, text)
       },
+      /**
+       * Makes the api call to put the notice in the bidding along with the date.
+       */
       postNotice: function (biddingID, noticeText) {
         this.loading = true
         if (!noticeText.length) {

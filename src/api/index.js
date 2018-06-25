@@ -392,6 +392,13 @@ async function registerQuestion (biddingID, questionText) {
   })
 }
 
+/**
+ * Creates a notice in the given bidding with a timestamp of the moment of creation of the notice.
+ * @param biddingID
+ * @param noticeText
+ * @param noticeDate
+ * @returns {Promise<AxiosResponse<any>>}
+ */
 async function registerNotice (biddingID, noticeText, noticeDate) {
   if (!noticeText) throw new Error('notice is mandatory')
   const data = {

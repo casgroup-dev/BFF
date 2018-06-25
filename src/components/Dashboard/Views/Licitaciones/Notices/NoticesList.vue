@@ -17,12 +17,19 @@
     export default {
       name: 'NoticesList',
       props: {
+        /**
+         * Bidding with all of its elements. This component in particular uses the notices element of the bidding.
+         */
         bidding: {
           type: Object,
           required: true
         }
       },
       computed: {
+        /**
+         * Creates a reversed copy of the notices array to listing them from last to first.
+         * @returns {Array}
+         */
         reverseItems () {
           return this.bidding.notices.slice().reverse()
         }

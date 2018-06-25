@@ -24,6 +24,9 @@
       }
     },
     props: {
+      /**
+       * Bidding with all of its elements. This component in particular uses the questions element of the bidding.
+       */
       bidding: {
         type: Object,
         required: true
@@ -33,9 +36,15 @@
       TextAreaButtonCard
     },
     methods: {
+      /**
+       * Event handler for the onUpload event. It calls the postQuestion method and it passes the text from the child component.
+       */
       onUpload: function (text) {
         this.postQuestion(this.bidding.id, text)
       },
+      /**
+       * Makes the api call to put the question in the bidding along with the answer.
+       */
       postQuestion: function (biddingID, questionText) {
         this.loading = true
         if (!questionText.length) {

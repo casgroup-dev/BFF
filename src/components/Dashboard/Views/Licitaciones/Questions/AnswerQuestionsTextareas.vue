@@ -57,6 +57,9 @@
       }
     },
     props: {
+      /**
+       * Bidding with all of its elements. This component in particular uses the questions element of the bidding.
+       */
       bidding: {
         type: Object,
         required: true
@@ -90,10 +93,16 @@
             })
         }
       },
+      /**
+       * Resets the data of the component.
+       */
       cancelAnswer: function () {
         this.answer.payload = this.answer.errorMessage = ''
         this.answer.error = false
       },
+      /**
+       * Adds the numbers of the question to put it in the frontend.
+       */
       addNumbers: function () {
         let i
         const json = this.bidding.questions

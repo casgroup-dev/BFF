@@ -21,6 +21,9 @@
       Card
     },
     props: {
+      /**
+       * Bidding with all of its elements. This component in particular uses the questions element of the bidding.
+       */
       bidding: {
         type: Object,
         required: true
