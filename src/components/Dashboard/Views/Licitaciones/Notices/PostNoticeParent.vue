@@ -12,7 +12,6 @@
     data () {
       return {
         loading: false,
-        biddingID: '',
         baseNotification: {
           horizontalAlign: 'right',
           verticalAlign: 'bottom',
@@ -25,6 +24,12 @@
         myDate: null
       }
     },
+    props: {
+      bidding: {
+        type: Object,
+        required: true
+      }
+    },
     components: {
       TextAreaButtonCard
     },
@@ -32,18 +37,18 @@
       setTextActualDate () {
         this.myDate = new Date().toISOString().split('T')[0]
       },
-      onUpload: function (text, myDate) {
-        this.postNotice(this.biddingID, text, myDate)
+      onUpload: function (text) {
+        this.postNotice(this.bidding.id, text)
       },
-      postNotice: function (biddingID, noticeText, noticeDate) {
+      postNotice: function (biddingID, noticeText) {
         this.loading = true
         if (!noticeText.length) {
           return this.notifyError(noticeText)
         } else {
           const self = this
-          usersApi.registerNotice(biddingID, noticeText, noticeDate)
+          self.setTextActualDate()
+          usersApi.registerNotice(biddingID, noticeText, self.myDate)
             .then(function () {
-              self.setTextActualDate()
               self.notifySuccess()
               console.log(self.myDate)
             })

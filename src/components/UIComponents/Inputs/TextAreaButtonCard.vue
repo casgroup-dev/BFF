@@ -6,7 +6,7 @@
     </div>
     <div class="stats col-xs-9" slot="footer">
       <clip-loader :loading="loading" color="#1DC7EA" class="clip-loader"/>
-      <button v-if="!loading" class="btn btn-fill btn-round btn-success" @click="$emit('upload', text)">
+      <button v-if="!loading" class="btn btn-fill btn-round btn-info" @click="$emit('upload', text)">
         {{buttonLabel}}
       </button>
     </div>
@@ -65,7 +65,7 @@
     border: solid 1px var(--border-color);
     border-radius: 5px;
     width: auto;
-    height: auto;
+    height: 100%;
   }
 
   .title {

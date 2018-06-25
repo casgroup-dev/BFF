@@ -12,7 +12,6 @@
     data () {
       return {
         loading: false,
-        biddingID: '5b182e54ab51ac1c24d49b53',
         baseNotification: {
           horizontalAlign: 'right',
           verticalAlign: 'bottom',
@@ -24,12 +23,18 @@
         }
       }
     },
+    props: {
+      bidding: {
+        type: Object,
+        required: true
+      }
+    },
     components: {
       TextAreaButtonCard
     },
     methods: {
       onUpload: function (text) {
-        this.postQuestion(this.biddingID, text)
+        this.postQuestion(this.bidding.id, text)
       },
       postQuestion: function (biddingID, questionText) {
         this.loading = true
@@ -40,7 +45,6 @@
           usersApi.registerQuestion(biddingID, questionText)
             .then(function () {
               self.notifySuccess()
-              console.log(self.myDate)
             })
             .catch(function () {
               self.notifyError(questionText)

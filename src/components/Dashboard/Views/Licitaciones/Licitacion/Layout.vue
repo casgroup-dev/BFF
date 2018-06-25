@@ -9,38 +9,102 @@
       <!-- <div class="flex-row"></div> -->
       <!-- RULES -->
       <div class="flex-row" v-if="uploadRules || downloadRules">
-        <Participants class="flex-row-item"
-                      :participants="bidding.participants"/>
-        <FileDownloadCard class="flex-row-item"
-                          :iconColor="'#f49521'"
-                          :buttonColor="'#f49521'"
-                          :files="bidding.rulesFiles"
-                          title="Descargar bases"
-                          v-if="downloadRules"/>
-        <PostQuestionParent class="flex-row-item"/>
+        <PostNoticeParent class="flex-row-item"
+                          :bidding="{id: '5b182e54ab51ac1c24d49b53'}"/>
+        <NoticesList class="flex-row-item"
+                                  :bidding="{id: '5b182e54ab51ac1c24d49b53',
+                                             questions: [{id: '5b30755a6e2f222ea04502ce',
+                                                          question: 'Puedo llevar los 10 barcos que tengo?',
+                                                          answer: ''},
+                                                         {id: '5b3075696e2f222ea04502cf',
+                                                          question: 'Puedo comerme la torta?',
+                                                          answer: ''},
+                                                         {id: '5b3075c06e2f222ea04502d0',
+                                                          question: 'Qué le pasaría a pinocho si dice me va a crecer la nariz?',
+                                                          answer: ''}],
+                                             notices: [{id: '5b302a557941bf3dcc5f620c',
+                                                         notice: 'intento 1',
+                                                         date: '2018-06-24'},
+                                                        {id: '5b30658b7941bf3dcc5f620d',
+                                                         notice: 'intento 2',
+                                                         date: '2018-06-25'},
+                                                        {id: '5b306bea6e2f222ea04502cd',
+                                                         notice: 'hola a todos los jiles',
+                                                         date: '2018-06-25'},
+                                                         {id: '5b302a557941bf3dcc5f620c',
+                                                         notice: 'intento 1',
+                                                         date: '2018-06-24'},
+                                                        {id: '5b30658b7941bf3dcc5f620d',
+                                                         notice: 'intento 2',
+                                                         date: '2018-06-25'},
+                                                        {id: '5b306bea6e2f222ea04502cd',
+                                                         notice: 'hola a todos los jiles',
+                                                         date: '2018-06-25'}]}"/>
+        <PostQuestionParent class="flex-row-item"
+                            :bidding="{id: '5b182e54ab51ac1c24d49b53'}"/>
       </div>
       <!-- OFFERS: Download or upload the offers of the bidding -->
-      <div class="flex-row" v-if="uploadTecOffer || uploadEcoOffer || downloadTecOffers || downloadEcoOffers">
-        <FileInputCard class="flex-row-item" :title="'Subir Oferta Técnica'" @uploaded="handleUploadedTecOffer"
-                       v-if="uploadTecOffer"/>
-        <FileDownloadCard class="flex-row-item" :title="'Descargar Oferta Técnica'"
-                          :files="bidding.tecOffers"
-                          v-if="downloadTecOffers">Descargar Oferta Técnica
-        </FileDownloadCard>
-        <FileInputCard class="flex-row-item" :title="'Subir Oferta Económica'" @uploaded="handleUploadedEcoOffer"
-                       :iconColor="'#d319a7'"
-                       :buttonColor="'#d319a7'"
-                       v-if="uploadEcoOffer"/>
-        <FileDownloadCard class="flex-row-item" :title="'Descargar Oferta Económica'"
-                          :iconColor="'#d319a7'"
-                          :buttonColor="'#d319a7'"
-                          :files="bidding.ecoOffers"
-                          v-if="downloadEcoOffers">Descargar Oferta Económica
-        </FileDownloadCard>
+      <div class="flex-row">
+        <QuestionsAndAnswersListing class="flex-row-item"
+                                    :bidding="{id: '5b182e54ab51ac1c24d49b53',
+                                             questions: [{id: '5b30755a6e2f222ea04502ce',
+                                                          question: 'Puedo llevar los 10 barcos que tengo?',
+                                                          answer: 'callate voh vieja culia'},
+                                                         {id: '5b3075696e2f222ea04502cf',
+                                                          question: 'Puedo comerme la torta?',
+                                                          answer: ''},
+                                                         {id: '5b3075c06e2f222ea04502d0',
+                                                          question: 'Qué le pasaría a pinocho si dice me va a crecer la nariz?',
+                                                          answer: 'callate voh vieja culia x2'}],
+                                             notices: [{id: '5b302a557941bf3dcc5f620c',
+                                                         notice: 'intento 1',
+                                                         date: '2018-06-24'},
+                                                        {id: '5b30658b7941bf3dcc5f620d',
+                                                         notice: 'intento 2',
+                                                         date: '2018-06-25'},
+                                                        {id: '5b306bea6e2f222ea04502cd',
+                                                         notice: 'hola a todos los jiles',
+                                                         date: '2018-06-25'},
+                                                         {id: '5b302a557941bf3dcc5f620c',
+                                                         notice: 'intento 1',
+                                                         date: '2018-06-24'},
+                                                        {id: '5b30658b7941bf3dcc5f620d',
+                                                         notice: 'intento 2',
+                                                         date: '2018-06-25'},
+                                                        {id: '5b306bea6e2f222ea04502cd',
+                                                         notice: 'hola a todos los jiles',
+                                                         date: '2018-06-25'}]}"/>
       </div>
       <div class="flex-row">
         <AnswerQuestionsTextareas class="flex-row-item"
-                                  :questions="bidding.questions"/>
+                                  :bidding="{id: '5b182e54ab51ac1c24d49b53',
+                                             questions: [{id: '5b30755a6e2f222ea04502ce',
+                                                          question: 'Puedo llevar los 10 barcos que tengo?',
+                                                          answer: ''},
+                                                         {id: '5b3075696e2f222ea04502cf',
+                                                          question: 'Puedo comerme la torta?',
+                                                          answer: ''},
+                                                         {id: '5b3075c06e2f222ea04502d0',
+                                                          question: 'Qué le pasaría a pinocho si dice me va a crecer la nariz?',
+                                                          answer: ''}],
+                                             notices: [{id: '5b302a557941bf3dcc5f620c',
+                                                         notice: 'intento 1',
+                                                         date: '2018-06-24'},
+                                                        {id: '5b30658b7941bf3dcc5f620d',
+                                                         notice: 'intento 2',
+                                                         date: '2018-06-25'},
+                                                        {id: '5b306bea6e2f222ea04502cd',
+                                                         notice: 'hola a todos los jiles',
+                                                         date: '2018-06-25'},
+                                                         {id: '5b302a557941bf3dcc5f620c',
+                                                         notice: 'intento 1',
+                                                         date: '2018-06-24'},
+                                                        {id: '5b30658b7941bf3dcc5f620d',
+                                                         notice: 'intento 2',
+                                                         date: '2018-06-25'},
+                                                        {id: '5b306bea6e2f222ea04502cd',
+                                                         notice: 'hola a todos los jiles',
+                                                         date: '2018-06-25'}]}"/>
       </div>
       <!-- FINAL RESULT OF THE BIDDING -->
 
@@ -62,18 +126,24 @@
   import FileInputCard from 'src/components/UIComponents/Inputs/FileInputCard'
   import Participants from './Components/Participants'
   import PostQuestionParent from '../Questions/PostQuestionParent'
+  import PostNoticeParent from '../Notices/PostNoticeParent'
   import Results from './Components/Results'
   import AnswerQuestionsTextareas from '../Questions/AnswerQuestionsTextareas'
+  import QuestionsAndAnswersListing from '../Questions/QuestionsAndAnswersListing'
+  import NoticesList from '../Notices/NoticesList'
   /* Api */
   import api from 'src/api/index'
   export default {
     components: {
+      NoticesList,
       FileDownloadCard,
       FileInputCard,
       Participants,
       PostQuestionParent,
+      PostNoticeParent,
       Results,
-      AnswerQuestionsTextareas
+      AnswerQuestionsTextareas,
+      QuestionsAndAnswersListing
     },
     data () {
       return {

@@ -1,9 +1,10 @@
 <template>
-  <div class="content" style="overflow: auto; width:200px;">
+  <div class="content" style="overflow: auto; height: 250px;">
     <!-- HEADERS -->
     <h3 class="title">Avisos Publicados</h3>
     <!-- BODY -->
-    <div class="list-group" v-for="(notice, index) in notices" :key="index">
+    <label class="label-info margin-top h4" v-if="bidding.notices.length < 1"><b>No existen avisos por el momento</b></label>
+    <div class="list-group" v-for="(notice, index) in reverseItems" :key="index">
       <a class="list-group-item list-group-item-action flex-column align-items-start">
         <p class="mb-1">{{notice.notice}}</p>
         <small>{{notice.date}}</small>
@@ -16,9 +17,14 @@
     export default {
       name: 'NoticesList',
       props: {
-        notices: {
-          type: Array,
+        bidding: {
+          type: Object,
           required: true
+        }
+      },
+      computed: {
+        reverseItems () {
+          return this.bidding.notices.slice().reverse()
         }
       }
     }
@@ -36,7 +42,6 @@
     background-color: #FFFFFF;
     /* Display */
     justify-content: space-evenly;
-    flex-wrap: wrap;
     /* Border */
     --border-color: #e4e4e4;
     border: solid 1px var(--border-color);
