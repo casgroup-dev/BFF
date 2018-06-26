@@ -49,6 +49,7 @@
                  :details="bidding.users[0].economicalFormAnswers">
         </Results>
       </div>
+      <Enter v-if="bidding.invite" :biddingId="bidding.id"></Enter>
 
       <modal v-if="modalOn">
         <template slot="header">
@@ -61,7 +62,7 @@
           <create-form v-on:endModal="modalOn = false" :modify="true" :loadedBidding="bidding"></create-form>
         </template>
       </modal>
-
+      
     </div>
   </div>
 </template>
@@ -80,6 +81,7 @@
   import CreateNotice from './Components/CreateNotice'
   import Evaluacion from 'src/components/Dashboard/Views/Licitaciones/Ofertas/Evaluacion/Layout'
   import Recepcion from 'src/components/Dashboard/Views/Licitaciones/Ofertas/Recepcion/Layout'
+
   import Results from './Components/Results'
   import PeriodsInfo from './Components/PeriodsInfo'
 
@@ -94,6 +96,8 @@
       FileDownloadCard,
       FileInputCard,
       Participants,
+      Evaluacion,
+      Recepcion,
       CreateNotice,
       Evaluacion,
       Recepcion,
