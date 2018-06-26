@@ -8,7 +8,8 @@
       <!-- BUTTONS -->
       <div class="col-10" style="text-align: right; font-size: xx-large">
         <!-- NEW BIDDING -->
-        <button class="btn btn-primary" @click="modalOn = true">Modificar Licitación</button>
+        <button class="btn btn-primary" v-if="bidding.permissions.canModify"
+                @click="modalOn = true">Modificar Licitación</button>
       </div>
       <!-- TIMELINE -->
       <!-- <div class="flex-row"></div> -->
@@ -29,7 +30,7 @@
         <Participants class="flex-row-item"
                       v-if="bidding.permissions.seeParticipants"
                       :participants="bidding.users"/>
-         <PostNoticeParent class="flex-row-item"/>
+         <PostNoticeParent v-if="bidding.permissions.sendNotice" class="flex-row-item"/>
       </div>
 
       <Evaluacion v-if="bidding.permissions.canModify && bidding.permissions.reviewTechnical" :bidding="bidding"
@@ -106,18 +107,20 @@
     data () {
       return {
         modalOn: false,
-        bidding: undefined,
+        bidding: Object,
         participantsComponentUsers: []
       }
     },
-    created: function () {
+    created: async function () {
       const self = this
-      api.getCurrentBidding(self.id).then(data => {
-        self.bidding = data
-      }).catch(err => {
-        console.error(err)
-        self.$router.push('/')
-      })
+      this.bidding = await api.getCurrentBidding(self.id)
+        .then(data => {
+          return data
+        })
+        .catch(err => {
+          console.error(err)
+          self.$router.push('/')
+        })
     }
   }
 </script>
