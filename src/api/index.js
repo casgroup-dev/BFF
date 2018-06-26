@@ -362,6 +362,62 @@ async function registerClient (data) {
 }
 
 /**
+ * Registers the answer given by the admin to a certain question in a certain bidding
+ * @param biddingID
+ * @param questionID
+ * @param answerText
+ * @returns {Promise<AxiosResponse<any>>}
+ */
+async function registerAnswer (biddingID, questionID, answerText) {
+  if (!answerText) throw new Error('answer is mandatory.')
+  const data = {
+    answer: answerText
+  }
+  return axios.put(getRouteWithToken(routes.biddings + '/' + biddingID + '/questions/' + questionID), data).then(res => {
+    if (res.data.error) throw new Error('Lo sentimos, intente más tarde.')
+  })
+}
+
+/**
+ * Creates a question with an empty answer in the given bidding
+ * @param biddingID
+ * @param questionText
+ * @returns {Promise<AxiosResponse<any>>}
+ */
+async function registerQuestion (biddingID, questionText) {
+  if (!questionText) throw new Error('question is mandatory')
+  const data = {
+    question: questionText,
+    answer: ''
+  }
+  return axios.put(getRouteWithToken(routes.biddings + '/' + biddingID + '/questions'), data).then(res => {
+    if (res.data.error) {
+      throw new Error('Lo sentimos, intente más tarde.')
+    }
+  })
+}
+
+/**
+ * Creates a notice in the given bidding with a timestamp of the moment of creation of the notice.
+ * @param biddingID
+ * @param noticeText
+ * @param noticeDate
+ * @returns {Promise<AxiosResponse<any>>}
+ */
+async function registerNotice (biddingID, noticeText, noticeDate) {
+  if (!noticeText) throw new Error('notice is mandatory')
+  const data = {
+    notice: noticeText,
+    date: noticeDate
+  }
+  return axios.put(getRouteWithToken(routes.biddings + '/' + biddingID + '/notices'), data).then(res => {
+    if (res.data.error) {
+      throw new Error('Lo sentimos, intente más tarde.')
+    }
+  })
+}
+
+/**
  * Returns a promise that resolves with the signed url to put the object in S3 and the url where the object will reside.
  * @param {String} fileName
  * @param {String} contentType
@@ -414,6 +470,9 @@ export default {
   checkEmail,
   registerClient,
   registerBidding,
+  registerAnswer,
+  registerQuestion,
+  registerNotice,
   updateBidding,
   participateInBidding,
   deleteBidding

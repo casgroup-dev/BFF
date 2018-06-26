@@ -27,7 +27,8 @@
     "vue-notifyjs": "^0.2.0",
     "vue-router": "^3.0.1",
     "vue-spinner": "^1.0.3",
-    "vue2-google-maps": "^0.8.4"
+    "vue2-google-maps": "^0.8.4",
+    "vue-json-excel": "^0.2.5"
   },
   "devDependencies": {
     "@vue/test-utils": "^1.0.0-beta.13",
