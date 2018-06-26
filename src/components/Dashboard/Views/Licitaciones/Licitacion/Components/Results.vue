@@ -49,7 +49,7 @@
 <script>
   import Card from 'src/components/UIComponents/Cards/Card.vue'
   import Modal from 'src/components/UIComponents/Modal/Modal'
-  import PCheckbox from '../../../../../UIComponents/Inputs/Checkbox';
+  import PCheckbox from '../../../../../UIComponents/Inputs/Checkbox'
 
   export default {
     name: 'Results',
@@ -81,16 +81,14 @@
       awardStatus: (awarded) => {
         if (awarded) {
           return 'Felicitaciones tu compañia se ha adjudicado esta licitación.'
-        }
-        else {
+        } else {
           return 'Lo sentimos, no te has adjudicado ningún ítem.'
         }
       },
       statusIcon: (awarded) => {
         if (awarded) {
           return 'fa-trophy'
-        }
-        else {
+        } else {
           return 'fa-legal'
         }
       }

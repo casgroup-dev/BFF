@@ -19,8 +19,13 @@
       <div class="flex-row">
         <PeriodsInfo :deadlines="bidding.deadlines"/>
         <FileDownloadCard class="flex-row-item"
-                          iconColor="#f49521" buttonColor="#f49521"
-                          :files="bidding.rules.files" title="Descargar bases"/>
+                          iconColor="#f49521"
+                          buttonColor="#f49521"
+                          :files="bidding.rules.files"
+                          title="Descargar bases"
+                          v-if="downloadRules"/>
+        <PostNoticeParent class="flex-row-item"
+                          :bidding="{id: bidding.id}"/>
       </div>
 
       <div class="flex-row">
@@ -66,6 +71,11 @@
   import FileDownloadCard from '../../../../UIComponents/Inputs/FileDownloadCard'
   import FileInputCard from 'src/components/UIComponents/Inputs/FileInputCard'
   import Participants from './Components/Participants'
+  import PostQuestionParent from '../Questions/PostQuestionParent'
+  import PostNoticeParent from '../Notices/PostNoticeParent'
+  import AnswerQuestionsTextareas from '../Questions/AnswerQuestionsTextareas'
+  import QuestionsAndAnswersListing from '../Questions/QuestionsAndAnswersListing'
+  import NoticesList from '../Notices/NoticesList'
   import Enter from './Components/Enter'
   import CreateNotice from './Components/CreateNotice'
   import Evaluacion from 'src/components/Dashboard/Views/Licitaciones/Ofertas/Evaluacion/Layout'
@@ -80,6 +90,7 @@
 
   export default {
     components: {
+      NoticesList,
       FileDownloadCard,
       FileInputCard,
       Participants,
@@ -89,8 +100,12 @@
       Modal,
       CreateForm,
       Enter,
+      PeriodsInfo,
+      PostQuestionParent,
+      PostNoticeParent,
       Results,
-      PeriodsInfo
+      AnswerQuestionsTextareas,
+      QuestionsAndAnswersListing
     },
     props: ['id'],
     data () {
@@ -121,14 +136,12 @@
     padding: 0;
     justify-content: space-around;
   }
-
   .flex-row-item {
     flex-grow: 1;
     padding: 5px;
     margin-top: 10px;
     text-align: center;
   }
-
   .flex-container {
     padding: 0;
     margin: 0;
@@ -137,11 +150,9 @@
     flex-flow: row wrap;
     justify-content: space-around;
   }
-
   .full-height {
     min-height: 100vh;
   }
-
   .rules-summary {
     margin: 0 20px 20px;
   }
