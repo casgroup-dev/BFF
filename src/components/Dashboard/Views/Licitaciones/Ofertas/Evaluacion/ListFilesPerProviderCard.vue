@@ -44,7 +44,7 @@
 </template>
 
 <script>
-  import Card from '../CardV2'
+  import Card from '../../../../../UIComponents/Cards/CardV2'
   import PCheckbox from '../../../../../UIComponents/Inputs/Checkbox'
 
   export default {

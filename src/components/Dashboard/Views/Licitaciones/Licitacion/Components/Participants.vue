@@ -1,8 +1,8 @@
 <template>
   <div class="content">
     <stats-card class="stats-card">
-      <div slot="header" class="icon-success" @click="showParticipantsModal">
-        <i v-if="icon" :class="`fa ${icon} icon`" :style="{color: iconColor}"></i>
+      <div slot="header" @click="showParticipantsModal">
+        <i class="fa fa-users"></i>
       </div>
       <div slot="content">
         <p>Participantes</p>{{ participants.length }}
@@ -18,16 +18,18 @@
             <!-- HEADERS -->
             <thead class="thead-light">
             <tr>
-              <th v-for="(attr, index) in tableColumns" :key="index" scope="col">{{attr}}</th>
+              <th v-for="(attr, index) in tableColumns" :key="index" scope="col">
+                {{attr}}
+              </th>
             </tr>
             </thead>
             <!-- BODY -->
             <tbody>
-            <tr v-for="(provider, index) in participants" :key="index">
+            <tr v-for="(provider, index) in participants" :key="index" style="font-weight:normal">
               <!-- PROVIDER ATTRIBUTES -->
-              <td v-for="(attr, index) in provider" :key="index">
-                <a style="font-weight:normal; color:#262626;">{{attr}}</a>
-              </td>
+              <td>{{provider.user.company.businessName}}</td>
+              <td>{{provider.user.email}}</td>
+              <td>{{provider.user.phone}}</td>
             </tr>
             </tbody>
           </table>
@@ -47,12 +49,10 @@
   import Modal from 'src/components/UIComponents/Modal/Modal.vue'
   import LTable from 'src/components/UIComponents/Table.vue'
 
-  const defaultColor = '#02B2A9'
-
   export default {
-    data () {
+    data() {
       return {
-        tableColumns: ['Razón Social', 'Email Admin Proveedor', 'Telefono Admin Proveedor'],
+        tableColumns: ['Razón social', 'Email admin proveedor', 'Teléfono admin proveedor'],
         showParticipants: false
       }
     },
@@ -62,21 +62,9 @@
       LTable
     },
     props: {
-      icon: {
-        type: String,
-        default: 'fa fa-users'
-      },
       title: {
         type: String,
         default: 'Insert title here'
-      },
-      iconColor: {
-        type: String,
-        default: defaultColor
-      },
-      buttonColor: {
-        type: String,
-        default: defaultColor
       },
       titleSize: {
         type: String,
@@ -84,7 +72,36 @@
       },
       participants: {
         type: Array,
-        required: true
+        required: true,
+        default: () => [
+          {
+            user: {
+              email: 'admin1@mail.com',
+              phone: '+56912345678',
+              company: {
+                businessName: 'Entel PCS'
+              }
+            }
+          },
+          {
+            user: {
+              email: 'admin2@mail.com',
+              phone: '+56913579135',
+              company: {
+                businessName: 'CTC SA'
+              }
+            }
+          },
+          {
+            user: {
+              email: 'admin3@mail.com',
+              phone: '+56924680246',
+              company: {
+                businessName: 'Vodafone LTDA'
+              }
+            }
+          }
+        ]
       }
     },
     methods: {
@@ -106,5 +123,14 @@
 
   .content {
     margin: 5px;
+  }
+
+  .fa-users {
+    color: lightseagreen;
+  }
+
+  .fa-users:hover {
+    color: #bb0502;
+    cursor: pointer;
   }
 </style>
