@@ -21,6 +21,9 @@
                   <!-- ADD PROVIDER -->
                   <button class="btn btn-primary" @click="provider.modalOn = true">Agregar proveedor</button>
                 </div>
+                <fg-input class="col-6" v-model="search" placeholder="Industria"
+                          addon-right-icon="nc-icon nc-zoom-split">
+                </fg-input>
               </div>
             </template>
             <search-bar v-model="search" placeholder="Buscar por industria" style="margin-bottom: 10px;"></search-bar>

@@ -84,68 +84,41 @@ function getCompanies () {
  * @returns {Promise<any>}
  */
 function getBiddings () {
-  const generalError = new Error('Error de conexion.')
   return new Promise((resolve, reject) => {
-    var res = [{
-      attributes: {
-        name: 'Snacks Copec de Rancagua',
-        client: 'Copec',
-        currentStage: '2'
-      },
-      show: false
-    },
-      {
-        attributes: {
-          name: 'Snacks Copec de Curico',
-          client: 'Copec',
-          currentStage: '3'
-        },
-        show: false
-      }
-    ]
-    return resolve(res)
+    const generalError = new Error('Error de conexion.')
+    axios.get(getRouteWithToken(routes.biddings))
+      .then(res => {
+        if (res.data.error && res.data.error.status === 403) {
+          return reject(new Error('No autorizado'))
+        } else if (res.data.error && res.data.error.status === 404) {
+          return reject(new Error('No encontrado'))
+        } else {
+          return resolve(res.data)
+        }
+      })
+      .catch(() => reject(generalError))
   })
 }
 
-/**
- * Obtains the information of the selected bidding to fill the dashboard
- * @returns {Promise<any>}
- */
-async function getCurrentBidding () {
-  return {
-    name: 'Licitacion de Groupcas',
-    bidderCompany: '',
-    users: [{
-      id: '5af0656ab27a8e2d4c3e00ea',
-      role: 'companyAdmin',
-      password: 'pass'
-    }],
-    files: [],
-    rulesSummary: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.',
-    periods: [{
-      start: '1-1-2017',
-      end: '2-2-2017'
-    }],
-    step: 2,
-    stages: 1,
-    participants: [
-      {
-        businessName: 'Microsoft',
-        usersEmail: 'email@example.com',
-        usersPhone: '+56912345678'
-      },
-      {
-        businessName: 'Microsoft',
-        usersEmail: 'email@example.com',
-        usersPhone: '+56912345678'
-      },
-      {
-        businessName: 'Microsoft',
-        usersEmail: 'email@example.com',
-        usersPhone: '+56912345678'
-      }
-    ]
-  }
+/** Obtains the information of the selected bidding to fill the dashboard
+* @returns {Promise<any>}
+* @returns {Promise<any>}
+*/
+async function getCurrentBidding (id) {
+  return new Promise((resolve, reject) => {
+    const generalError = new Error('Error de conexion.')
+    axios.get(getRouteWithToken(routes.biddings + '/' + id))
+      .then(res => {
+        if (res.data.error && res.data.error.status === 403) {
+          return reject(new Error('No autorizado'))
+        } else if (res.data.error && res.data.error.status === 404) {
+          return reject(new Error('No encontrado'))
+        } else {
+          return resolve(res.data)
+        }
+      })
+      .catch(() => reject(generalError))
+  })
 }
 
 /**
@@ -281,10 +254,55 @@ async function checkEmail (email) {
   if (!email) {
     throw new Error('Mail is mandatory.')
   }
-  return axios.get(endpoint + routes.shadowUsers + '/' + email).then(res => {
-    // return axios.get(getRouteWithToken(routes.users), email).then(res => {
+  return axios.get(getRouteWithToken(routes.usersMail(email))).then(res => {
     return !res.data.error
   })
+}
+
+function buildBidding(bidding) {
+  if (!bidding.name) throw new Error('No name assigned.')
+  if (!bidding.company) throw new Error('No company assigned.')
+  if (!bidding.users) throw new Error('No users assigned.')
+  if (!bidding.stages) throw new Error('No stages defined.')
+  if (!bidding.items) throw new Error('No items defined.')
+  const data = {
+    title: bidding.name,
+    bidderCompany: bidding.company,
+    users: (function () {
+      let result = []
+      for (let i = 0; i < bidding.users.length; ++i) {
+        let user = bidding.users[i]
+        let temp = {
+          email: user.mail,
+          role: 'client'
+        }
+        result.push(temp)
+      }
+      return result
+    })(),
+    rules: bidding.rules,
+    biddingType: bidding.type,
+    economicalForm: bidding.items,
+    deadlines: (function () {
+      let dictionary = {}
+      let stage
+      for (let i = 0; i < bidding.stages.length; ++i) {
+        stage = bidding.stages[i]
+        if (stage.save_name === 'results') {
+          dictionary[stage.save_name] = {
+            date: stage.date
+          }
+        } else {
+          dictionary[stage.save_name] = {
+            start: stage.start,
+            end: stage.end
+          }
+        }
+      }
+      return dictionary
+    })()
+  }
+  return data
 }
 
 /**
@@ -293,19 +311,33 @@ async function checkEmail (email) {
  * @returns {Promise<any>}
  */
 async function registerBidding (bidding) {
-  if (!bidding.name.payload) throw new Error('No name assigned.')
-  if (!bidding.company.payload) throw new Error('No company assigned.')
-  if (!bidding.users.payload) throw new Error('No users assigned.')
-  // if (!bidding.stages.payload) throw new Error('No stages defined.')
-  const data = {
-    name: bidding.name.payload,
-    bidderCompany: bidding.company.payload,
-    users: bidding.users.payload,
-    bases: [bidding.bases.payload, null],
-    periods: bidding.stages,
-    biddingType: bidding.type
-  }
+  const data = buildBidding(bidding)
   return axios.post(getRouteWithToken(routes.biddings), data).then(res => {
+    if (res.data.error) throw new Error('Lo sentimos, intente más tarde.')
+  })
+}
+
+/**
+ * Updates a bidding
+ * @param bidding
+ * @returns {Promise<any>}
+ */
+async function updateBidding (bidding, loadedBidding) {
+  let data = buildBidding(bidding)
+  data.questions = loadedBidding.questions
+  data.publishedResults = loadedBidding.publishedResults
+  return axios.put(getRouteWithToken(routes.bidding(loadedBidding.id)), data).then(res => {
+    if (res.data.error) throw new Error('Lo sentimos, intente más tarde.')
+  })
+}
+
+/**
+ * deletes a bidding
+ * @param bidding
+ * @returns {Promise<any>}
+ */
+async function deleteBidding (bidding) {
+  return axios.post(getRouteWithToken(routes.bidding(bidding.id)), bidding).then(res => {
     if (res.data.error) throw new Error('Lo sentimos, intente más tarde.')
   })
 }
@@ -318,14 +350,14 @@ async function registerBidding (bidding) {
  * @returns {Promise<void>}
  */
 async function registerClient (data) {
-  const generalError = new Error('Tuvimos un error procesando el registro de cliente, por favor intenta nuevamente más tarde.')
-  console.log(data)
   const user = {
     email: data.email,
     password: data.password
   }
   return axios.post(getRouteWithToken(routes.users), user).then(res => {
-    if (res.data.error) throw new Error(generalError)
+    if (res.data.error) {
+      throw new Error('Tuvimos un error procesando el registro de cliente, por favor intenta nuevamente más tarde.')
+    }
   })
 }
 
@@ -340,6 +372,18 @@ function getSignedUrlToPutObject (fileName, contentType) {
     .then(res => {
       if (res.data.signedRequest && res.data.url) return res.data
       if (res.data.error) throw new Error('Problem with the request to sign the url to put an object.')
+    })
+}
+
+function participateInBidding (id) {
+  console.log(routes.biddings + '/' + id + '/participate')
+  return axios.post(getRouteWithToken(routes.biddings + '/' + id + '/participate'))
+    .then(res => {
+      if (res.data.error) throw new Error(res.data.error)
+      return {}
+    })
+    .catch(err => {
+      throw new Error('Could not make participate api call.')
     })
 }
 
@@ -369,5 +413,8 @@ export default {
   getSignedUrlToPutObject,
   checkEmail,
   registerClient,
-  registerBidding
+  registerBidding,
+  updateBidding,
+  participateInBidding,
+  deleteBidding
 }

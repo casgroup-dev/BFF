@@ -7,6 +7,7 @@ const routes = {
   login: '/auth/login',
   shadowUsers: '/shadow/users',
   users: '/users',
+  usersMail: email => `${routes.users}/${email}`,
   industries: '/industries',
   signPutObject: '/auth/sign/put',
   biddings: '/biddings',

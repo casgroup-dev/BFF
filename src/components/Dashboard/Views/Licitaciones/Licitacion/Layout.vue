@@ -1,52 +1,60 @@
 <template>
   <div class="full-height">
     <div class="flex-container" v-if="bidding">
+      <Enter v-if="bidding.invite" :biddingId="bidding.id"></Enter>
+
       <!-- TITLE -->
-      <div class="flex-row"><h1 class="title">{{ bidding.name }}</h1></div>
-      <!-- SUMMARY -->
-      <div class="flex-row" v-if="bidding.rulesSummary"><p class="rules-summary">{{ bidding.rulesSummary }}</p></div>
+      <div class="flex-row"><h1 class="title">{{ bidding.title }}</h1></div>
+      <!-- BUTTONS -->
+      <div class="col-10" style="text-align: right; font-size: xx-large">
+        <!-- NEW BIDDING -->
+        <button class="btn btn-primary" @click="modalOn = true">Modificar Licitación</button>
+      </div>
       <!-- TIMELINE -->
       <!-- <div class="flex-row"></div> -->
       <!-- RULES -->
-      <div class="flex-row" v-if="uploadRules || downloadRules">
-        <Participants class="flex-row-item"
-                      :participants="bidding.participants"/>
+      <div class="flex-row">
+        <p class="rules-summary" v-if="bidding.rules">{{ bidding.rules.summary }}</p>
+      </div>
+      <div class="flex-row">
         <FileDownloadCard class="flex-row-item"
-                          :iconColor="'#f49521'"
-                          :buttonColor="'#f49521'"
-                          :files="bidding.rulesFiles"
-                          title="Descargar bases"
-                          v-if="downloadRules"/>
-        <CreateNotice class="flex-row-item"/>
+                          iconColor="#f49521" buttonColor="#f49521"
+                          :files="bidding.rules.files" title="Descargar bases"/>
       </div>
-      <!-- OFFERS: Download or upload the offers of the bidding -->
-      <div class="flex-row" v-if="uploadTecOffer || uploadEcoOffer || downloadTecOffers || downloadEcoOffers">
-        <FileInputCard class="flex-row-item" :title="'Subir Oferta Técnica'" @uploaded="handleUploadedTecOffer"
-                       v-if="uploadTecOffer"/>
-        <FileDownloadCard class="flex-row-item" :title="'Descargar Oferta Técnica'"
-                          :files="bidding.tecOffers"
-                          v-if="downloadTecOffers">Descargar Oferta Técnica
-        </FileDownloadCard>
-        <FileInputCard class="flex-row-item" :title="'Subir Oferta Económica'" @uploaded="handleUploadedEcoOffer"
-                       :iconColor="'#d319a7'"
-                       :buttonColor="'#d319a7'"
-                       v-if="uploadEcoOffer"/>
-        <FileDownloadCard class="flex-row-item" :title="'Descargar Oferta Económica'"
-                          :iconColor="'#d319a7'"
-                          :buttonColor="'#d319a7'"
-                          :files="bidding.ecoOffers"
-                          v-if="downloadEcoOffers">Descargar Oferta Económica
-        </FileDownloadCard>
-      </div>
-      <!-- FINAL RESULT OF THE BIDDING -->
 
-      <div class="flex-row" v-if="seeResult">
+      <div class="flex-row">
+        <Participants class="flex-row-item"
+                      v-if="bidding.permissions.seeParticipants"
+                      :participants="bidding.users"/>
+         <CreateNotice class="flex-row-item"/>
+      </div>
+
+      <Evaluacion v-if="bidding.permissions.canModify && bidding.permissions.reviewTechnical" :bidding="bidding"
+                  :show-economical-section="bidding.reviewEconomical"></Evaluacion>
+
+      <Recepcion v-if="!bidding.permissions.canModify && !bidding.invite" :bidding=bidding
+                 :showEconomicalOffer=bidding.permissions.uploadEconomical></Recepcion>
+
+      <!-- FINAL RESULT OF THE BIDDING -->
+      <div class="flex-row" v-if="bidding.publishedResults">
         <!-- When a provider is requesting info, only his data is in users array -->
         <Results class="flex-row-item" :awarded="bidding.users[0].awarded"
                  :award-comment="bidding.users[0].awardComment"
                  :details="bidding.users[0].economicalFormAnswers">
         </Results>
       </div>
+
+      <modal v-if="modalOn">
+        <template slot="header">
+          <h4 style="margin: 0">Modificar Licitación</h4>
+          <button type="button" class="btn btn-round btn-default btn-sm" @click="modalOn = false">
+            <span class="btn-label"><i class="fa fa-times"></i></span> Cerrar
+          </button>
+        </template>
+        <template slot="body">
+          <create-form v-on:endModal="modalOn = false" :modify="true" :loadedBidding="bidding"></create-form>
+        </template>
+      </modal>
 
     </div>
   </div>
@@ -57,10 +65,16 @@
   import FileDownloadCard from '../../../../UIComponents/Inputs/FileDownloadCard'
   import FileInputCard from 'src/components/UIComponents/Inputs/FileInputCard'
   import Participants from './Components/Participants'
+  import Enter from './Components/Enter'
   import CreateNotice from './Components/CreateNotice'
+  import Evaluacion from 'src/components/Dashboard/Views/Licitaciones/Ofertas/Evaluacion/Layout'
+  import Recepcion from 'src/components/Dashboard/Views/Licitaciones/Ofertas/Recepcion/Layout'
   import Results from './Components/Results'
+
   /* Api */
   import api from 'src/api/index'
+  import Modal from 'src/components/UIComponents/Modal/Modal.vue'
+  import CreateForm from 'src/components/Dashboard/Views/Licitaciones/CreateForm.vue'
 
   export default {
     components: {
@@ -68,98 +82,27 @@
       FileInputCard,
       Participants,
       CreateNotice,
+      Evaluacion,
+      Recepcion,
+      Modal,
+      CreateForm,
+      Enter,
       Results
     },
-    data() {
+    props: ['id'],
+    data () {
       return {
+        modalOn: false,
         bidding: undefined,
-        uploadTecOffer: false,
-        uploadEcoOffer: false,
-        downloadTecOffers: false,
-        downloadEcoOffers: false,
-        seeResult: false,
-        giveResult: false,
-        uploadRules: false,
-        downloadRules: false
-      }
-    },
-    methods: {
-      showProviderComponents: function (self) {
-        self.downloadRules = true
-        if (self.bidding.stages === 1) {
-          if (self.bidding.step === 2) {
-            self.uploadTecOffer = true
-            self.uploadEcoOffer = true
-          }
-          if (self.bidding.step >= 3) {
-            self.downloadTecOffers = true
-            self.downloadEcoOffers = true
-          }
-          if (self.bidding.step === 4) {
-            self.seeResult = true
-          }
-        } else {
-          if (self.bidding.step === 2) {
-            self.uploadTecOffer = true
-          }
-          if (self.bidding.step >= 3) {
-            self.downloadTecOffers = true
-          }
-          if (self.bidding.step === 4) {
-            self.uploadEcoOffer = true
-          }
-          if (self.bidding.step === 5) {
-            self.seeResult = true
-            self.downloadEcoOffers = true
-          }
-        }
-      },
-      showAdminComponents: function (self) {
-        self.downloadEcoOffers = true
-        self.downloadTecOffers = true
-        self.giveResult = true
-        self.uploadRules = true
-      },
-      handleUploadedTecOffer: function (url, fileName) {
-        // TODO: que pasa si el proveedor quiere sobreescribir un archivo anterior?
-        const newTecOffer = {
-          fileName: fileName,
-          url: url,
-          user: {
-            /* I assume that I receive only my user if I'm a provider */
-            id: this.bidding.users[0].id
-          }
-        }
-        this.bidding.tecOffers.append(newTecOffer)
-        // TODO: PUT to API adding a new downloadable file
-      },
-      handleUploadedEcoOffer: function (url, fileName) {
-        // TODO: que pasa si el proveedor quiere sobreescribir un archivo anterior?
-        const newEcoOffer = {
-          fileName: fileName,
-          url: url,
-          user: {
-            /* I assume that I receive only my user if I'm a provider */
-            id: this.bidding.users[0].id
-          }
-        }
-        this.bidding.ecoOffers.append(newEcoOffer)
-        // TODO: PUT to API adding a new downloadable file
+        participantsComponentUsers: []
       }
     },
     created: function () {
       const self = this
-      api.getCurrentBidding().then(data => {
+      api.getCurrentBidding(self.id).then(data => {
         self.bidding = data
-        /* Check permissions to see components */
-        if (self.bidding.bidderCompany.length === 0) {
-          self.showProviderComponents(self)
-        } else {
-          self.showAdminComponents(self)
-        }
       }).catch(err => {
         console.error(err)
-        /* The user is not authorized to access here */
         self.$router.push('/')
       })
     }
