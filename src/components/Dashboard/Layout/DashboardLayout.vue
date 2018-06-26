@@ -6,7 +6,7 @@
         <i class="nc-icon nc-notes"></i>
         <p>Licitaciones</p>
       </sidebar-link>
-      <sidebar-link to="/providers">
+      <sidebar-link to="/providers" v-if="isAdmin">
         <i class="nc-icon nc-delivery-fast"></i>
         <p>Proveedores</p>
       </sidebar-link>
@@ -57,7 +57,7 @@
   import ContentFooter from './ContentFooter.vue'
   import DashboardContent from './Content.vue'
   import MobileMenu from './MobileMenu.vue'
-  import api from '../../../apis/users'
+  import api from '../../../api/index'
 
   export default {
     components: {
@@ -65,6 +65,11 @@
       ContentFooter,
       DashboardContent,
       MobileMenu
+    },
+    data () {
+      return {
+        isAdmin: false
+      }
     },
     methods: {
       toggleSidebar () {
@@ -75,6 +80,9 @@
       logout () {
         api.logout(this.$router)
       }
+    },
+    async created () {
+      this.isAdmin = await api.isAdmin()
     }
   }
 </script>

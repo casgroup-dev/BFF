@@ -38,7 +38,7 @@
                 <tr v-for="(provider, index) in filteredProviders" :key="index">
                   <!-- PROVIDER ATTRIBUTES -->
                   <td v-for="(attr, index) in provider.attributes" :key="index">
-                    <a style="font-weight:normal; color:#262626;">{{attr}}</a>
+                    <a style="font-weight:normal; color:#262626;" v-html="attr"></a>
                   </td>
                   <!-- SELECT -->
                   <td class="align-center">
@@ -148,7 +148,7 @@
   import Modal from 'src/components/UIComponents/Modal/Modal.vue'
   import SearchBar from 'src/components/UIComponents/Inputs/SearchBar.vue'
   import ClipLoader from 'vue-spinner/src/ClipLoader'
-  import usersApi from 'src/apis/users'
+  import usersApi from 'src/api/index'
   import VueNotify from 'vue-notifyjs'
   import PCheckbox from 'src/components/UIComponents/Inputs/Checkbox.vue'
   import Icons from '../Icons'
@@ -173,7 +173,7 @@
             attributes: [
               'Razón social',
               'Mail Admin Proveedor',
-              'Telefono Admin Proveedor',
+              'Rubros',
               '',
               ''
             ],
@@ -264,11 +264,9 @@
           return {
             attributes: {
               businessName: company['businessName'],
-              usersEmail: company['users']// .filter(user => user.role === 'companyAdmin')
+              usersEmail: company['users']//.filter(user => user.role === 'companyAdmin')
                 .map(user => user.email).join(', '),
-              usersPhone: company['users'].filter(user => {
-                return user.role === 'companyAdmin'
-              }).map(user => user.phone).join(', ')
+              industries: company.industries.map(i => `- ${i}`).join('<br>').substring(0, 100) + '...'
             },
             details: {
               industries: company['industries'].join(', '),
@@ -348,6 +346,7 @@
       filteredProviders: function () {
         const self = this
         return this.table.data.filter(function (prov) {
+          if (prov.attributes.businessName === 'CAS compañía de asesorías y servicios SPA') return false
           return prov.details.industries.toLowerCase().includes(self.search.toLowerCase())
         })
       },

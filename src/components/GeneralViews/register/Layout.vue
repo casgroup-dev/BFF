@@ -49,7 +49,7 @@
 <script>
   import Form from './Form'
   import FullPageContainer from '../../UIComponents/FullPageContainer'
-  import usersApi from '../../../apis/users'
+  import usersApi from '../../../api/index'
   import Card from '../../UIComponents/Cards/Card'
   import ClipLoader from 'vue-spinner/src/ClipLoader'
 

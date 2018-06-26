@@ -1,26 +1,8 @@
 import axios from 'axios'
+import routesUtils from './routes/index'
+import token from './token/index'
 
-const TOKEN_NAME = 'casGroupTokenAuth'
-let endpoint = window.location.origin + '/api'
-if (endpoint.includes('localhost')) endpoint = 'http://localhost:3000/api'
-const routes = {
-  companies: '/companies',
-  login: '/auth/login',
-  shadowUsers: '/shadow/users',
-  users: '/users',
-  industries: '/industries',
-  signPutObject: '/auth/sign/put',
-  biddings: '/biddings'
-}
-
-/**
- * Returns the correct route with the token of the user.
- * @param route
- * @returns {string}
- */
-function getRouteWithToken (route) {
-  return `${endpoint + route}?token=${token.get()}`
-}
+const {endpoint, getRouteWithToken, routes} = routesUtils
 
 /**
  * Validates the credentials and return a promise that resolves with the token of the user. Rejects an error with
@@ -112,14 +94,14 @@ function getBiddings () {
       },
       show: false
     },
-    {
-      attributes: {
-        name: 'Snacks Copec de Curico',
-        client: 'Copec',
-        currentStage: '3'
-      },
-      show: false
-    }
+      {
+        attributes: {
+          name: 'Snacks Copec de Curico',
+          client: 'Copec',
+          currentStage: '3'
+        },
+        show: false
+      }
     ]
     return resolve(res)
   })
@@ -300,11 +282,10 @@ async function checkEmail (email) {
     throw new Error('Mail is mandatory.')
   }
   return axios.get(endpoint + routes.shadowUsers + '/' + email).then(res => {
-  // return axios.get(getRouteWithToken(routes.users), email).then(res => {
+    // return axios.get(getRouteWithToken(routes.users), email).then(res => {
     return !res.data.error
   })
 }
-
 
 /**
  * Creates a bidding
@@ -348,24 +329,6 @@ async function registerClient (data) {
   })
 }
 
-const token = {
-  /**
-   * Saves the token of the user to keep him logged in.
-   * @param {String} token
-   */
-  save: token => localStorage.setItem(TOKEN_NAME, token),
-  /**
-   * Gets the token from the storage.
-   * @return {string | null}
-   */
-  get: () => localStorage.getItem(TOKEN_NAME),
-  /**
-   * Removes the token from the local storage.
-   * @return {void}
-   */
-  remove: () => localStorage.removeItem(TOKEN_NAME)
-}
-
 /**
  * Returns a promise that resolves with the signed url to put the object in S3 and the url where the object will reside.
  * @param {String} fileName
@@ -380,7 +343,18 @@ function getSignedUrlToPutObject (fileName, contentType) {
     })
 }
 
+/**
+ * Function to check if the token is from an admin.
+ * @returns {Promise<Boolean>}
+ */
+function isAdmin () {
+  return axios.get(getRouteWithToken(routes.isAdmin())).then(res => {
+    return res.data.isAdmin
+  })
+}
+
 export default {
+  isAdmin,
   isLoggedIn,
   isShadowUser,
   login,

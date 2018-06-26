@@ -9,6 +9,7 @@
         <label class="custom-file-label">{{inputLabelComputed}}</label>
       </div>
       <clip-loader :loading="loading" color="#1DC7EA" class="clip-loader"/>
+      <label v-if="loading">{{ uploadPercentage }}%</label>
       <button v-if="!loading && files.length" class="btn btn-fill btn-round btn-upload"
               :style="{backgroundColor: buttonColor}"
               @click="uploadFiles">
@@ -20,7 +21,7 @@
 
 <script>
   import ClipLoader from 'vue-spinner/src/ClipLoader'
-  import api from '../../../apis/users'
+  import api from '../../../api/index'
   import axios from 'axios'
 
   const defaultColor = '#03A9F4'
@@ -39,6 +40,7 @@
     data () {
       return {
         loading: false,
+        uploadPercentage: 0,
         files: [],
         baseNotification: {
           horizontalAlign: 'right',
@@ -151,7 +153,16 @@
             let signedRequest = results[i].signedRequest
             let urlToDownloadTheFile = results[i].url
             try {
-              await axios.put(signedRequest, file, {headers: {'Content-Type': file.type}})
+              this.uploadPercentage = 0
+              await axios.put(
+                signedRequest,
+                file,
+                {
+                  headers: {'Content-Type': file.type},
+                  onUploadProgress: progressEvent => {
+                    this.uploadPercentage = Math.round((progressEvent.loaded * 100) / progressEvent.total)
+                  }
+                })
               this.emitUploadedFileEvent(file.name, urlToDownloadTheFile)
             } catch (err) {
               console.error(err)
