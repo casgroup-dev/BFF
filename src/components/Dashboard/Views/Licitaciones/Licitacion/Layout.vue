@@ -1,30 +1,48 @@
 <template>
   <div class="full-height">
     <div class="flex-container" v-if="bidding">
+      <Enter v-if="bidding.invite" :biddingId="bidding.id"></Enter>
+
       <!-- TITLE -->
       <div class="flex-row"><h1 class="title">{{ bidding.title }}</h1></div>
+      <!-- BUTTONS -->
+      <div class="col-10" style="text-align: right; font-size: xx-large">
+        <!-- NEW BIDDING -->
+        <button class="btn btn-primary" @click="modalOn = true">Modificar Licitación</button>
+      </div>
+      <!-- TIMELINE -->
+      <!-- <div class="flex-row"></div> -->
       <!-- RULES -->
       <div class="flex-row">
         <p class="rules-summary" v-if="bidding.rules">{{ bidding.rules.summary }}</p>
       </div>
-      <!-- TIMELINE -->
-      <!-- <div class="flex-row"></div> -->
-      <!-- Participants -->
-      <div class="flex-row" v-if="bidding.permissions.seeParticipants">
+      <div class="flex-row">
+        <PeriodsInfo :deadlines="bidding.deadlines"/>
+        <FileDownloadCard class="flex-row-item"
+                          iconColor="#f49521"
+                          buttonColor="#f49521"
+                          :files="bidding.rules.files"
+                          title="Descargar bases"
+                          v-if="downloadRules"/>
+        <PostNoticeParent class="flex-row-item"
+                          :bidding="{id: bidding.id}"/>
+      </div>
+
+      <div class="flex-row">
         <Participants class="flex-row-item"
+                      v-if="bidding.permissions.seeParticipants"
                       :participants="bidding.users"/>
-        <!-- <CreateNotice class="flex-row-item"/> -->
+         <CreateNotice class="flex-row-item"/>
       </div>
-      <div class="flex-row" v-if="bidding.permissions.canModify">
-        <Evaluacion class="flex-row-item"
-                    :bidding="bidding"></Evaluacion>
-      </div>
-      <div class="flex-row">
-        <Recepcion class="flex-row-item" v-if="!bidding.permissions.canModify && !bidding.invite"
-                   :bidding="bidding"></Recepcion>
+
+      <Evaluacion v-if="bidding.permissions.canModify && bidding.permissions.reviewTechnical" :bidding="bidding"
+                  :show-economical-section="bidding.reviewEconomical"></Evaluacion>
+
+      <Recepcion v-if="!bidding.permissions.canModify && !bidding.invite" :bidding=bidding
+                 :showEconomicalOffer=bidding.permissions.uploadEconomical></Recepcion>
+
       <!-- FINAL RESULT OF THE BIDDING -->
-      </div>
-      <div class="flex-row">
+      <div class="flex-row" v-if="bidding.publishedResults">
         <!-- When a provider is requesting info, only his data is in users array -->
         <Results class="flex-row-item" :awarded="bidding.users[0].awarded"
                  :award-comment="bidding.users[0].awardComment"
@@ -32,6 +50,19 @@
         </Results>
       </div>
       <Enter v-if="bidding.invite" :biddingId="bidding.id"></Enter>
+
+      <modal v-if="modalOn">
+        <template slot="header">
+          <h4 style="margin: 0">Modificar Licitación</h4>
+          <button type="button" class="btn btn-round btn-default btn-sm" @click="modalOn = false">
+            <span class="btn-label"><i class="fa fa-times"></i></span> Cerrar
+          </button>
+        </template>
+        <template slot="body">
+          <create-form v-on:endModal="modalOn = false" :modify="true" :loadedBidding="bidding"></create-form>
+        </template>
+      </modal>
+      
     </div>
   </div>
 </template>
@@ -41,30 +72,51 @@
   import FileDownloadCard from '../../../../UIComponents/Inputs/FileDownloadCard'
   import FileInputCard from 'src/components/UIComponents/Inputs/FileInputCard'
   import Participants from './Components/Participants'
+  import PostQuestionParent from '../Questions/PostQuestionParent'
+  import PostNoticeParent from '../Notices/PostNoticeParent'
+  import AnswerQuestionsTextareas from '../Questions/AnswerQuestionsTextareas'
+  import QuestionsAndAnswersListing from '../Questions/QuestionsAndAnswersListing'
+  import NoticesList from '../Notices/NoticesList'
   import Enter from './Components/Enter'
   import CreateNotice from './Components/CreateNotice'
   import Evaluacion from 'src/components/Dashboard/Views/Licitaciones/Ofertas/Evaluacion/Layout'
   import Recepcion from 'src/components/Dashboard/Views/Licitaciones/Ofertas/Recepcion/Layout'
 
   import Results from './Components/Results'
+  import PeriodsInfo from './Components/PeriodsInfo'
+
   /* Api */
   import api from 'src/api/index'
+  import Modal from 'src/components/UIComponents/Modal/Modal.vue'
+  import CreateForm from 'src/components/Dashboard/Views/Licitaciones/CreateForm.vue'
 
   export default {
     components: {
+      NoticesList,
       FileDownloadCard,
       FileInputCard,
       Participants,
       Evaluacion,
       Recepcion,
-      Enter,
       CreateNotice,
-      Results
+      Evaluacion,
+      Recepcion,
+      Modal,
+      CreateForm,
+      Enter,
+      PeriodsInfo,
+      PostQuestionParent,
+      PostNoticeParent,
+      Results,
+      AnswerQuestionsTextareas,
+      QuestionsAndAnswersListing
     },
     props: ['id'],
     data () {
       return {
-        bidding: undefined
+        modalOn: false,
+        bidding: undefined,
+        participantsComponentUsers: []
       }
     },
     created: function () {
@@ -88,14 +140,12 @@
     padding: 0;
     justify-content: space-around;
   }
-
   .flex-row-item {
     flex-grow: 1;
     padding: 5px;
     margin-top: 10px;
     text-align: center;
   }
-
   .flex-container {
     padding: 0;
     margin: 0;
@@ -104,11 +154,9 @@
     flex-flow: row wrap;
     justify-content: space-around;
   }
-
   .full-height {
     min-height: 100vh;
   }
-
   .rules-summary {
     margin: 0 20px 20px;
   }

@@ -104,17 +104,20 @@
       reduceDocumentsToType (users, type) {
         if (type !== 'technicals' && type !== 'economicals') throw new Error(`Type must be 'economicals' or 'technicals'`)
         return users.reduce((accumulatedResult, currentParticipant) => {
-          // If the current users' company is not in the accumulated result, add it
-          const currentBusinessName = currentParticipant.user.company.businessName
-          let providerDocuments = accumulatedResult.find(a => a.provider === currentBusinessName)
-          if (!providerDocuments) {
-            providerDocuments = {provider: currentBusinessName, documents: []}
-            accumulatedResult.push(providerDocuments)
+          if (currentParticipant.user.company &&
+            currentParticipant.user.company.businessName !== 'CAS compañía de asesorías y servicios SPA') {
+            // If the current users' company is not in the accumulated result, add it
+            const currentBusinessName = currentParticipant.user.company.businessName
+            let providerDocuments = accumulatedResult.find(a => a.provider === currentBusinessName)
+            if (!providerDocuments) {
+              providerDocuments = {provider: currentBusinessName, documents: []}
+              accumulatedResult.push(providerDocuments)
+            }
+            // Concat to the accumulated documents of the provider company
+            providerDocuments.documents = providerDocuments.documents.concat(currentParticipant.documents[type])
+            // Set approved if any user is approved
+            if (currentParticipant.approved.technically) providerDocuments.approved = true
           }
-          // Concat to the accumulated documents of the provider company
-          providerDocuments.documents = providerDocuments.documents.concat(currentParticipant.documents[type])
-          // Set approved if any user is approved
-          if (currentParticipant.approved.technically) providerDocuments.approved = true
           return accumulatedResult
         }, [])
       },
