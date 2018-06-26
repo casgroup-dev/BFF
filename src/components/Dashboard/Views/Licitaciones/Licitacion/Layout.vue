@@ -22,23 +22,20 @@
                           iconColor="#f49521"
                           buttonColor="#f49521"
                           :files="bidding.rules.files"
-                          title="Descargar bases"
-                          v-if="downloadRules"/>
-        <PostNoticeParent class="flex-row-item"
-                          :bidding="{id: bidding.id}"/>
+                          title="Descargar bases"/>
       </div>
 
       <div class="flex-row">
         <Participants class="flex-row-item"
                       v-if="bidding.permissions.seeParticipants"
                       :participants="bidding.users"/>
-         <CreateNotice class="flex-row-item"/>
+         <PostNoticeParent class="flex-row-item"/>
       </div>
 
       <Evaluacion v-if="bidding.permissions.canModify && bidding.permissions.reviewTechnical" :bidding="bidding"
                   :show-economical-section="bidding.reviewEconomical"></Evaluacion>
 
-      <Recepcion v-if="!bidding.permissions.canModify && !bidding.invite" :bidding=bidding
+      <Recepcion v-if="bidding.permissions.uploadTechnical && !bidding.invite" :bidding=bidding
                  :showEconomicalOffer=bidding.permissions.uploadEconomical></Recepcion>
 
       <!-- FINAL RESULT OF THE BIDDING -->
@@ -77,7 +74,6 @@
   import QuestionsAndAnswersListing from '../Questions/QuestionsAndAnswersListing'
   import NoticesList from '../Notices/NoticesList'
   import Enter from './Components/Enter'
-  import CreateNotice from './Components/CreateNotice'
   import Evaluacion from 'src/components/Dashboard/Views/Licitaciones/Ofertas/Evaluacion/Layout'
   import Recepcion from 'src/components/Dashboard/Views/Licitaciones/Ofertas/Recepcion/Layout'
   import Results from './Components/Results'
@@ -94,7 +90,6 @@
       FileDownloadCard,
       FileInputCard,
       Participants,
-      CreateNotice,
       Evaluacion,
       Recepcion,
       Modal,
