@@ -385,7 +385,18 @@ function participateInBidding (id) {
     })
 }
 
+/**
+ * Function to check if the token is from an admin.
+ * @returns {Promise<Boolean>}
+ */
+function isAdmin () {
+  return axios.get(getRouteWithToken(routes.isAdmin())).then(res => {
+    return res.data.isAdmin
+  })
+}
+
 export default {
+  isAdmin,
   isLoggedIn,
   isShadowUser,
   login,
