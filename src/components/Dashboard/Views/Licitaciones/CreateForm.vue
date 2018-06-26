@@ -26,10 +26,10 @@
                           v-if="bidding.bases.error">{{bidding.bases.errorMessage}}</label></small>
             <textarea class="form-control" v-model="bidding.bases.text" style="height: 50px;"></textarea>
             <small id="basesHelpBlock" class="form-text text-muted">
-              Descripción de bases PENDIENTE
+              Descripción resumida de las bases, para una versión acotada del documento subido
             </small>
           </div>
-          <FileInputCard class="col-4" title="Subir Bases" v-if="bidding.bases.show" v-on:uploaded="save(url, fileName)"></FileInputCard>
+          <FileInputCard class="col-4" title="Subir Bases" v-if="bidding.bases.show" v-on:uploaded="save"></FileInputCard>
           <br/>
           <div class="row">
             <div class="col-6">
@@ -116,11 +116,11 @@
             <small><label class="error" style="color: red;"
                           v-if="etapas.error">{{etapas.errorMessage}}</label></small>
             <table class="table-bordered">
-              <td v-for="stage in availableStages">
+              <td v-for="(stage, index) in availableStages" :key="`date-picker-${index}`">
                 <label :for="stage.label">
                   <fg-input v-model="stage.title"></fg-input>
                 </label>
-                <div class="col-1 nc-icon nc-stre-right"></div>
+                <!--<div class="col-1 nc-icon nc-stre-right"></div>-->
                 <div class="datepicker-trigger">
                   <fg-input
                     type="text"
@@ -144,22 +144,18 @@
                   <td>
                     <tr>Hora Inicio</tr>
                     <select class="custom-select custom-select-sm" v-model="stage.timeOne.hour">
-                      <!--<option selected :value="stage.timeOne.hour">Hora</option>-->
                       <option v-for="hour in time.hours" :value="hour.value">{{hour.show}}</option>
                     </select>
                     <select class="custom-select custom-select-sm" v-model="stage.timeOne.minute">
-                      <!--<option selected :value="stage.timeOne.minute">Minutos</option>-->
                       <option v-for="minute in time.minutes" :value="minute.value">{{minute.show}}</option>
                     </select>
                   </td>
                   <td>
                     <tr>Hora Término</tr>
                     <select class="custom-select custom-select-sm" v-model="stage.timeTwo.hour">
-                      <!--<option selected :value="stage.timeOne.hour">Hora</option>-->
                       <option v-for="hour in time.hours" :value="hour.value">{{hour.show}}</option>
                     </select>
                     <select class="custom-select custom-select-sm" v-model="stage.timeTwo.minute">
-                      <!--<option selected :value="stage.timeTwo.minute">Minutos</option>-->
                       <option v-for="minute in time.minutes" :value="minute.value">{{minute.show}}</option>
                     </select>
                   </td>
@@ -281,8 +277,8 @@
           name: fileName,
           url: url
         }
-        this.biddings.bases.files.push(file)
-        this.biddings.bases.show = false
+        this.bidding.bases.files.push(file)
+        this.bidding.bases.show = false
       },
       async deleteBidding () {
         usersApi.deleteBidding(this.loadedBidding)

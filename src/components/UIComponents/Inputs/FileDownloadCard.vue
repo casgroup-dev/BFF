@@ -84,13 +84,7 @@
       /**
        * Downloadable files
        */
-      files: [{
-        fileName: {type: String},
-        url: {type: String},
-        user: {
-          id: {type: String}
-        }
-      }]
+      files: Array
     },
     /**
      * Methods of the component.
@@ -101,8 +95,8 @@
        */
       downloadFiles () {
         this.loading = true
-        for (let i = 0; i < this.props.files.length; i++) {
-          let file = this.props.files[i]
+        for (let i = 0; i < this.files.length; i++) {
+          let file = this.files[i]
           try {
             window.open(file.url)
           } catch (err) {

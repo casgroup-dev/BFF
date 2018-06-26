@@ -16,27 +16,23 @@
       <div class="flex-row">
         <p class="rules-summary" v-if="bidding.rules">{{ bidding.rules.summary }}</p>
       </div>
-      <!--<div class="flex-row">-->
-        <!--<FileDownloadCard class="flex-row-item"-->
-                          <!--iconColor="#f49521" buttonColor="#f49521"-->
-                          <!--:files="bidding.rules.files" title="Descargar bases"/>-->
-      <!--</div>-->
-      <!-- TIMELINE -->
-      <!-- <div class="flex-row"></div> -->
-      <!-- Participants -->
+      <div class="flex-row">
+        <FileDownloadCard class="flex-row-item"
+                          iconColor="#f49521" buttonColor="#f49521"
+                          :files="bidding.rules.files" title="Descargar bases"/>
+      </div>
+
       <div class="flex-row" v-if="bidding.permissions.seeParticipants">
         <Participants class="flex-row-item"
                       :participants="bidding.users"/>
         <!-- <CreateNotice class="flex-row-item"/> -->
       </div>
-      <!--TODO-->
-      <!--<div class="flex-row" v-if="bidding.permissions.canModify">-->
-        <!--<Evaluacion class="flex-row-item"></Evaluacion>-->
-      <!--</div>-->
-      <div class="flex-row">
-        <Recepcion class="flex-row-item" v-if="!bidding.permissions.canModify && !bidding.invite" :biddingId=bidding.id
-                   :showEconomicalOffer=bidding.permissions.uploadEconomical></Recepcion>
-      </div>
+
+      <Evaluacion v-if="bidding.permissions.canModify && bidding.permissions.reviewTechnical" :bidding="bidding"
+                  :show-economical-section="bidding.reviewEconomical"></Evaluacion>
+
+      <Recepcion v-if="!bidding.permissions.canModify && !bidding.invite" :bidding=bidding
+                 :showEconomicalOffer=bidding.permissions.uploadEconomical></Recepcion>
 
       <!-- FINAL RESULT OF THE BIDDING -->
       <div class="flex-row" v-if="bidding.publishedResults">
