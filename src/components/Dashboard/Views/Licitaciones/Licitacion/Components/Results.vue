@@ -30,11 +30,13 @@
           <th>Comentario del evaluador</th>
           <th>¿Adjudicado?</th>
           </thead>
-          <tr v-for="(detail, index) in details" :key="index">
-            <td>{{detail.itemName}}</td>
-            <td>{{detail.adminComment}}</td>
-            <td><p-checkbox v-model="detail.adjudicated" disabled="disabled"></p-checkbox></td>
-          </tr>
+          <tbody>
+            <tr v-for="(detail, index) in details" :key="index">
+              <td>{{detail.itemName}}</td>
+              <td>{{detail.adminComment}}</td>
+              <td><p-checkbox v-model="detail.adjudicated" disabled="disabled"></p-checkbox></td>
+            </tr>
+          </tbody>
         </table>
       </template>
       <template slot="footer">

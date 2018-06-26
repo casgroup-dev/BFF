@@ -37,9 +37,10 @@ const routes = [
         component: LicitacionesHome
       },
       {
-        path: '/Licitacion',
+        path: '/Licitacion/:id',
         name: 'licitacion',
-        component: LicitacionLayout
+        component: LicitacionLayout,
+        props: true
       },
       {
         path: '/Nueva',
