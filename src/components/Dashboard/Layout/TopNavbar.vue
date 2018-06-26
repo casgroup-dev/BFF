@@ -1,7 +1,7 @@
 <template>
   <nav class="navbar navbar-expand-lg">
     <div class="container-fluid">
-      <a class="navbar-brand" href="#">Dashboard</a>
+      <!-- <a class="navbar-brand" href="#">Dashboard</a> -->
       <button type="button"
               class="navbar-toggler navbar-toggler-right"
               :class="{toggled: $sidebar.showSidebar}"
@@ -13,7 +13,9 @@
         <span class="navbar-toggler-bar burger-lines"></span>
         <span class="navbar-toggler-bar burger-lines"></span>
       </button>
-      <div class="collapse navbar-collapse justify-content-end">
+      <div class="collapse navbar-collapse justify-content-around">
+        <img src="static/img/logo-casgroup-consulting.png">
+        <!--
         <ul class="nav navbar-nav mr-auto">
           <li class="nav-item">
             <a class="nav-link" href="#" data-toggle="dropdown">
@@ -58,12 +60,13 @@
             <button class="nav-link btn btn-info btn-round" @click="logout">Log out</button>
           </li>
         </ul>
+        -->
       </div>
     </div>
   </nav>
 </template>
 <script>
-  import usersApi from '../../../apis/users'
+  import usersApi from '../../../api/index'
 
   export default {
     computed: {
