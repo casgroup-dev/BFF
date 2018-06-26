@@ -289,7 +289,9 @@ function buildBidding(bidding) {
       for (let i = 0; i < bidding.stages.length; ++i) {
         stage = bidding.stages[i]
         if (stage.save_name === 'results') {
-          dictionary[stage.save_name] = stage.start
+          dictionary[stage.save_name] = {
+            date: stage.date
+          }
         } else {
           dictionary[stage.save_name] = {
             start: stage.start,

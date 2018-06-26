@@ -132,7 +132,7 @@
                     :mode="'range'"
                     :fullscreen-mobile="true"
                     :months-to-show="1"
-                    :offset-x="-10"
+                    :offset-x="-50"
                     :offset-y="-70"
                     :date-one="stage.dateOne"
                     :date-two="stage.dateTwo"
@@ -376,9 +376,14 @@
               const dateTable = self.etapas.payload[i]
               let stage = {
                 title: dateTable.title,
-                save_name: dateTable.save_name,
-                start: self.parseDate(dateTable.dateOne, dateTable.timeOne),
-                end: self.parseDate(dateTable.dateTwo, dateTable.timeTwo)
+                save_name: dateTable.save_name
+              }
+              if (dateTable.save_name !== 'results') {
+                stage['start'] = self.parseDate(dateTable.dateOne, dateTable.timeOne)
+                stage['end'] = self.parseDate(dateTable.dateTwo, dateTable.timeTwo)
+              }
+              else {
+                stage['date'] = self.parseDate(dateTable.dateOne, dateTable.timeOne)
               }
               stages.push(stage)
             }
@@ -533,7 +538,7 @@
               startDate = new Date(this.loadedBidding.deadlines[this.etapas.save_names[i]].start)
             }
             else {
-              startDate = new Date(this.loadedBidding.deadlines[this.etapas.save_names[i]])
+              startDate = new Date(this.loadedBidding.deadlines[this.etapas.save_names[i]].date)
             }
             let stage = {
               title: this.etapas.names[i],

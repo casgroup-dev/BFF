@@ -22,10 +22,11 @@
                           :files="bidding.rules.files" title="Descargar bases"/>
       </div>
 
-      <div class="flex-row" v-if="bidding.permissions.seeParticipants">
+      <div class="flex-row">
         <Participants class="flex-row-item"
+                      v-if="bidding.permissions.seeParticipants"
                       :participants="bidding.users"/>
-        <!-- <CreateNotice class="flex-row-item"/> -->
+         <CreateNotice class="flex-row-item"/>
       </div>
 
       <Evaluacion v-if="bidding.permissions.canModify && bidding.permissions.reviewTechnical" :bidding="bidding"
