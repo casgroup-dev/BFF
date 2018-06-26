@@ -17,6 +17,7 @@
         <p class="rules-summary" v-if="bidding.rules">{{ bidding.rules.summary }}</p>
       </div>
       <div class="flex-row">
+        <PeriodsInfo :deadlines="bidding.deadlines"/>
         <FileDownloadCard class="flex-row-item"
                           iconColor="#f49521" buttonColor="#f49521"
                           :files="bidding.rules.files" title="Descargar bases"/>
@@ -70,6 +71,7 @@
   import Evaluacion from 'src/components/Dashboard/Views/Licitaciones/Ofertas/Evaluacion/Layout'
   import Recepcion from 'src/components/Dashboard/Views/Licitaciones/Ofertas/Recepcion/Layout'
   import Results from './Components/Results'
+  import PeriodsInfo from './Components/PeriodsInfo'
 
   /* Api */
   import api from 'src/api/index'
@@ -87,7 +89,8 @@
       Modal,
       CreateForm,
       Enter,
-      Results
+      Results,
+      PeriodsInfo
     },
     props: ['id'],
     data () {
