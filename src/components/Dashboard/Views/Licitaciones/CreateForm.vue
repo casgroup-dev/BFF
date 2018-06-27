@@ -308,6 +308,7 @@
               }
             })
           }
+          location.reload()
         }
       },
       formatDates (dateOne, dateTwo) {
