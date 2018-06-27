@@ -165,7 +165,7 @@
             legalRepresentative: this.inputs.text.legalRepresentative.payload,
             legalRepEmail: this.inputs.text.legalRepresentativeEmail.payload,
             legalRepPhone: this.inputs.text.legalRepresentativePhone.payload,
-            industries: this.inputs.dropDowns.industries.options.filter(opt => opt.selected).map(opt => opt.label),
+            industries: this.inputs.dropDowns.industries.selected.map(i => i.name),
             password: this.inputs.passwords.first.payload
           })
             .then(function () {
