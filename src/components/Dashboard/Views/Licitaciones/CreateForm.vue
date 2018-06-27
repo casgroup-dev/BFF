@@ -29,7 +29,7 @@
               Descripción resumida de las bases, para una versión acotada del documento subido
             </small>
           </div>
-          <FileInputCard class="col-4" title="Subir Bases" v-if="bidding.bases.show" v-on:uploaded="save"></FileInputCard>
+          <FileInputCard class="col-4" title="Subir Bases" v-if="bidding.bases.show" v-on:uploaded="save"/>
           <br/>
           <div class="row">
             <div class="col-6">
@@ -66,8 +66,13 @@
                 <fg-input placeholder="Contraseña" v-model="user.password" type="password"></fg-input>
               </div>
               <div class="row-md-4">
-                <p-checkbox v-model="user.role.cliente">Cliente</p-checkbox>
+                <p-checkbox :inline="true" v-model="user.role.cliente">Cliente</p-checkbox>
+              </div>
+              <div class="row-md-4">
                 <p-checkbox :disabled="true" v-model="user.role.ingeniero">Ingeniero</p-checkbox>
+              </div>
+              <div class="row-md-4">
+                <p-checkbox :disabled="true" v-model="user.role.proveedor">Proveedor</p-checkbox>
               </div>
             </div>
           </div>
@@ -419,7 +424,9 @@
                 mail: this.loadedBidding.users[i].user.email,
                 role: {
                   cliente: this.loadedBidding.users[i].role === 'client',
-                  ingeniero: this.loadedBidding.users[i].role === 'engineer'
+                  ingeniero: this.loadedBidding.users[i].role === 'engineer',
+                  proveedor:
+                  this.loadedBidding.users[i].role !== 'engineer' && this.loadedBidding.users[i].role !== 'client'
                 },
                 error: false,
                 errorMessage: '',
@@ -432,7 +439,8 @@
                 mail: '',
                 role: {
                   cliente: false,
-                  ingeniero: false
+                  ingeniero: false,
+                  proveedor: false
                 },
                 error: false,
                 errorMessage: '',

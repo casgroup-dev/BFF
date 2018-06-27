@@ -1,64 +1,75 @@
 <template>
   <div class="full-height">
     <div class="flex-container" v-if="bidding">
-      <Enter v-if="bidding.invite" :biddingId="bidding.id"></Enter>
-
-      <!-- TITLE -->
-      <div class="flex-row"><h1 class="title">{{ bidding.title }}</h1></div>
-      <!-- BUTTONS -->
-      <div class="col-10" style="text-align: right; font-size: xx-large">
-        <!-- NEW BIDDING -->
-        <button class="btn btn-primary" v-if="bidding.permissions.canModify"
-                @click="modalOn = true">Modificar Licitación</button>
-      </div>
-      <!-- TIMELINE -->
-      <!-- <div class="flex-row"></div> -->
-      <!-- RULES -->
       <div class="flex-row">
-        <p class="rules-summary" v-if="bidding.rules">{{ bidding.rules.summary }}</p>
-      </div>
-      <div class="flex-row">
-        <PeriodsInfo :deadlines="bidding.deadlines"/>
-        <FileDownloadCard class="flex-row-item"
-                          iconColor="#f49521"
-                          buttonColor="#f49521"
-                          :files="bidding.rules.files"
-                          title="Descargar bases"/>
+        <Enter v-if="bidding.invite" :biddingId="bidding.id"/>
       </div>
 
-      <div class="flex-row">
-        <Participants class="flex-row-item"
-                      v-if="bidding.permissions.seeParticipants"
-                      :participants="bidding.users"/>
-         <PostNoticeParent v-if="bidding.permissions.sendNotice" class="flex-row-item"/>
-      </div>
+      <template v-if="bidding.rules">
+        <!-- TITLE -->
+        <div class="flex-row"><h1 class="title">{{ bidding.title }}</h1></div>
+        <!-- BUTTONS -->
+        <div class="col-10" style="text-align: right; font-size: xx-large">
+          <!-- NEW BIDDING -->
+          <button class="btn btn-primary" v-if="bidding.permissions.canModify"
+                  @click="modalOn = true">Modificar Licitación</button>
+        </div>
+        <!-- TIMELINE -->
+        <!-- <div class="flex-row"></div> -->
+        <!-- RULES -->
+        <div class="flex-row">
+          <p class="rules-summary" v-if="bidding.rules">{{ bidding.rules.summary }}</p>
+        </div>
+        <div class="flex-row">
+          <div class="flex-column">
+            <PeriodsInfo :deadlines="bidding.deadlines"/>
+          </div>
+          <div class="flex-column">
+            <Participants class="flex-row-item"
+                          v-if="bidding.permissions.seeParticipants"
+                          :participants="bidding.users"/>
+            <FileDownloadCard class="flex-row-item"
+                              iconColor="#f49521"
+                              buttonColor="#f49521"
+                              :files="bidding.rules.files"
+                              title="Descargar bases"/>
+          </div>
+        </div>
 
-      <Evaluacion v-if="bidding.permissions.canModify && bidding.permissions.reviewTechnical" :bidding="bidding"
-                  :show-economical-section="bidding.reviewEconomical"></Evaluacion>
+        <div class="flex-row">
+          <PostNoticeParent v-if="bidding.permissions.sendNotice" class="flex-row-item" :bidding="bidding"/>
+          <NoticesList class="flex-row-item" :bidding="bidding"/>
+          <AnswerQuestionsTextareas class="flex-row-item" :bidding="bidding"/>
+          <QuestionsAndAnswersListing class="flex-row-item" :bidding="bidding"/>
+        </div>
 
-      <Recepcion v-if="bidding.permissions.uploadTechnical && !bidding.invite" :bidding=bidding
-                 :showEconomicalOffer=bidding.permissions.uploadEconomical></Recepcion>
+        <Evaluacion v-if="bidding.permissions.canModify && bidding.permissions.reviewTechnical" :bidding="bidding"
+                    :show-economical-section="bidding.reviewEconomical"></Evaluacion>
 
-      <!-- FINAL RESULT OF THE BIDDING -->
-      <div class="flex-row" v-if="bidding.publishedResults">
-        <!-- When a provider is requesting info, only his data is in users array -->
-        <Results class="flex-row-item" :awarded="bidding.users[0].awarded"
-                 :award-comment="bidding.users[0].awardComment"
-                 :details="bidding.users[0].economicalFormAnswers">
-        </Results>
-      </div>
+        <Recepcion v-if="bidding.permissions.uploadTechnical && !bidding.invite" :bidding=bidding
+                   :showEconomicalOffer=bidding.permissions.uploadEconomical></Recepcion>
 
-      <modal v-if="modalOn">
-        <template slot="header">
-          <h4 style="margin: 0">Modificar Licitación</h4>
-          <button type="button" class="btn btn-round btn-default btn-sm" @click="modalOn = false">
-            <span class="btn-label"><i class="fa fa-times"></i></span> Cerrar
-          </button>
-        </template>
-        <template slot="body">
-          <create-form v-on:endModal="modalOn = false" :modify="true" :loadedBidding="bidding"></create-form>
-        </template>
-      </modal>
+        <!-- FINAL RESULT OF THE BIDDING -->
+        <div class="flex-row" v-if="bidding.publishedResults">
+          <!-- When a provider is requesting info, only his data is in users array -->
+          <Results class="flex-row-item" :awarded="bidding.users[0].awarded"
+                   :award-comment="bidding.users[0].awardComment"
+                   :details="bidding.users[0].economicalFormAnswers">
+          </Results>
+        </div>
+
+        <modal v-if="modalOn">
+          <template slot="header">
+            <h4 style="margin: 0">Modificar Licitación</h4>
+            <button type="button" class="btn btn-round btn-default btn-sm" @click="modalOn = false">
+              <span class="btn-label"><i class="fa fa-times"></i></span> Cerrar
+            </button>
+          </template>
+          <template slot="body">
+            <create-form v-on:endModal="modalOn = false" :modify="true" :loadedBidding="bidding"></create-form>
+          </template>
+        </modal>
+      </template>
 
     </div>
   </div>
