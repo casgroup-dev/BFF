@@ -449,6 +449,7 @@ function participateInBidding (id) {
  */
 function isAdmin () {
   return axios.get(getRouteWithToken(routes.isAdmin())).then(res => {
+    // console.log(res.data.isAdmin)
     return res.data.isAdmin
   })
 }

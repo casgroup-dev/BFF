@@ -4,7 +4,7 @@
     <h3 class="title">Avisos Publicados</h3>
     <!-- BODY -->
     <label class="label-info margin-top h4" v-if="bidding.notices.length < 1"><b>No existen avisos por el momento</b></label>
-    <div class="list-group" v-for="(notice, index) in reverseItems" :key="index">
+    <div class="list-group" v-for="(notice, index) in notices" :key="index">
       <a class="list-group-item list-group-item-action flex-column align-items-start">
         <p class="mb-1">{{notice.notice}}</p>
         <small>{{notice.date}}</small>
@@ -16,6 +16,11 @@
 <script>
     export default {
       name: 'NoticesList',
+      data () {
+        return {
+          notices: ''
+        }
+      },
       props: {
         /**
          * Bidding with all of its elements. This component in particular uses the notices element of the bidding.
@@ -25,14 +30,8 @@
           required: true
         }
       },
-      computed: {
-        /**
-         * Creates a reversed copy of the notices array to listing them from last to first.
-         * @returns {Array}
-         */
-        reverseItems () {
-          return this.bidding.notices.slice().reverse()
-        }
+      beforeMount: function () {
+        this.notices = this.bidding.notices.slice().reverse()
       }
     }
 </script>

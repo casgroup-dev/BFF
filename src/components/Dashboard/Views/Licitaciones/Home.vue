@@ -9,7 +9,7 @@
                 <!-- TITLE -->
                 <div class="col-4 offset-4" style="text-align: center; font-size: xx-large">Licitaciones</div>
                 <!-- BUTTONS -->
-                <div class="col-4" style="text-align: right; font-size: xx-large">
+                <div class="col-4" style="text-align: right; font-size: xx-large" v-if="showButton">
                   <!-- NEW BIDDING -->
                   <button class="btn btn-primary" @click="modalOn = true">Nueva Licitación</button>
                 </div>
@@ -89,7 +89,8 @@
           },
           data: []
         },
-        modalOn: false
+        modalOn: false,
+        showButton: false
       }
     },
     /* METHODS OF THE COMPONENTS */
@@ -121,6 +122,10 @@
         const self = this
         return this.table.data.filter(function (licit) { return licit.attributes.title.toLowerCase().indexOf(self.search.toLowerCase()) >= 0 })
       }
+    },
+    beforeMount: function () {
+      const self = this
+      usersApi.isAdmin().then(d => { self.showButton = d })
     }
   }
 </script>
