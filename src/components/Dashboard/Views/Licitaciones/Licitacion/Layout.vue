@@ -132,7 +132,6 @@
           console.error(err)
           self.$router.push('/')
         })
-      console.log(Object.keys(this.bidding))
     }
   }
 </script>
