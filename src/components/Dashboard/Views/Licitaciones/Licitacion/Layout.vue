@@ -44,8 +44,8 @@
         </div>
 
         <Evaluacion v-if="bidding.permissions.reviewTechnical" :bidding="bidding"
-                    :show-economical-section="bidding.permissions.reviewEconomical"
-                    :can-sign-and-publish="!bidding.permissions.canModify"></Evaluacion>
+                    :show-economical-section="bidding.permissions.reviewEconomical || bidding.publishedResults"
+                    :can-sign-and-publish="!bidding.publishedResults"></Evaluacion>
 
         <Recepcion v-if="bidding.permissions.uploadTechnical" :bidding=bidding
                    :showEconomicalOffer=bidding.permissions.uploadEconomical></Recepcion>

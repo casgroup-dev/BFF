@@ -3,7 +3,7 @@
     <!-- TECHNICAL OFFERS -->
     <list-files-per-provider-card title="Ofertas técnicas"
                                   :providers="providersTechnicalDocuments"
-                                  :show-approvement="!showEconomicalSection"
+                                  :showApprovement="canSignAndPublish"
                                   @approve="approveProviders" />
     <template v-if="showEconomicalSection">
       <!-- ECONOMICAL COMPARISON -->
@@ -84,6 +84,7 @@ export default {
     },
     economicalFormAnswers () {
       return this.bidding.users
+        .filter(participant => participant.approved.technically)
         .map(participant =>
           participant.economicalFormAnswers.map(answers => ({
             ...answers,
@@ -145,6 +146,7 @@ export default {
                 .join('<br>')}.`
             : `Se guardó que ningún proveedor está aprobado aún.`
           this.notifySuccess(message)
+          setTimeout(() => location.reload(), 1000)
         })
         .catch(this.notifyError)
     },
