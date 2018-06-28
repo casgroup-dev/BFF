@@ -10,7 +10,7 @@
             <fg-input placeholder="Nombre Licitación" v-model="bidding.name.payload"></fg-input>
           </div>
           <div class="form-group">
-            <label>Empresa Autora</label><br style="margin: 0.5%;">
+            <label>Empresa Mandante</label><br style="margin: 0.5%;">
             <small><label class="error" style="color: red;"
                           v-if="bidding.company.error">{{bidding.company.errorMessage}}</label></small>
             <fg-input placeholder="CasGroup" v-model="bidding.company.payload"></fg-input>
@@ -69,10 +69,10 @@
                 <p-checkbox :inline="true" v-model="user.role.cliente">Cliente</p-checkbox>
               </div>
               <div class="row-md-4">
-                <p-checkbox :disabled="true" v-model="user.role.ingeniero">Ingeniero</p-checkbox>
+                <p-checkbox v-if="modify" :disabled="true" v-model="user.role.ingeniero">Ingeniero</p-checkbox>
               </div>
               <div class="row-md-4">
-                <p-checkbox :disabled="true" v-model="user.role.proveedor">Proveedor</p-checkbox>
+                <p-checkbox v-if="modify" :disabled="true" v-model="user.role.proveedor">Proveedor</p-checkbox>
               </div>
             </div>
           </div>
@@ -225,16 +225,29 @@
             {show: '20', value: 20}, {show: '21', value: 21}, {show: '22', value: 22}, {show: '23', value: 23}
           ],
           minutes: [
-            {show: '00', value: 0}, {show: '10', value: 10}, {show: '20', value: 20},
-            {show: '30', value: 30}, {show: '40', value: 40}, {show: '50', value: 50}
+            {show: '00', value: 0}, {show: '01', value: 1}, {show: '02', value: 2}, {show: '03', value: 3},
+            {show: '04', value: 4}, {show: '05', value: 5}, {show: '06', value: 6}, {show: '07', value: 7},
+            {show: '08', value: 8}, {show: '09', value: 9}, {show: '10', value: 10}, {show: '11', value: 11},
+            {show: '12', value: 12}, {show: '13', value: 13}, {show: '14', value: 14}, {show: '15', value: 15},
+            {show: '16', value: 16}, {show: '17', value: 17}, {show: '18', value: 18}, {show: '19', value: 19},
+            {show: '20', value: 20}, {show: '21', value: 21}, {show: '22', value: 22}, {show: '23', value: 23},
+            {show: '24', value: 24}, {show: '25', value: 25}, {show: '26', value: 26}, {show: '27', value: 27},
+            {show: '28', value: 28}, {show: '29', value: 29}, {show: '30', value: 30}, {show: '31', value: 31},
+            {show: '32', value: 32}, {show: '33', value: 33}, {show: '34', value: 34}, {show: '35', value: 35},
+            {show: '36', value: 36}, {show: '37', value: 37}, {show: '38', value: 38}, {show: '39', value: 39},
+            {show: '40', value: 40}, {show: '41', value: 41}, {show: '42', value: 42}, {show: '43', value: 43},
+            {show: '44', value: 44}, {show: '45', value: 45}, {show: '46', value: 46}, {show: '47', value: 47},
+            {show: '48', value: 48}, {show: '49', value: 49}, {show: '50', value: 50}, {show: '51', value: 51},
+            {show: '52', value: 52}, {show: '53', value: 53}, {show: '54', value: 54}, {show: '55', value: 55},
+            {show: '56', value: 56}, {show: '57', value: 57}, {show: '58', value: 58}, {show: '59', value: 59}
           ]
         },
         etapas: {
           loaded: false,
           amount: 6,
-          names: ['Recepción de Ofertas', 'Preguntas', 'Respuestas',
+          names: ['Preguntas', 'Respuestas', 'Recepción de Ofertas',
             'Evaluación Técnica', 'Evaluación Comercial', 'Resultados'],
-          save_names: ['reception', 'questions', 'answers', 'technicalEvaluation', 'economicalEvaluation', 'results'],
+          save_names: ['questions', 'answers', 'reception', 'technicalEvaluation', 'economicalEvaluation', 'results'],
           payload: [],
           error: false,
           errorMessage: 'Debe definir las fechas de la Licitación'
@@ -378,7 +391,9 @@
           type: this.bidding.type,
           stages: (function () {
             let stages = []
-            for (let i = 0; i < self.etapas.amount; ++i) {
+            let techStart
+            let techEnd
+            for (let i = 0; i < self.etapas.payload.length; ++i) {
               const dateTable = self.etapas.payload[i]
               let stage = {
                 title: dateTable.title,
@@ -390,6 +405,19 @@
               }
               else {
                 stage['date'] = self.parseDate(dateTable.dateOne, dateTable.timeOne)
+              }
+              if (dateTable.save_name === 'technicalEvaluation') {
+                techStart = stage.start
+                techEnd = stage.end
+              }
+              stages.push(stage)
+            }
+            if (self.bidding.type === '1') {
+              let stage = {
+                title: 'Evaluación Comercial',
+                save_name: 'economicalEvaluation',
+                start: techStart,
+                end: techEnd
               }
               stages.push(stage)
             }
@@ -506,6 +534,7 @@
             },
             id: 'datepicker-trigger' + (i + 1)
           }
+          if (this.bidding.type === '1' && stage.save_name === 'economicalEvaluation') continue
           stages.push(stage)
         }
         this.etapas.payload = stages

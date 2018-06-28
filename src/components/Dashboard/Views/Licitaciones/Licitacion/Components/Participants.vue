@@ -5,7 +5,7 @@
         <i class="fa fa-users"></i>
       </div>
       <div slot="content">
-        <p>Participantes</p>{{ participants.length }}
+        <p>Proveedores Participantes</p>{{ amountProviders() }}
       </div>
     </stats-card>
     <modal v-if="showParticipants">
@@ -25,7 +25,7 @@
             </thead>
             <!-- BODY -->
             <tbody>
-            <tr v-for="(provider, index) in participants" :key="index" style="font-weight:normal">
+            <tr v-for="(provider, index) in participants" v-if="provider.role === 'provider'" :key="index" style="font-weight:normal">
               <!-- PROVIDER ATTRIBUTES -->
               <td>{{provider.user.company.businessName}}</td>
               <td>{{provider.user.email}}</td>
@@ -105,6 +105,15 @@
       }
     },
     methods: {
+      amountProviders: function () {
+        let amount = 0
+        let user
+        for (let i = 0; i < this.participants.length; ++i) {
+          user = this.participants[i]
+          if (user.role === 'provider') ++amount
+        }
+        return amount
+      },
       showParticipantsModal: function () {
         this.showParticipants = true
       },
