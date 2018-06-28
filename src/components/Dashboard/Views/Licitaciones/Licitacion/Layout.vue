@@ -53,7 +53,7 @@
         <!-- FINAL RESULT OF THE BIDDING -->
         <div class="flex-row" v-if="bidding.publishedResults && bidding.permissions.seeResults">
           <!-- When a provider is requesting info, only his data is in users array -->
-          <Results class="flex-row-item" :awarded="bidding.users[0].awarded"
+          <Results class="flex-row-item" :awarded="bidding.users[0].economicalFormAnswers.some(answer => answer.adjudicated)"
                    :award-comment="bidding.users[0].awardComment"
                    :details="bidding.users[0].economicalFormAnswers">
           </Results>
