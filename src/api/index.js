@@ -277,10 +277,10 @@ function buildBidding(bidding) {
           role: (function () {
             if (user.role.proveedor) {
               return 'provider'
-            } else if (user.role.cliente) {
-              return 'client'
-            } else {
+            } else if (user.role.ingeniero) {
               return 'engineer'
+            } else {
+              return 'client'
             }
           }())
         }
