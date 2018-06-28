@@ -15,7 +15,6 @@
         <th>Cantidad</th>
         <th>Precio unitario (CLP)</th>
         <th>Especificaciones (Opcional)</th>
-        <th>Total</th>
       </tr>
       </thead>
       <tbody>
@@ -30,7 +29,6 @@
         <td>
           <fg-input v-model="item.specifications" class="no-margin"/>
         </td>
-        <td>${{ item.wantedAmount * item.costPerUnit || 0}}</td>
       </tr>
       </tbody>
     </table>
