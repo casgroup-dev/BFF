@@ -318,10 +318,10 @@
             usersApi.registerBidding(bidding).then(res => {
               if (!res) {
                 self.$emit('endModal', null)
+                location.reload()
               }
             })
           }
-          location.reload()
         }
       },
       formatDates (dateOne, dateTwo) {
