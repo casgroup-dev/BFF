@@ -32,6 +32,7 @@
                               iconColor="#f49521"
                               buttonColor="#f49521"
                               :files="bidding.rules.files"
+                              v-if="bidding.rules.files[0]"
                               title="Descargar bases"/>
           </div>
         </div>
@@ -43,7 +44,7 @@
           <QuestionsAndAnswersListing v-if="bidding.permissions.answerQuestions" class="flex-row-item" :bidding="bidding"/>
         </div>
 
-        <Evaluacion v-if="bidding.permissions.reviewTechnical" :bidding="bidding"
+        <Evaluacion v-if="bidding.permissions.reviewTechnical || bidding.permissions.reviewEconomical" :bidding="bidding"
                     :show-economical-section="bidding.permissions.reviewEconomical || bidding.publishedResults"
                     :can-sign-and-publish="!bidding.publishedResults"></Evaluacion>
 
