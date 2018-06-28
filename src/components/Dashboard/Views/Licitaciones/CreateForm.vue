@@ -391,7 +391,9 @@
           type: this.bidding.type,
           stages: (function () {
             let stages = []
-            for (let i = 0; i < self.etapas.amount; ++i) {
+            let techStart
+            let techEnd
+            for (let i = 0; i < self.etapas.payload.length; ++i) {
               const dateTable = self.etapas.payload[i]
               let stage = {
                 title: dateTable.title,
@@ -403,6 +405,19 @@
               }
               else {
                 stage['date'] = self.parseDate(dateTable.dateOne, dateTable.timeOne)
+              }
+              if (dateTable.save_name === 'technicalEvaluation') {
+                techStart = stage.start
+                techEnd = stage.end
+              }
+              stages.push(stage)
+            }
+            if (self.bidding.type === '1') {
+              let stage = {
+                title: 'Evaluación Comercial',
+                save_name: 'economicalEvaluation',
+                start: techStart,
+                end: techEnd
               }
               stages.push(stage)
             }
@@ -519,6 +534,7 @@
             },
             id: 'datepicker-trigger' + (i + 1)
           }
+          if (this.bidding.type === '1' && stage.save_name === 'economicalEvaluation') continue
           stages.push(stage)
         }
         this.etapas.payload = stages

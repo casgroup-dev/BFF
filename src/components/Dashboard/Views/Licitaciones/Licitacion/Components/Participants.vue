@@ -5,7 +5,7 @@
         <i class="fa fa-users"></i>
       </div>
       <div slot="content">
-        <p>Participantes</p>{{ amountProviders() }}
+        <p>Proveedores Participantes</p>{{ amountProviders() }}
       </div>
     </stats-card>
     <modal v-if="showParticipants">
