@@ -311,17 +311,17 @@
             usersApi.updateBidding(bidding, this.loadedBidding).then(res => {
               if (!res) {
                 self.$emit('endModal', null)
+                location.reload()
               }
             })
-          }
-          else {
+          } else {
             usersApi.registerBidding(bidding).then(res => {
               if (!res) {
                 self.$emit('endModal', null)
+                location.reload()
               }
             })
           }
-          location.reload()
         }
       },
       formatDates (dateOne, dateTwo) {
@@ -402,8 +402,7 @@
               if (dateTable.save_name !== 'results') {
                 stage['start'] = self.parseDate(dateTable.dateOne, dateTable.timeOne)
                 stage['end'] = self.parseDate(dateTable.dateTwo, dateTable.timeTwo)
-              }
-              else {
+              } else {
                 stage['date'] = self.parseDate(dateTable.dateOne, dateTable.timeOne)
               }
               if (dateTable.save_name === 'technicalEvaluation') {
@@ -462,8 +461,7 @@
                 isNew: false,
                 password: ''
               }
-            }
-            else {
+            } else {
               user = {
                 mail: '',
                 role: {
@@ -479,8 +477,7 @@
             }
             this.bidding.users.payload.push(user)
           }
-        }
-        else {
+        } else {
           this.bidding.users.payload.splice(this.bidding.users.amount,
             this.bidding.users.payload.length - this.bidding.users.amount)
         }
@@ -494,8 +491,7 @@
             let request
             if (this.modify && i < this.loadedBidding.economicalForm.length) {
               request = this.loadedBidding.economicalForm[i]
-            }
-            else {
+            } else {
               request = {
                 itemName: '',
                 wantedAmount: '',
@@ -504,8 +500,7 @@
             }
             this.bidding.requests.payload.push(request)
           }
-        }
-        else {
+        } else {
           this.bidding.requests.payload.splice(this.bidding.requests.amount,
             this.bidding.requests.payload.length - this.bidding.requests.amount)
         }
@@ -574,8 +569,7 @@
             let startDate = null
             if (this.etapas.save_names[i] !== 'results') {
               startDate = new Date(this.loadedBidding.deadlines[this.etapas.save_names[i]].start)
-            }
-            else {
+            } else {
               startDate = new Date(this.loadedBidding.deadlines[this.etapas.save_names[i]].date)
             }
             let stage = {
@@ -597,8 +591,7 @@
                 hour: endDate.getHours(),
                 minute: endDate.getMinutes()
               }
-            }
-            else {
+            } else {
               stage['dateTwo'] = ''
               stage['timeTwo'] = {
                 hour: 0,
