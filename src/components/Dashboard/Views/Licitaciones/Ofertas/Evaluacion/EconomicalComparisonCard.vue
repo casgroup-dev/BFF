@@ -7,6 +7,7 @@
                            :key="index"
                            :item="itemAndOffers.item"
                            :offers="itemAndOffers.offers"
+                           :canSave="canSave"
                            @adjudicate="emitAdjudicate"/>
     <!-- Message if there are no items -->
     <div class="text-center" v-if="!economicalForm.length"><h4>No hay items que mostrar.</h4></div>
@@ -23,6 +24,7 @@
       ItemComparisonTable
     },
     props: {
+      canSave: Boolean,
       economicalForm: {
         type: Array,
         default: () => []

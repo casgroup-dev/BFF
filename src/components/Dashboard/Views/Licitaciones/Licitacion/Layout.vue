@@ -43,14 +43,15 @@
           <QuestionsAndAnswersListing v-if="bidding.permissions.answerQuestions" class="flex-row-item" :bidding="bidding"/>
         </div>
 
-        <Evaluacion v-if="bidding.permissions.canModify && bidding.permissions.reviewTechnical" :bidding="bidding"
-                    :show-economical-section="bidding.reviewEconomical"></Evaluacion>
+        <Evaluacion v-if="bidding.permissions.reviewTechnical" :bidding="bidding"
+                    :show-economical-section="bidding.permissions.reviewEconomical"
+                    :can-sign-and-publish="!bidding.permissions.canModify"></Evaluacion>
 
         <Recepcion v-if="bidding.permissions.uploadTechnical" :bidding=bidding
                    :showEconomicalOffer=bidding.permissions.uploadEconomical></Recepcion>
 
         <!-- FINAL RESULT OF THE BIDDING -->
-        <div class="flex-row" v-if="bidding.publishedResults">
+        <div class="flex-row" v-if="bidding.publishedResults && bidding.permissions.seeResults">
           <!-- When a provider is requesting info, only his data is in users array -->
           <Results class="flex-row-item" :awarded="bidding.users[0].awarded"
                    :award-comment="bidding.users[0].awardComment"

@@ -21,10 +21,10 @@
         <td>{{ offer.specifications }}</td>
         <td>${{ offer.totalCost }}</td>
         <td>
-          <p-checkbox v-model="offer.selected"/>
+          <p-checkbox v-model="offer.selected" :disabled="!canSave"/>
         </td>
         <td>
-          <fg-input v-model="offer.comment"/>
+          <fg-input v-model="offer.comment" :disabled="!canSave" :title="offer.comment"/>
         </td>
       </tr>
       </tbody>
@@ -32,7 +32,7 @@
     <!-- Message if there are no offers -->
     <h3 class="text-center" v-else>No hay ofertas que mostrar para el item '{{ item.itemName }}'.</h3>
     <!-- Adjudicate button -->
-    <div class="row text-center">
+    <div class="row text-center" v-if="canSave">
       <div class="col">
         <button class="btn btn-primary" @click="emitAdjudicateEvent">
           <i class="fa fa-check"></i> Guardar
@@ -52,6 +52,7 @@
       Card
     },
     props: {
+      canSave: Boolean,
       /**
        * Item to show comparison between providers.
        */

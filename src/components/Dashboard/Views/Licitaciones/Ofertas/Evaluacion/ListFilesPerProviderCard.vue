@@ -7,7 +7,7 @@
       <tr>
         <th>Proveedor</th>
         <th>Archivos</th>
-        <th v-if="showApprovement">Aprobados</th>
+        <th>Aprobados</th>
       </tr>
       </thead>
       <tbody>
@@ -23,8 +23,8 @@
           <!-- Show message if there is no document -->
           <h5 class="title" v-else>No presentó documentos.</h5>
         </td>
-        <td v-if="showApprovement">
-          <p-checkbox v-model="provider.approved"/>
+        <td>
+          <p-checkbox v-model="provider.approved" :disabled="!showApprovement"/>
         </td>
       </tr>
       </tbody>
