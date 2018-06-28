@@ -39,14 +39,14 @@
         <div class="flex-row">
           <PostNoticeParent v-if="bidding.permissions.sendNotice" class="flex-row-item" :bidding="bidding"/>
           <NoticesList class="flex-row-item" :bidding="bidding"/>
-          <AnswerQuestionsTextareas class="flex-row-item" :bidding="bidding"/>
-          <QuestionsAndAnswersListing class="flex-row-item" :bidding="bidding"/>
+          <AnswerQuestionsTextareas v-if="bidding.permissions.seeQuestions" class="flex-row-item" :bidding="bidding"/>
+          <QuestionsAndAnswersListing v-if="bidding.permissions.answerQuestions" class="flex-row-item" :bidding="bidding"/>
         </div>
 
         <Evaluacion v-if="bidding.permissions.canModify && bidding.permissions.reviewTechnical" :bidding="bidding"
                     :show-economical-section="bidding.reviewEconomical"></Evaluacion>
 
-        <Recepcion v-if="bidding.permissions.uploadTechnical && !bidding.invite" :bidding=bidding
+        <Recepcion v-if="bidding.permissions.uploadTechnical" :bidding=bidding
                    :showEconomicalOffer=bidding.permissions.uploadEconomical></Recepcion>
 
         <!-- FINAL RESULT OF THE BIDDING -->

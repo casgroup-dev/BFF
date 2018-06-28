@@ -69,10 +69,10 @@
                 <p-checkbox :inline="true" v-model="user.role.cliente">Cliente</p-checkbox>
               </div>
               <div class="row-md-4">
-                <p-checkbox :disabled="true" v-model="user.role.ingeniero">Ingeniero</p-checkbox>
+                <p-checkbox v-if="modify" :disabled="true" v-model="user.role.ingeniero">Ingeniero</p-checkbox>
               </div>
               <div class="row-md-4">
-                <p-checkbox :disabled="true" v-model="user.role.proveedor">Proveedor</p-checkbox>
+                <p-checkbox v-if="modify" :disabled="true" v-model="user.role.proveedor">Proveedor</p-checkbox>
               </div>
             </div>
           </div>

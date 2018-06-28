@@ -274,7 +274,15 @@ function buildBidding(bidding) {
         let user = bidding.users[i]
         let temp = {
           email: user.mail,
-          role: 'client'
+          role: (function () {
+            if (user.role.proveedor) {
+              return 'provider'
+            } else if (user.role.cliente) {
+              return 'client'
+            } else {
+              return 'engineer'
+            }
+          }())
         }
         result.push(temp)
       }
