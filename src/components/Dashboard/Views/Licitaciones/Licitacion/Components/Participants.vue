@@ -10,7 +10,7 @@
     </stats-card>
     <modal v-if="showParticipants">
       <template slot="header">
-        <h4 class="no-margin">Participantes</h4>
+        <h4 class="no-margin">Proveedores Participantes</h4>
       </template>
       <template slot="body">
         <div class="table-responsive">
@@ -50,7 +50,7 @@
   import LTable from 'src/components/UIComponents/Table.vue'
 
   export default {
-    data() {
+    data () {
       return {
         tableColumns: ['Razón social', 'Email admin proveedor', 'Teléfono admin proveedor'],
         showParticipants: false

@@ -41,7 +41,7 @@
        * It gets the date at the moment of publishing the notice, to put it in the bidding.
        */
       setTextActualDate: function () {
-        this.myDate = new Date().toISOString().split('T')[0]
+        this.myDate = new Date()
       },
       /**
        * Event handler for the onUpload event. It calls the postNotice method and it passes the text from the child component.
