@@ -146,24 +146,24 @@
                   </AirbnbStyleDatepicker>
                 </div>
                 <table>
-                  <td>
-                    <tr>Hora Inicio</tr>
-                    <select class="custom-select custom-select-sm" v-model="stage.timeOne.hour">
+                  <tr>
+                    <td>Hora Inicio</td>
+                    <td><select class="custom-select custom-select-sm" v-model="stage.timeOne.hour">
                       <option v-for="hour in time.hours" :value="hour.value">{{hour.show}}</option>
-                    </select>
-                    <select class="custom-select custom-select-sm" v-model="stage.timeOne.minute">
+                    </select></td>
+                    <td><select class="custom-select custom-select-sm" v-model="stage.timeOne.minute">
                       <option v-for="minute in time.minutes" :value="minute.value">{{minute.show}}</option>
-                    </select>
-                  </td>
-                  <td>
-                    <tr>Hora Término</tr>
-                    <select class="custom-select custom-select-sm" v-model="stage.timeTwo.hour">
+                    </select></td>
+                  </tr>
+                  <tr>
+                    <td>Hora Término</td>
+                    <td><select class="custom-select custom-select-sm" v-model="stage.timeTwo.hour">
                       <option v-for="hour in time.hours" :value="hour.value">{{hour.show}}</option>
-                    </select>
-                    <select class="custom-select custom-select-sm" v-model="stage.timeTwo.minute">
+                    </select></td>
+                    <td><select class="custom-select custom-select-sm" v-model="stage.timeTwo.minute">
                       <option v-for="minute in time.minutes" :value="minute.value">{{minute.show}}</option>
-                    </select>
-                  </td>
+                    </select></td>
+                  </tr>
                 </table>
               </td>
             </table>
