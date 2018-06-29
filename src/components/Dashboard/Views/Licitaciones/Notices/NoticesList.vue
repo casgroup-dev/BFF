@@ -7,7 +7,7 @@
     <div class="list-group" v-for="(notice, index) in notices" :key="index">
       <a class="list-group-item list-group-item-action flex-column align-items-start">
         <p class="mb-1">{{notice.notice}}</p>
-        <small>{{notice.date}}</small>
+        <small>{{formatDate(notice.date)}}</small>
       </a>
     </div>
   </div>
@@ -32,6 +32,20 @@
       },
       beforeMount: function () {
         this.notices = this.bidding.notices.slice().reverse()
+      },
+      methods: {
+        formatDate: (date) => {
+          const dateFormatOptions = {
+            weekday: 'long',
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric',
+            hour: 'numeric',
+            minute: 'numeric'
+          }
+          let stringDate = (new Date(date)).toLocaleDateString('es-ES', dateFormatOptions).replace(',', '')
+          return stringDate.charAt(0).toUpperCase() + stringDate.slice(1)
+        }
       }
     }
 </script>
