@@ -3,6 +3,7 @@
     <i v-if="icon" :class="`fa ${icon} icon`" :style="{color: iconColor}"></i>
     <div class="content">
       <h2 v-if="title" class="title" :style="{fontSize: titleSize}">{{ title }}</h2>
+      <h5 v-if="isAdmin">{{ filename }}</h5>
       <clip-loader :loading="loading" color="#1DC7EA" class="clip-loader"/>
       <button v-if="!loading" class="btn btn-fill btn-round btn-download"
               :style="{backgroundColor: buttonColor}"
@@ -15,6 +16,7 @@
 
 <script>
   import ClipLoader from 'vue-spinner/src/ClipLoader'
+  import api from '../../../api/index'
 
   const defaultColor = '#03A9F4'
 
@@ -36,7 +38,8 @@
           horizontalAlign: 'right',
           verticalAlign: 'bottom',
           timeout: 20000
-        }
+        },
+        isAdmin: false
       }
     },
     /**
@@ -117,6 +120,18 @@
           icon: 'fa fa-exclamation',
           type: 'warning'
         })
+      }
+    },
+    async created () {
+      this.isAdmin = await api.isAdmin()
+    },
+    computed: {
+      filename () {
+        let names
+        for (let i = 0; i < this.files.length; i++) {
+          names = this.files[i].name
+        }
+        return names
       }
     }
   }
