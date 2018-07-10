@@ -40,8 +40,9 @@
         <div class="flex-row">
           <PostNoticeParent v-if="bidding.permissions.sendNotice" class="flex-row-item" :bidding="bidding"/>
           <NoticesList class="flex-row-item" :bidding="bidding"/>
-          <AnswerQuestionsTextareas v-if="bidding.permissions.seeQuestions" class="flex-row-item" :bidding="bidding"/>
+          <AnswerQuestionsTextareas v-if="bidding.permissions.seeQuestion" class="flex-row-item" :bidding="bidding"/>
           <QuestionsAndAnswersListing v-if="bidding.permissions.answerQuestions" class="flex-row-item" :bidding="bidding"/>
+          <post-question-parent v-if="bidding.permissions.askQuestion" :bidding="bidding"/>
         </div>
 
         <Evaluacion v-if="bidding.permissions.reviewTechnical || bidding.permissions.reviewEconomical" :bidding="bidding"
@@ -82,10 +83,10 @@
   import FileDownloadCard from '../../../../UIComponents/Inputs/FileDownloadCard'
   import FileInputCard from 'src/components/UIComponents/Inputs/FileInputCard'
   import Participants from './Components/Participants'
-  import PostQuestionParent from '../Questions/PostQuestionParent'
+  import PostQuestionParent from '../Questions/PostQuestionParent.vue'
   import PostNoticeParent from '../Notices/PostNoticeParent'
-  import AnswerQuestionsTextareas from '../Questions/AnswerQuestionsTextareas'
-  import QuestionsAndAnswersListing from '../Questions/QuestionsAndAnswersListing'
+  import AnswerQuestionsTextareas from '../Questions/AnswerQuestionsTextareas.vue'
+  import QuestionsAndAnswersListing from '../Questions/QuestionsAndAnswersListing.vue'
   import NoticesList from '../Notices/NoticesList'
   import Enter from './Components/Enter'
   import Evaluacion from 'src/components/Dashboard/Views/Licitaciones/Ofertas/Evaluacion/Layout'
